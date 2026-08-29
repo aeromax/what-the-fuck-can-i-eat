@@ -1,0 +1,21 @@
+node_modules/
+dist/
+.astro/
+
+# Secrets. GEMINI_API_KEY lives here locally and as a GitHub Actions secret in
+# CI. It must never carry a PUBLIC_ prefix or reach client code — Astro inlines
+# PUBLIC_ vars into the shipped bundle.
+.env
+.env.*
+!.env.example
+
+.DS_Store
+npm-debug.log*
+
+# NOTE: data/ is deliberately NOT ignored.
+#
+# data/recalls.json is the published state, data/review.json holds ambiguous
+# merges awaiting a human, and data/snapshots/ holds the raw government
+# responses. All three are committed on purpose: git history is the audit trail
+# that lets you tell whether a wrong page came from the government or from the
+# model. See docs/design.md §5.

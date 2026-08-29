@@ -1,0 +1,21 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "types": ["node"],
+
+    // `npm run refresh` runs the TypeScript in scripts/ through Node's native
+    // type stripping — there is no build step for the pipeline. Type stripping
+    // erases annotations but cannot handle syntax that emits code (enums,
+    // namespaces, parameter properties, non-`type` re-exports).
+    //
+    // This flag makes that a compile error at `npm run check` instead of a
+    // runtime error four steps later inside a GitHub Action.
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true
+  }
+}

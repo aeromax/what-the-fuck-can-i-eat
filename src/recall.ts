@@ -1,0 +1,100 @@
+import { z } from 'zod';
+
+// The Recall record is the whole data model. See docs/design.md §3.
+//
+// Why `zod` and not `astro/zod`: the astro/zod rule in CLAUDE.md applies to
+// content-collection schemas. This project has no content collections — the page
+// imports data/recalls.json plainly — and scripts/ runs under bare Node, where
+// reaching into Astro's subpath export would drag the framework into the data
+// pipeline for no benefit. Both are Zod 4.
+
+/** Where a record's facts came from, and therefore how far it can be trusted. */
+export const Confidence = z.enum([
+  // Every fact came from structured government columns. No model output in any
+  // factual field.
+  'verified',
+  // A model read press-release prose for retailers/states/origin/lot codes.
+  // Brand, company, product and reason are still structured or <dl>-parsed.
+  'extracted',
+]);
+
+export const Source = z.enum(['openfda', 'fdaRss', 'fsis']);
+
+/**
+ * Class III is excluded as the boring tier — an editorial call, docs/design.md §7.
+ *
+ * `Public Health Alert` is FSIS-only and is not a recall class at all: FSIS
+ * issues one when contaminated product is believed to be in commerce but no
+ * recall has been requested. Included deliberately (decision 2026-08-29), on the
+ * grounds that the page's standard is "food you should not eat right now" and a
+ * PHA meets it — arguably more urgently than a Class II, since nothing has been
+ * withdrawn. The page must not present it as a recall; see docs/design.md §7.
+ */
+export const Classification = z.enum(['Class I', 'Class II', 'Public Health Alert']);
+
+export const RecallSchema = z.object({
+  /** `${source}:${native key}` — stable across runs. See `makeId`. */
+  id: z.string().min(1),
+
+  // --- Facts. Never model-written. -----------------------------------------
+  /** The food name, shown large. */
+  product: z.string().min(1),
+  brand: z.string(),
+  company: z.string(),
+  /** Verbatim government text. Never rewritten, summarised or tidied. */
+  reason: z.string().min(1),
+  /** ISO YYYY-MM-DD. Sources disagree on format; normalize on the way in. */
+  announcedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  classification: Classification,
+
+  // --- Facts that are structured on the verified tier and model-extracted on
+  // --- the extracted tier. docs/design.md §2.
+  retailers: z.array(z.string()).default([]),
+  /** Full state names, normalized. openFDA emits 2-letter codes; FSIS emits names. */
+  states: z.array(z.string()).default([]),
+  countryOfOrigin: z.string().nullable().default(null),
+  lotCodes: z.array(z.string()).default([]),
+
+  // --- Provenance ----------------------------------------------------------
+  source: Source,
+  /** The government page a reader can go and check. Always present. */
+  sourceUrl: z.url(),
+  confidence: Confidence,
+
+  // --- Voice. Model-written, written once, then frozen. --------------------
+  /** Snark lives here and nowhere else. Absent until scripts/voice.ts runs. */
+  headline: z.string().nullable().default(null),
+  /** Deadpan. The line someone reads while holding the product. */
+  avoidLine: z.string().nullable().default(null),
+});
+
+export type Recall = z.infer<typeof RecallSchema>;
+export type Source = z.infer<typeof Source>;
+export type Confidence = z.infer<typeof Confidence>;
+
+/**
+ * Resolves docs/design.md §10 open question 1.
+ *
+ * Ids are namespaced per source rather than shared across sources, because the
+ * three sources have no common key: openFDA has `recall_number` (H-1219-2026),
+ * FSIS has its own `field_recall_number` (018-2026) — which collide in shape but
+ * mean different things — and an RSS item has nothing but a URL.
+ *
+ * So the id is deliberately NOT the cross-source merge key. It only has to be
+ * stable for one source across runs, which is what lets voice.ts skip records
+ * that already have a headline. Matching the same recall across sources is
+ * merge.ts's job, done on content, with ambiguity routed to review.json rather
+ * than guessed at (docs/design.md §6).
+ */
+export function makeId(source: Source, nativeKey: string): string {
+  const key = nativeKey.trim().toLowerCase().replace(/\s+/g, '-');
+  if (!key) throw new Error(`makeId: empty native key for source ${source}`);
+  return `${source}:${key}`;
+}
+
+/** An RSS item's only stable handle is its press-release URL slug. */
+export function slugFromUrl(url: string): string {
+  const last = new URL(url).pathname.split('/').filter(Boolean).pop();
+  if (!last) throw new Error(`slugFromUrl: no slug in ${url}`);
+  return last;
+}

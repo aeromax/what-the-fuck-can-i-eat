@@ -1,0 +1,30 @@
+{
+  "name": "what-the-fuck-can-i-eat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "refresh": "node scripts/refresh.ts",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@google/genai": "2.19.0",
+    "astro": "7.2.9",
+    "fast-xml-parser": "5.11.1",
+    "impit": "0.14.4",
+    "zod": "4.5.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/node": "^24",
+    "typescript": "6.0.3",
+    "vitest": "4.1.11"
+  }
+}
