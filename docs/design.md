@@ -81,19 +81,20 @@ The `Recall` record is the whole data model. Its spine is `confidence`:
 The page labels the difference honestly. It does not silently present the two
 tiers as equivalent, because they are not.
 
-Fields (**unverified** as a literal TypeScript shape — this is the intent, the
-exact names get fixed in build step 2):
+Fields (implemented in `src/recall.ts`, step 2):
 
 | Field | Notes |
 |---|---|
-| `id` | stable across runs; the merge key |
+| `id` | `source:nativeKey`, stable across runs; **not** the cross-source merge key — see §10.1 |
 | `product` | the food name, shown large |
 | `brand`, `company` | never model-written |
 | `reason` | verbatim government text, never rewritten |
 | `retailers`, `states`, `countryOfOrigin`, `lotCodes` | structured on the verified tier, model-extracted on the extracted tier |
+| `distributionRaw` | verbatim government distribution text; the fallback when the `states` parse under-reports |
+| `nationwide` | set when the source says the product went everywhere; prevents an empty `states` list reading as "not near me" |
 | `announcedDate` | drives the 30-day window |
 | `status` | inclusion is `Ongoing` only |
-| `classification` | Class I and II only |
+| `classification` | Class I, Class II, and FSIS `Public Health Alert` — see §7 |
 | `source` | `openfda` \| `fdaRss` \| `fsis` |
 | `sourceUrl` | the cited government page |
 | `confidence` | `verified` \| `extracted` |
@@ -135,12 +136,25 @@ contradict pre-2026 training data. Trust these over recollection.
   appears as bare codes (`"MD, VA, NY"`), full names
   (`"Arkansas, Louisiana, …"`), and prose with a preamble and `&` separators
   (`"Product was shipped to the following states: AL, GA, … & WV."`). All three
-  shapes must be handled. FSIS `states` uses full names. This is a real
+  shapes must be handled — 21 distinct shapes across 43 records, including
+  `"only in OR."`, `"Distributed to Nevada for further distribution."` and two
+  that name no state at all. FSIS `states` uses full names. This is a real
   cross-source join and it silently under-matches if skipped.
-- **`code_info` carries lot codes as a structured column** (present on all 43
-  captured records; `more_code_info` is absent — not empty — on 3 of 43). This
-  is why openFDA records never need model extraction: lot codes reach the page
-  on the verified tier.
+  The parser (`scripts/states.ts`) matches state codes **case-sensitively**,
+  which is what keeps the word "in" from becoming Indiana while still reading
+  `OR` as Oregon. It deliberately over-reports rather than under-reports: a
+  spurious state is a false alarm, a missing one hides a recall from someone
+  standing in that state.
+- **`code_info` is a structured field with free-text content** — a weaker claim
+  than this document previously made. Present on all 43 captured records
+  (`more_code_info` is absent, not empty, on 3 of 43), but the content ranges
+  from a bare lot code (`"Selec1011"`) through `"None"` to a full paragraph
+  explaining where on the carton to look. It is therefore stored **verbatim and
+  unsplit**: parsing that prose into a list would invent lot codes that do not
+  exist, which is precisely the failure the AI/facts boundary exists to prevent.
+  The important half of the original claim still holds — openFDA records never
+  need *model* extraction, because whatever the government wrote reaches the page
+  on the verified tier without a model seeing it.
 - **`product_type` is `"Food"` on every record and does not distinguish human
   from pet food.** The inclusion rule's pet-food filter cannot be implemented
   here. Verified 2026-08-29: the 30-day window contained no pet food at all —
@@ -389,6 +403,11 @@ Not settled by `CLAUDE.md`; resolve before or during the step they block.
 3. **The 30-day clock.** Measured from announcement date, but openFDA's
    `report_date` and the RSS `pubDate` for the same recall differ by weeks. Which
    one governs? Affects which items fall out of the window and when.
+   **Step 3 uses `report_date`** as the only date openFDA offers for this, and
+   stores it as `announcedDate`. That is provisional: when merge.ts starts
+   upgrading an RSS record to its openFDA twin, the same recall will carry two
+   different `announcedDate` values depending on which source won, and the older
+   one can push it out of the window. Resolve before step 6.
 4. **Deploy target.** The GitHub Action refreshes data; what publishes `dist/`
    is unspecified.
 5. ~~**FSIS `Public Health Alert`.**~~ **Resolved 2026-08-29: include them**, as

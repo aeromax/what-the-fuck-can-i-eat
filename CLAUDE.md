@@ -2,14 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project status: schema and fixtures, no pipeline yet
+## Project status: one source of three wired up
 
-As of 2026-08-29, build steps 1–2 are done: scaffold builds clean, the `Recall`
-model and all three source schemas exist, and six live fixtures back 33 passing
-tests. There is still no data pipeline — no source module fetches anything and
-the page is a placeholder.
+As of 2026-08-29, build steps 1–3 are done: scaffold builds clean, the `Recall`
+model and all three source schemas exist, and the openFDA source fetches, filters
+and normalizes live data (39 of 43 rows) on the `verified` tier. 57 tests pass
+offline against captured fixtures. The RSS and FSIS sources do not exist yet and
+the page is still a placeholder.
 
-**Continue at `docs/build-plan.md` step 3.** Do not improvise off this file
+**Continue at `docs/build-plan.md` step 4.** Do not improvise off this file
 alone — the build plan carries per-step acceptance criteria and the order
 matters (the riskiest unknown is deliberately step 5, not step 8).
 
@@ -159,8 +160,10 @@ These were each found the hard way. None are hypothetical.
 - `state` is a 2-letter code; `distribution_pattern` is free text in **three**
   incompatible shapes (bare codes, full names, prose with `&` separators). FSIS
   `states` uses full names. Normalize before comparing.
-- `code_info` carries lot codes as a structured column — openFDA records never
-  need extraction. `more_code_info` is absent, not empty, on some records.
+- `code_info` is a structured field with **free-text content** — sometimes a bare
+  lot code, sometimes `"None"`, sometimes a paragraph. Store it verbatim and
+  unsplit; splitting the prose invents lot codes. openFDA records still never
+  need *model* extraction. `more_code_info` is absent, not empty, on some records.
 - `product_type` is `"Food"` on every record and does **not** separate human from
   pet food. Pet food arrives via RSS, where the press-release `Product Type` row
   reads `Animal & Veterinary`. Filter there, by excluding on `Animal &

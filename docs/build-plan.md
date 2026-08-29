@@ -92,7 +92,18 @@ with the network unavailable.
 green, git initialised on `main`. Note that the "Node even-numbered only"
 constraint did not reproduce — see CLAUDE.md.
 
-## Step 3 — openFDA source + normalize
+## Step 3 — openFDA source + normalize ✅ done 2026-08-29
+
+Delivered: `scripts/sources/openfda.ts`, `scripts/normalize.ts`,
+`scripts/states.ts`, 24 new tests (57 total). A live run returns 39 of 43 rows,
+all `verified`, all with a citation, none with voice, no pet food.
+
+Two model fields were added that the design did not anticipate, both verbatim
+government data: `distributionRaw` (because the `states` parse is best-effort
+over 21 text shapes) and `nationwide` (because an empty state list on a
+nationwide recall reads as "not near me"). Design §3 and §4 updated.
+
+<details><summary>Original acceptance criteria</summary>
 
 The `verified` tier, simplest path first.
 
@@ -108,6 +119,8 @@ The `verified` tier, simplest path first.
 **Accept when:** a live run yields a plausible count of validated `Recall`
 objects, none of which has a `headline`; pet food is absent; every record has a
 `sourceUrl`; the fixture test passes offline.
+
+</details>
 
 ## Step 4 — FDA RSS + press-release parsing
 

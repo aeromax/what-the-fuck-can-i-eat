@@ -52,6 +52,19 @@ export const RecallSchema = z.object({
   retailers: z.array(z.string()).default([]),
   /** Full state names, normalized. openFDA emits 2-letter codes; FSIS emits names. */
   states: z.array(z.string()).default([]),
+  /**
+   * Verbatim government distribution text, kept because `states` is a
+   * best-effort parse of free text that comes in 21 distinct shapes. If the
+   * parse under-reports, the reader can still see what the government said.
+   * Never model-written.
+   */
+  distributionRaw: z.string().nullable().default(null),
+  /**
+   * Set when the source says the product went everywhere. Without this, a
+   * nationwide recall parses to zero states and reads on the page as "not near
+   * me" — the most dangerous possible misreading of an empty list.
+   */
+  nationwide: z.boolean().default(false),
   countryOfOrigin: z.string().nullable().default(null),
   lotCodes: z.array(z.string()).default([]),
 
