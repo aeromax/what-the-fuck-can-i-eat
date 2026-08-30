@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "test": "vitest run",
     "refresh": "node scripts/refresh.ts",
-    "check": "astro check"
+    "check": "astro check",
+    "seed": "node scripts/seed.ts"
   },
   "dependencies": {
     "@google/genai": "2.19.0",

@@ -414,7 +414,20 @@ Not settled by `CLAUDE.md`; resolve before or during the step they block.
    the safer reading. Step 5 no longer blocked. The remaining work is
    presentational and lands in step 9 — a PHA must not be labelled a recall.
    See §7.
-6. **Pet food on the openFDA path.** Now moot in practice — the captured window
+6. **`product` is not a food name on the openFDA path.** ⚠️ Surfaced by the
+   step-3 preview. §1 promises "food names in large plain type", but openFDA's
+   `product_description` is a full spec line — one live record reads *"Grade A
+   Brown In-shell Chicken eggs packaged in the following configurations: 1.
+   Simple Truth, Natural Cage Free Grain Fed, Medium, 12 Eggs, Net Wt 21 oz (1lb
+   5oz) 596g, UPC 0 11110-87032 0. Distributed by…"*. As a heading it runs four
+   lines and buries the food.
+   Shortening it is not free: §2 forbids the model from touching `product`, so
+   the options are mechanical truncation (brittle — the food name is not always
+   first) or a separate model-written display name held to the same
+   extraction-only standard as lot codes. Decide at step 7, since it determines
+   whether `headline` alone carries the large type. Until then the preview shows
+   the untruncated text, which is honest but ugly.
+7. **Pet food on the openFDA path.** Now moot in practice — the captured window
    contained none, and RSS items carry a structured `Product Type` that
    identifies them. But openFDA offers no equivalent field, so if a pet-food row
    ever does appear there, nothing filters it. Revisit at step 3 if it bites.

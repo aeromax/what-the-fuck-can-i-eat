@@ -1,0 +1,82 @@
+---
+import type { Recall } from '../recall.ts';
+
+interface Props { recall: Recall }
+const { recall } = Astro.props;
+
+// No headline yet (step 7). The documented fallback is the plain product name
+// and the verbatim government reason — docs/design.md §6, "Gemini failure is
+// not fatal". That is what renders here, so this preview shows the real
+// degraded path rather than invented copy.
+const heading = recall.headline ?? recall.product;
+
+// The avoid line is assembled mechanically from government fields. Nothing here
+// is written or inferred; when step 7 lands, `avoidLine` replaces it.
+const where = recall.nationwide
+  ? 'Nationwide'
+  : recall.states.length > 0
+    ? recall.states.join(', ')
+    : null;
+
+const isAlert = recall.classification === 'Public Health Alert';
+---
+
+<article class="recall">
+  <h2>{heading}</h2>
+
+  {recall.avoidLine
+    ? <p class="avoid">{recall.avoidLine}</p>
+    : <p class="avoid">
+        <span class="reason">{recall.reason}</span>
+        {recall.company && <span class="bit">Recalled by {recall.company}.</span>}
+        {where && <span class="bit">Distributed: {where}.</span>}
+        {recall.lotCodes.length > 0 && <span class="bit">Codes: {recall.lotCodes.join(' / ')}</span>}
+      </p>
+  }
+
+  <p class="meta">
+    <span class:list={['tag', isAlert ? 'alert' : 'class']}>
+      {recall.classification}
+    </span>
+    <span class:list={['tag', recall.confidence]}>{recall.confidence}</span>
+    <span class="date">{recall.announcedDate}</span>
+    <a href={recall.sourceUrl} rel="noopener">source</a>
+  </p>
+</article>
+
+<style>
+  .recall { padding: 1.75rem 0; border-bottom: 1px solid var(--rule); }
+  h2 {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    line-height: 1.15;
+    font-weight: 650;
+    margin: 0 0 0.6rem;
+    letter-spacing: -0.02em;
+  }
+  .avoid { margin: 0 0 0.75rem; font-size: 1rem; line-height: 1.5; color: var(--ink); }
+  .reason { font-weight: 600; }
+  /* No ::before spacer: compressHTML: true preserves the real whitespace
+     between these spans. If someone ever flips that config to Astro 7's 'jsx'
+     default, the words glue together here first. */
+  .meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--dim);
+  }
+  .tag {
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    font-variant: all-small-caps;
+    letter-spacing: 0.04em;
+  }
+  .alert { border-color: #b45309; color: #b45309; }
+  .verified { border-color: #15803d; color: #15803d; }
+  .extracted { border-color: #a16207; color: #a16207; }
+  .date { font-variant-numeric: tabular-nums; }
+  a { color: var(--dim); }
+</style>

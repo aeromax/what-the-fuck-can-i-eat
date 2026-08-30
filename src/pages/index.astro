@@ -1,8 +1,23 @@
 ---
-// Placeholder. The real page is build step 9 — it reads data/recalls.json and
-// renders one <Recall /> per item. This exists so step 1 can prove the toolchain
-// builds.
-const lastChecked = 'never';
+import RecallRow from '../components/Recall.astro';
+import { RecallSchema, type Recall } from '../recall.ts';
+import raw from '../../data/recalls.json';
+
+// PROVISIONAL. The real page is build step 9 — this exists so `npm run dev` and
+// `npm run preview` have something to show while the pipeline is built. Layout
+// and voice are both placeholders; the DATA is real government data, seeded by
+// `npm run seed`.
+
+// Validate on the way in: a malformed recalls.json should fail the build rather
+// than render half a page of wrong facts.
+const recalls: Recall[] = raw.map((r) => RecallSchema.parse(r));
+
+const sources = [
+  { name: 'openFDA', live: true },
+  { name: 'FDA RSS', live: false },
+  { name: 'FSIS', live: false },
+];
+const awaitingVoice = recalls.filter((r) => r.headline === null).length;
 ---
 
 <html lang="en">
@@ -10,9 +25,76 @@ const lastChecked = 'never';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>what the fuck can i eat</title>
+    <meta name="robots" content="noindex" />
   </head>
   <body>
-    <h1>what the fuck can i eat</h1>
-    <p>Nothing here yet. Last checked: {lastChecked}.</p>
+    <main>
+      <header>
+        <h1>what the fuck can i eat</h1>
+        <p class="sub">US food recalls that are currently active.</p>
+        <p class="wip">
+          Preview build. Facts are real government data; the snark isn't written yet,
+          so every row falls back to its verbatim recall reason.
+          {awaitingVoice} of {recalls.length} awaiting voice.
+        </p>
+      </header>
+
+      {recalls.length === 0
+        ? <p class="empty">No records seeded. Run <code>npm run seed</code>.</p>
+        : recalls.map((recall) => <RecallRow recall={recall} />)
+      }
+
+      <footer>
+        <p>
+          Sources:
+          {sources.map((s) => (
+            <span class:list={['src', s.live ? 'on' : 'off']}>{s.name}</span>
+          ))}
+        </p>
+        <p class="note">
+          FDA RSS and FSIS are not wired up yet (build steps 4 and 5), so meat,
+          poultry and egg recalls are missing from this preview entirely.
+        </p>
+      </footer>
+    </main>
   </body>
 </html>
+
+<style is:global>
+  :root {
+    --bg: #fbfbf9;
+    --ink: #1a1a18;
+    --dim: #6b6b66;
+    --rule: #e0e0da;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16161a; --ink: #ececea; --dim: #8f8f8a; --rule: #2e2e33; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  h1 { font-size: clamp(2rem, 7vw, 3rem); margin: 0; letter-spacing: -0.03em; }
+  .sub { color: var(--dim); margin: 0.4rem 0 0; }
+  .wip {
+    margin: 1.5rem 0 0;
+    padding: 0.75rem 0.9rem;
+    border: 1px dashed var(--rule);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--dim);
+  }
+  header { margin-bottom: 1rem; }
+  .empty { color: var(--dim); }
+  footer { margin-top: 3rem; font-size: 0.85rem; color: var(--dim); }
+  .src { margin-left: 0.4rem; }
+  .src.on::before { content: '● '; color: #15803d; }
+  .src.off::before { content: '○ '; }
+  .note { font-style: italic; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
