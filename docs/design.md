@@ -215,7 +215,25 @@ contradict pre-2026 training data. Trust these over recollection.
 - `<dd>` values repeat their own label inline: the brand cell reads
   `"Brand Name(s) Donutful"`. Strip the duplicated prefix.
 - The same `<dl>` carries `Consumers:` and `Media:` contact rows. Ignore them —
-  they are phone numbers, not product facts.
+  they are phone numbers, not product facts. **They are separate `<dl>` elements**;
+  the facts live in the one with class `lcds-description-list--grid`, so select
+  that block rather than filtering labels out of a merged list.
+- **The duplicated label is an element, not a string prefix.** The `<dd>` contains
+  `<div class="field--label">Brand Name(s)</div>` beside
+  `<div class="field--item">Donutful</div>`. Removing the label element is
+  strictly better than stripping a duplicated string prefix, because it cannot
+  damage a value that legitimately begins with its own label text.
+- **`<time datetime>` is UTC and the dates are US Eastern.** An evening
+  announcement carries a UTC instant on the following day —
+  `datetime="2026-08-25T00:36:00Z"` on a page that reads *August 24, 2026*.
+  Slicing the ISO string misdates the record and shifts it within the 30-day
+  window. Convert to `America/New_York` first.
+- Confirmed labels (2026-08-29): `Company Announcement Date`, `FDA Publish Date`,
+  `Product Type`, `Reason for Announcement`, `Company Name`, `Brand Name`,
+  `Product Description`. **No classification row exists** — see §7.
+- Product names on this path are already short and clean ("Mangoes", "Jalapeno
+  Ranch Dressing"), unlike openFDA's spec lines, so `displayName` matters far
+  less here.
 - **`Product Type:` is the pet-food discriminator, and it is structured.**
   Human items read `"Food & Beverages …"`; pet items read
   `"Animal & Veterinary Food & Beverages …"`. Note that pet items contain
@@ -334,6 +352,22 @@ pet food, which is filtered out.
 
 This is an **editorial judgment, not a technical constraint**. Changing it is a
 product decision — ask, don't assume.
+
+### Unclassified records (found at step 4, 2026-08-29)
+
+⚠️ **Editorial — confirm this reading.** FDA press releases carry **no
+classification at all**: the `<dl>` has no such row, and the class is assigned
+weeks later through openFDA. That lag is the entire reason the RSS path exists.
+
+The inclusion rule as written admits Class I and II, which would reject every RSS
+record and empty the `extracted` tier — deleting the freshest items on the page,
+which are also the ones most likely to still be on a shelf.
+
+So `classification` is nullable and null means "not yet classified", which is
+included and labelled as such. This follows the same reasoning as the PHA
+decision below: the rule's intent is "food you should not eat right now", and a
+recall announced yesterday meets it whether or not a clerk has graded it yet.
+Excluding it would be the literal reading; including it is the safe one.
 
 ### Public Health Alerts (decision 2026-08-29)
 

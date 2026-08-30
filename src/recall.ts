@@ -64,7 +64,13 @@ export const RecallSchema = z.object({
   reason: z.string().min(1),
   /** ISO YYYY-MM-DD. Sources disagree on format; normalize on the way in. */
   announcedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  classification: Classification,
+  /**
+   * Null means "not yet classified", which is the normal state of a fresh FDA
+   * press release: classification arrives weeks later via openFDA, and that lag
+   * is the entire reason the RSS path exists. Treating null as excluded would
+   * empty the `extracted` tier. See docs/design.md §7.
+   */
+  classification: Classification.nullable().default(null),
 
   // --- Facts that are structured on the verified tier and model-extracted on
   // --- the extracted tier. docs/design.md §2.

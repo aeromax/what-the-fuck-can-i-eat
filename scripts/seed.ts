@@ -11,6 +11,7 @@
 // published state file are the one kind of placeholder that could do harm.
 
 import { writeFileSync } from 'node:fs';
+import { fetchFdaRssRecalls } from './sources/fdaRss.ts';
 import { fetchOpenFda } from './sources/openfda.ts';
 
 const out = new URL('../data/recalls.json', import.meta.url);
@@ -18,13 +19,20 @@ const out = new URL('../data/recalls.json', import.meta.url);
 const openfda = await fetchOpenFda();
 console.log(`openFDA: reachable=${openfda.reachable} — ${openfda.note}`);
 
-if (!openfda.reachable) {
+const rss = await fetchFdaRssRecalls();
+console.log(`FDA RSS: reachable=${rss.reachable} — ${rss.note}`);
+
+if (!openfda.reachable && !rss.reachable) {
   // Degrade, never blank: leave whatever is already committed in place.
-  console.error('openFDA unreachable; leaving data/recalls.json untouched.');
+  console.error('all sources unreachable; leaving data/recalls.json untouched.');
   process.exit(1);
 }
 
-const recalls = [...openfda.recalls].sort((a, b) =>
+// NOT merged. merge.ts is step 6, so a recall that appears in both openFDA and
+// RSS shows up twice here. That is the honest preview of an unmerged pipeline,
+// and duplicate rows are the cheap failure the merge rules are designed around
+// (docs/design.md §6) — better visible here than papered over.
+const recalls = [...openfda.recalls, ...rss.recalls].sort((a, b) =>
   a.announcedDate === b.announcedDate
     ? a.id.localeCompare(b.id)
     : b.announcedDate.localeCompare(a.announcedDate),
@@ -33,3 +41,5 @@ const recalls = [...openfda.recalls].sort((a, b) =>
 writeFileSync(out, `${JSON.stringify(recalls, null, 2)}\n`);
 console.log(`wrote ${recalls.length} records to data/recalls.json`);
 console.log(`  ${recalls.filter((r) => r.headline === null).length} awaiting voice (step 7)`);
+console.log(`  ${recalls.filter((r) => r.confidence === 'verified').length} verified, ${recalls.filter((r) => r.confidence === 'extracted').length} extracted`);
+console.log('  NOT deduped — merge.ts is step 6.');

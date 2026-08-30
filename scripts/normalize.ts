@@ -1,5 +1,6 @@
 import type { z } from 'zod';
-import { type Recall, RecallSchema, makeId } from '../src/recall.ts';
+import { type Recall, RecallSchema, makeId, slugFromUrl } from '../src/recall.ts';
+import type { PressReleaseFactsT } from './pressRelease.ts';
 import type { OpenFdaRow } from './sourceSchemas.ts';
 import { parseDistribution } from './states.ts';
 
@@ -71,6 +72,47 @@ export function normalizeOpenFda(row: OpenFdaRowT): Recall {
     sourceUrl: openFdaSourceUrl(row.recall_number),
     confidence: 'verified',
 
+    headline: null,
+    avoidLine: null,
+  });
+}
+
+/**
+ * RSS item + parsed press-release <dl> -> Recall, on the `extracted` tier.
+ *
+ * Every factual field below comes from the parsed <dl>, not from a model. The
+ * tier is called `extracted` because the PROSE fields — retailers, states,
+ * country of origin, lot codes — are left empty here for step 7 to extract from
+ * the page text. Brand, company, product, reason and dates are structured data
+ * and stay that way. docs/design.md §2.
+ */
+export function normalizeFdaRss(link: string, facts: PressReleaseFactsT): Recall {
+  return RecallSchema.parse({
+    id: makeId('fdaRss', slugFromUrl(link)),
+
+    product: facts.productDescription,
+    brand: facts.brandName,
+    company: facts.companyName,
+    reason: facts.reason,
+    announcedDate: facts.companyAnnouncementDate,
+
+    // FDA has not classified this yet — press releases carry no class, and the
+    // assignment arrives weeks later through openFDA. Null is the honest value.
+    classification: null,
+
+    retailers: [],
+    states: [],
+    distributionRaw: null,
+    nationwide: false,
+    countryOfOrigin: null,
+    lotCodes: [],
+
+    source: 'fdaRss',
+    // Canonicalised to https: the feed emits http:// links.
+    sourceUrl: link.replace(/^http:\/\//, 'https://'),
+    confidence: 'extracted',
+
+    displayName: null,
     headline: null,
     avoidLine: null,
   });

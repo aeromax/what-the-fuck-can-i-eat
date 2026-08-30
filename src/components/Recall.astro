@@ -22,6 +22,8 @@ const where = recall.nationwide
     : null;
 
 const isAlert = recall.classification === 'Public Health Alert';
+// Null classification is honest, not missing data: FDA has not yet assigned one.
+const classLabel = recall.classification ?? 'not yet classified';
 ---
 
 <article class="recall">
@@ -41,7 +43,9 @@ const isAlert = recall.classification === 'Public Health Alert';
   }
 
   <p class="meta">
-    <span class:list={['tag', isAlert ? 'alert' : 'class']}>{recall.classification}</span>
+    <span class:list={['tag', isAlert ? 'alert' : recall.classification ? 'class' : 'unclassified']}>
+      {classLabel}
+    </span>
     <span class:list={['tag', recall.confidence]}>{recall.confidence}</span>
     <span class="date">{recall.announcedDate}</span>
     <a href={recall.sourceUrl} rel="noopener">source</a>
@@ -84,6 +88,7 @@ const isAlert = recall.classification === 'Public Health Alert';
     letter-spacing: 0.04em;
   }
   .alert { border-color: #b45309; color: #b45309; }
+  .unclassified { border-style: dashed; }
   .verified { border-color: #15803d; color: #15803d; }
   .extracted { border-color: #a16207; color: #a16207; }
   .date { font-variant-numeric: tabular-nums; }

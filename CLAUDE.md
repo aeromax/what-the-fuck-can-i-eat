@@ -2,15 +2,26 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project status: one source of three wired up
+## How to work
 
-As of 2026-08-29, build steps 1–3 are done: scaffold builds clean, the `Recall`
-model and all three source schemas exist, and the openFDA source fetches, filters
-and normalizes live data (39 of 43 rows) on the `verified` tier. 57 tests pass
-offline against captured fixtures. The RSS and FSIS sources do not exist yet and
-the page is still a placeholder.
+Spawn subagents to accomplish smaller tasks. Subagents can be used for:
+- Fetching research
+- Code review
+- Git actions
+- Design
+- API coding
 
-**Continue at `docs/build-plan.md` step 4.** Do not improvise off this file
+and anything else necessary. 
+
+## Project status: two sources of three wired up
+
+As of 2026-08-29, build steps 1–4 are done. openFDA (verified tier, 39 records)
+and FDA RSS + press-release parsing (extracted tier, 17 records) both fetch and
+normalize live data; 82 tests pass offline against captured fixtures. FSIS is not
+wired up, nothing is merged or deduped, there is no voice, and the page is a
+provisional preview.
+
+**Continue at `docs/build-plan.md` step 5 — the risky one.** Do not improvise off this file
 alone — the build plan carries per-step acceptance criteria and the order
 matters (the riskiest unknown is deliberately step 5, not step 8).
 
@@ -187,9 +198,14 @@ These were each found the hard way. None are hypothetical.
   `https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/food-safety-recalls/rss.xml`.
 
 **FDA press-release pages**
-- `<dd>` values repeat their own label inline: the brand cell reads
-  `"Brand Name(s) Donutful"`. Strip the duplicated prefix.
-- The same `<dl>` carries `Consumers:` and `Media:` contact rows. Ignore them.
+- `<dd>` values repeat their own label as a `<div class="field--label">` child —
+  raw text reads `"Brand Name(s) Donutful"`. Remove the label ELEMENT; do not
+  strip a string prefix.
+- The facts live in the `<dl class="lcds-description-list--grid">`. The page has
+  two other `<dl>`s holding `Consumers:` and `Media:` phone numbers.
+- **`<time datetime>` is UTC; the dates are US Eastern.** Convert before taking
+  a calendar date or evening announcements land a day late.
+- **No classification row exists.** RSS records carry `classification: null`.
 
 **FSIS**
 - ⚠️ Recorded as blocked by **TLS fingerprinting**, not by network or headers —

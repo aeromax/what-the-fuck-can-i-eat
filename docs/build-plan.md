@@ -122,7 +122,22 @@ objects, none of which has a `headline`; pet food is absent; every record has a
 
 </details>
 
-## Step 4 — FDA RSS + press-release parsing
+## Step 4 — FDA RSS + press-release parsing ✅ done 2026-08-29
+
+Delivered: `scripts/sources/fdaRss.ts`, `scripts/pressRelease.ts`, RSS
+normalization, 25 new tests (82 total). A live run yields 17 extracted records
+from 20 feed items, skipping 3 pet-food announcements, with 0 unparseable pages.
+
+Three findings, all in design §4 and §7:
+- Press releases carry **no classification**, so `classification` is now
+  nullable and null means "not yet classified". Without that the inclusion rule
+  would have emptied the entire extracted tier. **Needs your confirmation.**
+- `<time datetime>` is UTC while the dates are US Eastern — an evening
+  announcement reads a day late. Converted before use.
+- The duplicated `<dd>` label is an element, not a string prefix, so it is
+  removed structurally rather than by string surgery.
+
+<details><summary>Original acceptance criteria</summary>
 
 The `extracted` tier's factual half. No model involved in this step at all —
 that is the point.
@@ -143,6 +158,8 @@ that is the point.
 release all come out of the `<dl>` with no model call anywhere in the path;
 `reason` is byte-identical to the source text; a single-item feed produces an
 array of one.
+
+</details>
 
 ## Step 5 — FSIS via impit ⚠️ **the risky one**
 
