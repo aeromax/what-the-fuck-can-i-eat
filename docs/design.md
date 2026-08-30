@@ -353,9 +353,9 @@ pet food, which is filtered out.
 This is an **editorial judgment, not a technical constraint**. Changing it is a
 product decision — ask, don't assume.
 
-### Unclassified records (found at step 4, 2026-08-29)
+### Unclassified records (decision 2026-08-29)
 
-⚠️ **Editorial — confirm this reading.** FDA press releases carry **no
+**Confirmed: include them.** FDA press releases carry **no
 classification at all**: the `<dl>` has no such row, and the class is assigned
 weeks later through openFDA. That lag is the entire reason the RSS path exists.
 
@@ -368,6 +368,48 @@ included and labelled as such. This follows the same reasoning as the PHA
 decision below: the rule's intent is "food you should not eat right now", and a
 recall announced yesterday meets it whether or not a clerk has graded it yet.
 Excluding it would be the literal reading; including it is the safe one.
+
+### Plain-English severity (decision 2026-08-29)
+
+The page never prints "Class I". Class numbers mean nothing to someone holding a
+jar, and the whole point of the page is a four-second read. Each class is shown
+as the hazard it describes:
+
+| Stored value | Shown as |
+|---|---|
+| `Class I` | Can cause serious illness or death |
+| `Class II` (FDA) | Can cause temporary or reversible illness |
+| `Class II` (FSIS) | Remote chance of illness |
+| `Public Health Alert` | Warning — not recalled, may still be on sale |
+| `null` | Severity not yet assigned by FDA |
+
+Implemented in `src/severity.ts`. Three properties keep this inside the AI/facts
+boundary rather than eroding it:
+
+- It is a **fixed legend**, written and reviewed once, applied by lookup on a
+  government-supplied class. Nothing is inferred per record and no model is
+  involved, so this is not the model writing a factual field.
+- The issuing agency's **verbatim definition travels with every label** (the
+  badge's `title`), so the shortening is checkable against the source.
+- **FDA and FSIS word their definitions differently and are not interchangeable.**
+  `severityOf` picks by `source`; attributing FDA's text to an FSIS record would
+  be a misquote. Sources fetched 2026-08-29: FDA's *Recalls, Background and
+  Definitions* page, and the "USDA Recall Classifications" block FSIS prints on
+  every recall page.
+
+### Dates (decision 2026-08-29)
+
+All dates are US Eastern and labelled with the zone, because every source is a
+US agency publishing on Eastern time and an unlabelled date invites the reader to
+assume their own.
+
+The zone abbreviation is computed per date rather than fixed: `EDT` from March to
+November, `EST` otherwise. Pinning a literal UTC-5 year-round would be wrong for
+about eight months and wrong in a way that **moves calendar dates** — a recall
+announced at 00:30 EDT would render as the previous day. That is the same
+off-by-one the `<time datetime>` UTC bug already caused once, and since
+`announcedDate` drives the 30-day window, a shifted date can add or drop an item.
+See `src/dates.ts`.
 
 ### Public Health Alerts (decision 2026-08-29)
 

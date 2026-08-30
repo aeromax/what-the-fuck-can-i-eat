@@ -252,6 +252,15 @@ Status `Ongoing`, Class I and Class II, **plus FSIS Public Health Alerts**,
 announced within 30 days — roughly 46 items. Class III is excluded as the boring
 tier. Human food only; the feed also carries pet food, which is filtered out.
 
+Records with **no classification** are also included (2026-08-29): FDA press
+releases carry no class — it is assigned weeks later via openFDA — so excluding
+them would empty the extracted tier of the freshest items.
+
+The page never prints "Class I". Severity is shown in plain English via
+`src/severity.ts`, which carries each agency's verbatim definition and picks FDA
+vs FSIS wording by `source`. All dates are US Eastern, labelled EDT/EST per date
+(`src/dates.ts`) — never a fixed offset, which would shift calendar dates.
+
 PHAs are included deliberately (2026-08-29): FSIS issues one when contaminated
 product is believed to be in commerce and **no recall has been requested**, which
 by this page's standard is at least as urgent as a Class II. A PHA is **not a

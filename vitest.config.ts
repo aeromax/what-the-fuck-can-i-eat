@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { getViteConfig } from 'astro/config';
 
 // getViteConfig, not defineConfig: rendering .astro components in a test needs

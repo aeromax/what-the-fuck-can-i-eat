@@ -59,8 +59,22 @@ describe('Recall row rendering', () => {
     expect(html).toContain('Nationwide');
   });
 
-  it('labels a Public Health Alert as such, not as a recall', async () => {
+  it('labels a Public Health Alert as not recalled', async () => {
+    // The page shows plain-English severity, never the raw class name.
     const html = await render({ ...base, classification: 'Public Health Alert', source: 'fsis' });
-    expect(html).toContain('Public Health Alert');
+    expect(html).toContain('not recalled');
+    expect(html).not.toMatch(/>\s*Class I\s*</);
+  });
+
+  it('shows plain English rather than a class number', async () => {
+    const html = await render(base);
+    expect(html).toContain('Can cause serious illness or death');
+    expect(html).not.toMatch(/>\s*Class I\s*</);
+  });
+
+  it('labels the date with its Eastern zone', async () => {
+    const html = await render(base);
+    expect(html).toContain('Aug 19, 2026');
+    expect(html).toContain('EDT');
   });
 });

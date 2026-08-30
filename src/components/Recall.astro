@@ -1,5 +1,7 @@
 ---
+import { formatEastern } from '../dates.ts';
 import type { Recall } from '../recall.ts';
+import { severityOf } from '../severity.ts';
 
 interface Props { recall: Recall }
 const { recall } = Astro.props;
@@ -21,9 +23,13 @@ const where = recall.nationwide
     ? recall.states.join(', ')
     : null;
 
-const isAlert = recall.classification === 'Public Health Alert';
-// Null classification is honest, not missing data: FDA has not yet assigned one.
-const classLabel = recall.classification ?? 'not yet classified';
+// Plain English instead of "Class I" — see src/severity.ts. The agency's own
+// definition rides along in the title attribute so the shortening is checkable.
+const severity = severityOf(recall);
+const announced = formatEastern(recall.announcedDate);
+const definitionTitle = severity.agency
+  ? `${severity.agency}: ${severity.definition}`
+  : severity.definition;
 ---
 
 <article class="recall">
@@ -43,11 +49,9 @@ const classLabel = recall.classification ?? 'not yet classified';
   }
 
   <p class="meta">
-    <span class:list={['tag', isAlert ? 'alert' : recall.classification ? 'class' : 'unclassified']}>
-      {classLabel}
-    </span>
+    <span class:list={['tag', severity.tone]} title={definitionTitle}>{severity.label}</span>
     <span class:list={['tag', recall.confidence]}>{recall.confidence}</span>
-    <span class="date">{recall.announcedDate}</span>
+    <span class="date">{announced.text} {announced.zone}</span>
     <a href={recall.sourceUrl} rel="noopener">source</a>
   </p>
 </article>
@@ -87,8 +91,10 @@ const classLabel = recall.classification ?? 'not yet classified';
     font-variant: all-small-caps;
     letter-spacing: 0.04em;
   }
-  .alert { border-color: #b45309; color: #b45309; }
-  .unclassified { border-style: dashed; }
+  .severe { border-color: #b91c1c; color: #b91c1c; font-weight: 600; }
+  .moderate { border-color: #b45309; color: #b45309; }
+  .alert { border-color: #b45309; color: #b45309; font-weight: 600; }
+  .unknown { border-style: dashed; }
   .verified { border-color: #15803d; color: #15803d; }
   .extracted { border-color: #a16207; color: #a16207; }
   .date { font-variant-numeric: tabular-nums; }
