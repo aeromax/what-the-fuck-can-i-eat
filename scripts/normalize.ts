@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import type { z } from 'zod';
 import { type Recall, RecallSchema, makeId, slugFromUrl } from '../src/recall.ts';
 import type { PressReleaseFactsT } from './pressRelease.ts';
@@ -5,6 +6,24 @@ import type { FsisRecord, OpenFdaRow } from './sourceSchemas.ts';
 import { normalizeStateNames, parseDistribution } from './states.ts';
 
 type OpenFdaRowT = z.infer<typeof OpenFdaRow>;
+
+/**
+ * openFDA's `recall_number` is the natural key, but it is EMPTY on some rows —
+ * notably ones FDA has not classified yet, which the inclusion rule now admits.
+ *
+ * `event_id` alone is not a safe fallback: it groups related recalls, and is
+ * shared by 21 of 43 rows in the captured window. Keying on it would fuse two
+ * different products into one record, which is precisely the wrong-merge failure
+ * the whole merge step is built to avoid. So the fallback pairs the event with a
+ * stable digest of the product text, which is deterministic across runs.
+ */
+export function openFdaKey(row: { recall_number: string; event_id: string; product_description: string }): string {
+  const number = row.recall_number.trim();
+  if (number !== '') return number;
+
+  const digest = createHash('sha1').update(row.product_description).digest('hex').slice(0, 8);
+  return `event-${row.event_id}-${digest}`;
+}
 
 /** openFDA emits YYYYMMDD strings. The model stores ISO. */
 export function isoFromCompact(yyyymmdd: string): string {
@@ -18,9 +37,13 @@ export function isoFromCompact(yyyymmdd: string): string {
  * returns exactly this record. It is deterministic, public, and a reader can
  * paste it into a browser and see the same row this page was built from.
  */
-export function openFdaSourceUrl(recallNumber: string): string {
-  const q = encodeURIComponent(`recall_number:"${recallNumber}"`);
-  return `https://api.fda.gov/food/enforcement.json?search=${q}`;
+export function openFdaSourceUrl(recallNumber: string, eventId?: string): string {
+  // An unclassified row can have no recall_number, so cite the event instead —
+  // the citation must still resolve to the government record.
+  const query = recallNumber.trim() !== ''
+    ? `recall_number:"${recallNumber.trim()}"`
+    : `event_id:"${eventId ?? ''}"`;
+  return `https://api.fda.gov/food/enforcement.json?search=${encodeURIComponent(query)}`;
 }
 
 /**
@@ -46,7 +69,7 @@ export function normalizeOpenFda(row: OpenFdaRowT): Recall {
   const { states, nationwide } = parseDistribution(row.distribution_pattern);
 
   return RecallSchema.parse({
-    id: makeId('openfda', row.recall_number),
+    id: makeId('openfda', openFdaKey(row)),
 
     // Verbatim. product_description is often a full sentence with pack sizes;
     // trimming it to a short display name is a presentation decision for step 9,
@@ -59,7 +82,9 @@ export function normalizeOpenFda(row: OpenFdaRowT): Recall {
     company: row.recalling_firm,
     reason: row.reason_for_recall,
     announcedDate: isoFromCompact(row.report_date),
-    classification: row.classification,
+    // "Not Yet Classified" is FDA's own value for a recall it has not graded.
+    // Null means the same thing the RSS path means by it. docs/design.md §7.
+    classification: row.classification === 'Not Yet Classified' ? null : row.classification,
 
     retailers: [],
     states,
@@ -69,7 +94,7 @@ export function normalizeOpenFda(row: OpenFdaRowT): Recall {
     lotCodes: lotCodesFrom(row.code_info, row.more_code_info),
 
     source: 'openfda',
-    sourceUrl: openFdaSourceUrl(row.recall_number),
+    sourceUrl: openFdaSourceUrl(row.recall_number, row.event_id),
     confidence: 'verified',
 
     headline: null,

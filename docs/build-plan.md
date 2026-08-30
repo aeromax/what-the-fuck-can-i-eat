@@ -208,7 +208,27 @@ shape and are a product decision, not an implementation detail.
 
 </details>
 
-## Step 6 — merge
+## Step 6 — merge ✅ done 2026-08-30
+
+Delivered: `scripts/merge.ts`, `mergedFrom` on the model, `data/review.json`
+wired into the seed and the page footer, 29 new tests (134 total).
+
+**Live data merged nothing, and that is the correct result.** openFDA's
+`report_date` lags recall initiation by a median of 69 days, so the openFDA
+30-day window holds recalls initiated January–July while the RSS window holds
+August announcements. The two sets are disjoint by construction and no genuine
+cross-source duplicate exists today. The merge path is therefore exercised by
+fixtures built on real records rather than by the live set — see the
+`_provenance` block in `tests/fixtures/merge-extracted-counterparts.json`.
+
+Open questions 2 and 3 are both resolved — see design §6.1 and §10.3.
+
+Three wrong merges were found and fixed during calibration, all from real data:
+a shared lot code identifying a firm rather than a product, company names inside
+product text, and openFDA boilerplate. Each is now a regression test, and all six
+safety guards were mutation-tested.
+
+<details><summary>Original acceptance criteria</summary>
 
 Dedupe across sources, and upgrade `extracted` to `verified` when openFDA
 eventually publishes a row for something RSS reported weeks earlier.
@@ -228,6 +248,8 @@ eventually publishes a row for something RSS reported weeks earlier.
 voice; a deliberately ambiguous fixture pair lands in `review.json` with both
 records intact; no test case produces a merged record mixing lot codes from two
 different products.
+
+</details>
 
 ## Step 7 — voice (Gemini)
 

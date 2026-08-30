@@ -98,6 +98,17 @@ export const RecallSchema = z.object({
   /** The government page a reader can go and check. Always present. */
   sourceUrl: z.url(),
   confidence: Confidence,
+  /**
+   * Records folded into this one by merge.ts, with their citations.
+   *
+   * §2 requires every record to keep a `sourceUrl` pointing at the government
+   * page it came from. After a merge the record came from more than one page,
+   * and dropping the loser's URL would quietly destroy a citation a reader could
+   * otherwise check. Verbatim ids and URLs only — nothing inferred.
+   */
+  mergedFrom: z
+    .array(z.object({ id: z.string(), source: Source, sourceUrl: z.url() }))
+    .default([]),
 
   // --- Voice. Model-written, written once, then frozen. --------------------
   /** Snark lives here and nowhere else. Absent until scripts/voice.ts runs. */

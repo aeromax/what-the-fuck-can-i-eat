@@ -32,12 +32,38 @@ describe('openFDA query', () => {
 describe('inclusion rule', () => {
   const selected = selectRows(rows);
 
-  it('keeps only Ongoing Class I and II', () => {
+  it('keeps only Ongoing Class I, Class II and ungraded rows', () => {
     expect(selected.length).toBeGreaterThan(0);
     for (const r of selected) {
       expect(r.status).toBe('Ongoing');
-      expect(['Class I', 'Class II']).toContain(r.classification);
+      expect(['Class I', 'Class II', 'Not Yet Classified']).toContain(r.classification);
     }
+  });
+
+  it('includes ungraded rows, matching the RSS path', () => {
+    // FDA grades a recall after the fact. An ungraded Ongoing recall is still an
+    // active recall, and excluding it here while including unclassified RSS
+    // records would be an inconsistency rather than a policy. docs/design.md §7.
+    expect(selected.some((r) => r.classification === 'Not Yet Classified')).toBe(true);
+  });
+
+  it('survives a row with no recall_number', () => {
+    // The ungraded Taylor Farms row has an empty recall_number, which threw
+    // "makeId: empty native key" before the fallback existed. event_id alone is
+    // not safe — it is shared by 21 of 43 rows — so the key pairs it with a
+    // digest of the product text.
+    const ungraded = selected.find((r) => r.recall_number.trim() === '');
+    expect(ungraded).toBeDefined();
+    const recall = normalizeOpenFda(ungraded!);
+    expect(recall.id).toMatch(/^openfda:event-\d+-[0-9a-f]{8}$/);
+    expect(recall.classification).toBeNull();
+    expect(recall.sourceUrl).toContain('event_id');
+  });
+
+  it('gives two products in one event distinct ids', () => {
+    const a = { ...selected[0]!, recall_number: '', event_id: '1234', product_description: 'Lettuce' };
+    const b = { ...selected[0]!, recall_number: '', event_id: '1234', product_description: 'Spinach' };
+    expect(normalizeOpenFda(a).id).not.toBe(normalizeOpenFda(b).id);
   });
 
   it('drops Class III, Completed and Terminated rows the fixture contains', () => {

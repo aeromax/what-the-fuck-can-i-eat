@@ -234,43 +234,5 @@
   ],
   "field_recall_type": "Active Recall",
   "field_year": "2026"
- },
- {
-  "field_title": "Ukrop&#039;s Homestyle Foods Recalls Spaghetti and Chicken Products Due to Possible Foreign Matter Contamination",
-  "field_recall_number": "012-2026",
-  "field_recall_url": "http://www.fsis.usda.gov/recalls-alerts/ukrops-homestyle-foods-recalls-spaghetti-and-chicken-products-due-possible-foreign",
-  "field_recall_classification": "Class I",
-  "field_recall_date": "2026-07-31",
-  "langcode": "English",
-  "field_active_notice": "False",
-  "field_summary": "<p><strong>WASHINGTON, JUL 31, 2026 -</strong> Ukrop's Homestyle Foods, a Richmond, Va., establishment, is recalling approximately 22,880 pounds of baked spaghetti and chicken cobbler products that may be contaminated with foreign material, specifically metal slivers, the U.S. Department of Agriculture's Food Safety and Inspection Service (FSIS) announced today.</p><p>The baked spaghetti and chicken cobbler items were produced from July 1, 2026, through July 29, 2026. The following products are subject to recall [<a href=\"/sites/default/files/food_label_pdf/2026-07/Recall-012-2026-Labels.pdf\">view labels</a>]:</p><ul type=\"disc\"><li data-list-item-id=\"ec2f63e84102102c0ffdd00ac5aa7c0e5\">62.4-oz. ALUMINUM PAN WITH PLASTIC OVERWRAP containing \"Ukrop's Baked Spaghetti - Bulk\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"EST. 19979\" in the mark of inspection.</li><li data-list-item-id=\"ed0f0880a0d03b1b12f5b9d2dcd2f94df\">14.8-oz. CARDBOARD TRAY WITH PLASTIC OVERWRAP containing \"Ukrop's Baked Spaghetti\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"EST. 19979\" in the mark of inspection.</li><li data-list-item-id=\"e22066c06a5820afbad67295c14c09674\">48-oz. ALUMINUM PAN WITH PLASTIC OVERWRAP containing \"Ukrop's Chicken Cobbler - Bulk\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"P-19979\" in the mark of inspection.</li><li data-list-item-id=\"e96288c195d734d5ef82637fb0e8cce38\">11.6-oz. CARDBOARD TRAY WITH PLASTIC OVERWRAP containing \"Ukrop's Chicken Cobbler\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"P-19979\" in the mark of inspection.</li></ul><p>These items were shipped to retail locations in North Carolina, Virginia, West Virginia, the Department of Defense and online sales.</p><p>The problem was discovered after the establishment received a consumer complaint regarding a metal piece found in a fully cooked product.</p><p>There have been no confirmed reports of injuries due to consumption of these products. Anyone concerned about an injury should contact a healthcare provider.</p><p>FSIS is concerned that some product may be in consumers' refrigerators or freezers. Consumers who have purchased these products are urged not to consume them. These products should be thrown away or returned to the place of purchase.</p><p>FSIS routinely conducts recall effectiveness checks to verify recalling firms notify their customers of the recall and that steps are taken to make certain that the product is no longer available to consumers. When available, the retail distribution list(s) will be posted on the FSIS website at <a href=\"http://www.fsis.usda.gov/recalls\">www.fsis.usda.gov/recalls</a>.</p><p>Consumers and members of the media with questions about the recall can contact Susan Rowe, Ukrop's Executive Administrator at (804) 340-3104 or <a href=\"mailto:susan.rowe@ukrops.com\">susan.rowe@ukrops.com</a>.</p><p>Consumers with food safety questions can call the toll-free USDA Meat and Poultry Hotline at 888-MPHotline (888-674-6854) or send a question via email to <a href=\"mailto:MPHotline@usda.gov\">MPHotline@usda.gov</a>. For consumers that need to report a problem with a meat, poultry, or egg product, the online Electronic Consumer Complaint Monitoring System can be accessed 24 hours a day at <a href=\"https://foodcomplaint.fsis.usda.gov/eCCF/\">https://foodcomplaint.fsis.usda.gov/eCCF/</a>.</p>",
-  "field_recall_reason": [
-   "Product Contamination"
-  ],
-  "field_states": [
-   "North Carolina",
-   "Virginia",
-   "West Virginia"
-  ],
-  "field_product_items": [
-   "62.4-oz. ALUMINUM PAN WITH PLASTIC OVERWRAP containing &quot;Ukrop&#039;s Baked Spaghetti - Bulk&quot; and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number &quot;EST. 19979&quot; in the mark of inspection.",
-   "14.8-oz. CARDBOARD TRAY WITH PLASTIC OVERWRAP containing &quot;Ukrop&#039;s Baked Spaghetti&quot; and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number &quot;EST. 19979&quot; in the mark of inspection.",
-   "48-oz. ALUMINUM PAN WITH PLASTIC OVERWRAP containing &quot;Ukrop&#039;s Chicken Cobbler - Bulk&quot; and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number &quot;P-19979&quot; in the mark of inspection.",
-   "11.6-oz. CARDBOARD TRAY WITH PLASTIC OVERWRAP containing &quot;Ukrop&#039;s Chicken Cobbler&quot; and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number &quot;P-19979&quot; in the mark of inspection."
-  ],
-  "field_establishment": [
-   "Ukrop&#039;s Homestyle Foods"
-  ],
-  "field_labels": [
-   "Recall-012-2026-Labels.pdf"
-  ],
-  "field_distro_list": [
-   "RC-012-2026-Retail-List.pdf"
-  ],
-  "field_processing": [
-   "Fully Cooked - Not Shelf Stable"
-  ],
-  "field_recall_type": "Active Recall",
-  "field_year": "2026"
  }
 ]

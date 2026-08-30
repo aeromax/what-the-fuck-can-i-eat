@@ -9,8 +9,15 @@ type OpenFdaRowT = z.infer<typeof OpenFdaRow>;
 const ENDPOINT = 'https://api.fda.gov/food/enforcement.json';
 const WINDOW_DAYS = 30;
 
-/** Classifications the inclusion rule admits from openFDA. docs/design.md §7. */
-const INCLUDED = new Set(['Class I', 'Class II']);
+/**
+ * Classifications the inclusion rule admits from openFDA. docs/design.md §7.
+ *
+ * "Not Yet Classified" is included for the same reason unclassified RSS records
+ * are: FDA grades a recall after the fact, and an ungraded Ongoing recall is
+ * still an active recall. Excluding it here while including it on the RSS path
+ * would have been an inconsistency, not a policy.
+ */
+const INCLUDED = new Set(['Class I', 'Class II', 'Not Yet Classified']);
 
 export function compactDate(d: Date): string {
   return d.toISOString().slice(0, 10).replace(/-/g, '');

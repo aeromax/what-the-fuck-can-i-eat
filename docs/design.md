@@ -134,6 +134,7 @@ Fields (implemented in `src/recall.ts`, step 2):
 | `classification` | Class I, Class II, and FSIS `Public Health Alert` — see §7 |
 | `source` | `openfda` \| `fdaRss` \| `fsis` |
 | `sourceUrl` | the cited government page |
+| `mergedFrom` | ids and citations of records folded in by merge.ts, so no citation is lost |
 | `confidence` | `verified` \| `extracted` |
 | `headline` | snark; model-written |
 | `avoidLine` | deadpan; model-written |
@@ -365,6 +366,61 @@ These are invariants, not preferences.
 The asymmetry in that last rule is the design's whole posture in miniature:
 when uncertain, be redundant rather than confident.
 
+### 6.1 How merge decides (step 6, 2026-08-30)
+
+`scripts/merge.ts` compares every cross-source pair and returns one of three
+verdicts. No model is involved: merging is a judgement about record identity made
+from government fields, and a confidently wrong merge is exactly the failure the
+AI/facts boundary exists to prevent.
+
+**Hard gates** — failing any of these is `unrelated`, with nothing for a human to
+adjudicate:
+
+- **Same source never merges.** One agency filing two rows means two recalls.
+  Clover Hill Dairy alone filed 18 near-identical cheese rows in one window.
+- **Conflicting non-null classifications never merge.** Null is not a conflict —
+  it only ever means "FDA has not graded this yet".
+- **No company on either side, no match.** FSIS leaves `field_establishment`
+  empty on most records, so meat recalls essentially never match — correctly,
+  since openFDA does not cover meat.
+- **Announcement dates more than 300 days apart never merge.** The gate is
+  generous on purpose: openFDA's reporting lag reaches 196 days, so anything
+  tighter would reject genuine upgrades.
+
+**Confirmation** — past the gates, the company is effectively certain, and the
+only remaining question is *same recall, or two recalls from one firm?* Only
+**product agreement** can answer it:
+
+- Product Jaccard ≥ 0.5 over distinctive tokens, with at least 2 words in common.
+- Or a brand match with product ≥ 0.35.
+- Or a shared lot code with product ≥ 0.35.
+
+Anything else is `ambiguous`: both records stay published and the pair is written
+to `review.json` for a human.
+
+Three findings from live data shaped this, each of which had produced a wrong
+merge in an earlier draft:
+
+- **A shared lot code does not mean a shared product.** Clover Hill Dairy prints
+  one code, `AA051526`, across all 18 recalled products. Letting a lot code
+  confirm a match on its own fused two unrelated cheeses. Lot codes now only
+  corroborate.
+- **Company names inside product text inflate similarity.** Every Clover Hill row
+  begins "Clover Hill Dairy LLP, …", scoring two unrelated cheeses at 0.56 —
+  above the threshold — on shared company words alone. Company and brand tokens
+  are now stripped before comparison.
+- **openFDA boilerplate inflates it further.** "Unknown information regarding
+  packaging/labeling. Approximate total quantity…" repeats verbatim on every row
+  a firm files, and supplied 7 of 11 apparently-shared words between those same
+  two cheeses. It is now treated as noise.
+
+**On merging**, the verified record wins every factual field, `headline`,
+`avoidLine` and `displayName` are carried across so voice is never regenerated
+(§6), the earliest announcement date survives (§10.3), and every merged-away
+record's citation is preserved in `mergedFrom` — §2 requires a reader to be able
+to check the page a fact came from, and after a merge the record came from more
+than one.
+
 ## 7. Inclusion rule
 
 Status `Ongoing`, Class I and Class II, **plus FSIS Public Health Alerts**,
@@ -434,6 +490,24 @@ announced at 00:30 EDT would render as the previous day. That is the same
 off-by-one the `<time datetime>` UTC bug already caused once, and since
 `announcedDate` drives the 30-day window, a shifted date can add or drop an item.
 See `src/dates.ts`.
+
+### Unclassified openFDA rows (extended 2026-08-30, step 6)
+
+The "include unclassified" ruling was originally made about RSS records, but
+openFDA has the same state under its own name: `Not Yet Classified`. Excluding it
+there while including it here would have been an inconsistency rather than a
+policy, so `selectRows` now admits it and normalization maps it to
+`classification: null` like every other ungraded record. It adds one live record
+(a Taylor Farms lettuce blend, `Ongoing`).
+
+That row also exposed a latent crash. **`recall_number` is empty on ungraded
+rows**, and `makeId` throws on an empty key by design. `event_id` is not a safe
+substitute — it groups related recalls and is shared by 21 of 43 rows in the
+captured window, so keying on it would fuse two different products into one
+record: exactly the wrong-merge failure §6 exists to prevent. The fallback key is
+therefore `event-<event_id>-<sha1(product_description)[0:8]>`, which is stable
+across runs and distinct per product. The citation falls back to an `event_id`
+query so it still resolves.
 
 ### Public Health Alerts (decision 2026-08-29)
 
@@ -534,17 +608,36 @@ Not settled by `CLAUDE.md`; resolve before or during the step they block.
    across runs, which is what lets `voice.ts` skip records that already have a
    headline. Cross-source matching is `merge.ts`'s job, done on content with
    ambiguity routed to `review.json`. See `src/recall.ts`.
-2. **Merge ambiguity threshold.** What counts as "ambiguous" rather than
-   "matched"? Blocks step 6, and the safety asymmetry in §6 means the threshold
-   should be tuned to over-produce `review.json` entries, not under-produce them.
-3. **The 30-day clock.** Measured from announcement date, but openFDA's
-   `report_date` and the RSS `pubDate` for the same recall differ by weeks. Which
-   one governs? Affects which items fall out of the window and when.
-   **Step 3 uses `report_date`** as the only date openFDA offers for this, and
-   stores it as `announcedDate`. That is provisional: when merge.ts starts
-   upgrading an RSS record to its openFDA twin, the same recall will carry two
-   different `announcedDate` values depending on which source won, and the older
-   one can push it out of the window. Resolve before step 6.
+2. ~~**Merge ambiguity threshold.**~~ **Resolved 2026-08-30 (step 6).** Company
+   equality is a hard gate; product agreement is the only thing that can confirm
+   a match. Reason agreement and lot codes corroborate but can never confirm on
+   their own. Same company + unclear product = ambiguous, not matched. See
+   §6.1 and `scripts/merge.ts`.
+3. ~~**The 30-day clock.**~~ **Resolved 2026-08-30 (step 6): the earliest known
+   announcement date wins a merge, and the window is never re-applied after
+   merging.**
+
+   openFDA's `announcedDate` is `report_date` — the day FDA published the
+   enforcement report, not the day the public was told. Measured on live data it
+   lags `recall_initiation_date` by a **median of 69 days** (min 14, max 196), so
+   it is a poor announcement date and the press-release date is the true one.
+   Taking the earliest of a merged group therefore makes the date on the page
+   more honest, not less.
+
+   The worry was that an older date could push a record out of the 30-day window
+   — an item vanishing *because* better data arrived. It cannot, because
+   **inclusion is decided per source at fetch time, before merging, and
+   `mergeRecalls` never re-applies the window.** A record is on the page because
+   at least one source considered it current; merging only improves what is
+   known about it.
+
+   A consequence worth stating plainly: for openFDA the inclusion rule is really
+   "reported within 30 days", not "announced within 30 days". It cannot be
+   otherwise — no openFDA record in the live window has an initiation date within
+   30 days, so an announcement-date window would drop the entire verified tier.
+   The page therefore mixes "recently announced" (RSS, FSIS) with "recently
+   reported" (openFDA). That is an editorial wrinkle, not a bug, but it is real.
+
 4. **Deploy target.** The GitHub Action refreshes data; what publishes `dist/`
    is unspecified.
 5. ~~**FSIS `Public Health Alert`.**~~ **Resolved 2026-08-29: include them**, as

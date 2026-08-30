@@ -1,0 +1,62 @@
+{
+ "meta": {
+  "results": {
+   "skip": 0,
+   "limit": 100,
+   "total": 2
+  }
+ },
+ "results": [
+  {
+   "status": "Ongoing",
+   "city": "Lynn",
+   "state": "MA",
+   "country": "United States",
+   "classification": "Class I",
+   "openfda": {},
+   "product_type": "Food",
+   "event_id": "99038",
+   "recalling_firm": "Kettle Cuisine, LLC",
+   "address_1": "330 Lynnway",
+   "address_2": "N/A",
+   "postal_code": "01901-1706",
+   "voluntary_mandated": "Voluntary: Firm initiated",
+   "initial_firm_notification": "E-Mail",
+   "distribution_pattern": "AL, CT, DC, FL, GA, MA, MD, ME, MS, NC, NH, NJ, NY, PA, RI, SC, TN, VA",
+   "recall_number": "H-0941-2026",
+   "product_description": "Individual Unit Label (both lid and front of cup): Whole Foods Market Kitchens Minestrone Soup, VEGETARIAN NET WT 24 OZ (1 Lb 8OZ) 680g.  Case Label: Whole Foods Global Minestrone Soup 702505, KEEP REFRIGERATED, Distributed by Whole Foods Market Austin, TX 78703. Eight (8)/ 24 oz. Cups (Net Wt. 12 LBS)/case.",
+   "product_quantity": "562 cases (4,496 - 24oz units)",
+   "reason_for_recall": "Contains undeclared allergen (shrimp).",
+   "recall_initiation_date": "20260519",
+   "center_classification_date": "20260610",
+   "report_date": "20260617",
+   "code_info": "Use by: 05/27/26 Lot/Unit Numbers: 1762181 UPC Codes: 099482502065"
+  },
+  {
+   "status": "Ongoing",
+   "city": "Arlington",
+   "state": "VA",
+   "country": "United States",
+   "classification": "Class II",
+   "openfda": {},
+   "product_type": "Food",
+   "event_id": "98584",
+   "recalling_firm": "Lidl US TRADING",
+   "address_1": "3500 S Clark Pl",
+   "address_2": "",
+   "postal_code": "22202",
+   "voluntary_mandated": "Voluntary: Firm initiated",
+   "initial_firm_notification": "Two or more of the following: Email, Fax, Letter, Press Release, Telephone, Visit",
+   "distribution_pattern": "DC, DE, GA, MD, NC, NJ, NY, PA, SC, VA",
+   "recall_number": "H-0631-2026",
+   "product_description": "Favorina Chocolate Ladybugs German-Style Nougat, Net Wt 3.52 oz (100g).  UPC 2030 4492.  Distributed By Lidl US, LLC, 3500 S. Clark St, Arlington, VA  22202.  Product of Germany.",
+   "product_quantity": "17,056 units",
+   "reason_for_recall": "Label does not specify type of tree nut contained in the product.",
+   "recall_initiation_date": "20260312",
+   "center_classification_date": "20260325",
+   "report_date": "20260401",
+   "code_info": "Best If Used By:  Jun 30 2026",
+   "more_code_info": ""
+  }
+ ]
+}

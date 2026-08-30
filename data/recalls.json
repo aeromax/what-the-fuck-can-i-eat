@@ -17,6 +17,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/everything-sprouts-llc-expands-voluntarily-recall-include-robust-radish-mix-due-potential-e-coli-and",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -38,6 +39,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/panorama-produce-recalls-mangoes-due-possible-salmonella-contamination",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -65,6 +67,7 @@
     "source": "fsis",
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/shanghai-ravioli-corporation-recalls-not-ready-eat-frozen-buffalo-chicken-products",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -86,6 +89,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/jaimes-foods-atx-issues-allergy-alert-undeclared-egg-allergen-jaimes-spanish-village-jalapeno-ranch",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -107,6 +111,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/better-bakehouse-snack-company-recalling-certain-lots-donutful-chocolate-dipped-vanilla-cake-donuts",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -128,6 +133,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/everything-sprouts-llc-recalls-alfalfa-sprouts-due-potential-e-coli-and-salmonella-risk",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -149,6 +155,59 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/prince-bakery-inc-issues-allergy-alert-undeclared-milk-and-sesame-prince-bakery-breads",
     "confidence": "extracted",
+    "mergedFrom": [],
+    "headline": null,
+    "avoidLine": null
+  },
+  {
+    "id": "openfda:event-99453-e0f7146c",
+    "product": "MARKON BLEND LETT/ROM 80/20 WITH SEP BAGGIES 4/5# Iceberg, Romaine, Carrots, Red Cabbage products.",
+    "displayName": null,
+    "brand": "",
+    "company": "Taylor Farms de Mexico S. de R.L. de C.V.",
+    "reason": "Potential Cyclospora contamination.",
+    "announcedDate": "2026-08-19",
+    "classification": null,
+    "retailers": [],
+    "states": [
+      "Alabama",
+      "Arkansas",
+      "Connecticut",
+      "Florida",
+      "Georgia",
+      "Illinois",
+      "Indiana",
+      "Iowa",
+      "Kansas",
+      "Kentucky",
+      "Louisiana",
+      "Maryland",
+      "Massachusetts",
+      "Michigan",
+      "Mississippi",
+      "Missouri",
+      "New Hampshire",
+      "New Jersey",
+      "North Carolina",
+      "Ohio",
+      "Oklahoma",
+      "Pennsylvania",
+      "South Carolina",
+      "Tennessee",
+      "Texas",
+      "Virginia",
+      "Wisconsin"
+    ],
+    "distributionRaw": "Domestic: AL, AR, CT, FL, GA, IA, IL, IN, KS, KY, LA, MA, MD, MI, MO, MS, NC, NH, NJ, OH, OK, PA, SC, TN, TX, VA, and WI Foreign: Mexico.",
+    "nationwide": false,
+    "countryOfOrigin": null,
+    "lotCodes": [
+      "MARKON BLEND LETT/ROM 80/20 WITH SEP BAGGIES 4/5# TFMX183A05 7/21/2026 TFMX184A02 7/22/2026 TFMX187B02 7/25/2026 TFMX189A03 7/27/2026 TFMX190A03 7/28/2026 TFMX190B01 7/28/2026 TFMX191A02 7/29/2026 TFMX194B02 8/1/2026"
+    ],
+    "source": "openfda",
+    "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=event_id%3A%2299453%22",
+    "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -174,6 +233,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1224-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -199,6 +259,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1228-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -229,6 +290,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1229-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -259,6 +321,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1230-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -280,6 +343,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/updated-dreyers-grand-ice-cream-inc-issues-voluntary-recall-select-outshine-fruit-bars-due-possible",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -301,6 +365,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/l-nutra-issues-allergy-alert-undeclared-tree-nuts-prolon-brand-apulian-almond-cocoa-spread",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -324,6 +389,7 @@
     "source": "fsis",
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/asian-america-trading-inc--recalls-ineligible-siluriformes-fish-products-imported",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -345,6 +411,7 @@
     "source": "fsis",
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/indus-foods-llc-dba-gangothri-foods-recalls-ready-eat-pickled-goat-and-chicken",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -366,6 +433,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/exotique-foods-inc-recalls-momchipz-veggie-chips-broccoli-florets-cauliflower-due-undeclared-wheat",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -387,6 +455,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/hampton-grocers-inc-recalls-its-8-ounce-packages-lacnola-lactation-granola-because-possible-health",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -408,6 +477,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/updated-grand-central-bakery-seattle-recalls-potato-sourdough-bread-due-possible-foreign-object",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -429,6 +499,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/hardies-fresh-foods-recalls-jalapenos-because-possible-health-risk",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -450,6 +521,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/kettle-cuisine-recalls-marketside-tomato-bisque-soup-kit-sold-exclusively-walmart-stores-because",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -471,6 +543,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/whole-foods-market-announces-recall-select-salsas-guacamole-pico-de-gallo-and-prepared-foods",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -503,6 +576,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1192-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -528,6 +602,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1193-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -554,6 +629,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1194-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -577,6 +653,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1195-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -600,6 +677,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1196-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -626,6 +704,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1197-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -652,6 +731,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1198-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -679,6 +759,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1199-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -706,6 +787,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1200-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -733,6 +815,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1201-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -760,6 +843,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1202-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -787,6 +871,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1203-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -814,6 +899,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1204-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -841,6 +927,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1205-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -868,6 +955,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1206-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -895,6 +983,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1207-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -922,6 +1011,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1208-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -949,6 +1039,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1209-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -976,6 +1067,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1210-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1003,6 +1095,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1211-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1030,6 +1123,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1212-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1057,6 +1151,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1213-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1084,6 +1179,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1214-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1111,6 +1207,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1215-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1138,6 +1235,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1216-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1164,6 +1262,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1217-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1190,6 +1289,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1218-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1216,6 +1316,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1219-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1242,6 +1343,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1220-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1265,6 +1367,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1221-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1290,6 +1393,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1222-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1337,6 +1441,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1223-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1366,6 +1471,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1237-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1387,6 +1493,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/frankies-organic-issues-allergy-alert-undeclared-milk-frankies-organic-plant-based-vegan-cheddar",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1408,6 +1515,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/lidl-us-recalls-vitasia-asian-style-wok-spice-mix-due-potential-salmonella-contamination",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1429,6 +1537,7 @@
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/recall-jalapeno-avocado-dressing-because-possible-health-risk",
     "confidence": "extracted",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1450,6 +1559,7 @@
     "source": "fsis",
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/city-foods-inc--recalls-ready-eat-pastrami-and-corned-beef-products-due-possible",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1471,6 +1581,7 @@
     "source": "fsis",
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/fsis-issues-public-health-alert-various-meat-and-poultry-products-containing-fda-0",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1495,6 +1606,7 @@
     "source": "fsis",
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/corte-argentino-usa-llc-recalls-raw-beef-products-imported-without-benefit-import",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1525,6 +1637,7 @@
     "source": "fsis",
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/shan-distribution-network-inc--recalls-ineligible-frozen-siluriformes-breaded-fish",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1548,6 +1661,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1189-2026%22",
     "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   },
@@ -1571,31 +1685,7 @@
     "source": "openfda",
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1190-2026%22",
     "confidence": "verified",
-    "headline": null,
-    "avoidLine": null
-  },
-  {
-    "id": "fsis:012-2026",
-    "product": "62.4-oz. ALUMINUM PAN WITH PLASTIC OVERWRAP containing \"Ukrop's Baked Spaghetti - Bulk\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"EST. 19979\" in the mark of inspection. 14.8-oz. CARDBOARD TRAY WITH PLASTIC OVERWRAP containing \"Ukrop's Baked Spaghetti\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"EST. 19979\" in the mark of inspection. 48-oz. ALUMINUM PAN WITH PLASTIC OVERWRAP containing \"Ukrop's Chicken Cobbler - Bulk\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"P-19979\" in the mark of inspection. 11.6-oz. CARDBOARD TRAY WITH PLASTIC OVERWRAP containing \"Ukrop's Chicken Cobbler\" and BEST BY dates from 07/08/26 through 08/05/26 on the label and bears establishment number \"P-19979\" in the mark of inspection.",
-    "displayName": null,
-    "brand": "",
-    "company": "Ukrop's Homestyle Foods",
-    "reason": "Product Contamination",
-    "announcedDate": "2026-07-31",
-    "classification": "Class I",
-    "retailers": [],
-    "states": [
-      "North Carolina",
-      "Virginia",
-      "West Virginia"
-    ],
-    "distributionRaw": "North Carolina, Virginia, West Virginia",
-    "nationwide": false,
-    "countryOfOrigin": null,
-    "lotCodes": [],
-    "source": "fsis",
-    "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/ukrops-homestyle-foods-recalls-spaghetti-and-chicken-products-due-possible-foreign",
-    "confidence": "verified",
+    "mergedFrom": [],
     "headline": null,
     "avoidLine": null
   }

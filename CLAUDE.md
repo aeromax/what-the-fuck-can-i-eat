@@ -13,17 +13,21 @@ Spawn subagents to accomplish smaller tasks. Subagents can be used for:
 
 and anything else necessary. 
 
-## Project status: all three sources wired up, nothing merged
+## Project status: sources wired up and merged, no voice yet
 
-As of 2026-08-29, build steps 1–5 are done. All three sources fetch and normalize
-live data — openFDA 39, FDA RSS 17, FSIS 8 — and 105 tests pass offline against
-captured fixtures. Nothing is merged or deduped, there is no voice, and the page
-is a provisional preview.
+As of 2026-08-30, build steps 1–6 are done. All three sources fetch and normalize
+live data — openFDA 39, FDA RSS 17, FSIS 7 — and merge.ts dedupes across them;
+134 tests pass offline against captured fixtures. There is no voice yet and the
+page is a provisional preview.
+
+Merge finds nothing to merge in live data, correctly: openFDA's report_date lags
+recall initiation by a median of 69 days, so its 30-day window and the RSS window
+are disjoint. The merge path is covered by fixtures built on real records.
 
 ⚠️ FSIS is proven from this machine only. Whether `impit` gets through from a
 GitHub Actions runner is still unverified; see build plan step 5.
 
-**Continue at `docs/build-plan.md` step 6 (merge).** Do not improvise off this file
+**Continue at `docs/build-plan.md` step 7 (voice).** Do not improvise off this file
 alone — the build plan carries per-step acceptance criteria and the order
 matters (the riskiest unknown is deliberately step 5, not step 8).
 
@@ -179,6 +183,9 @@ These were each found the hard way. None are hypothetical.
 - `state` is a 2-letter code; `distribution_pattern` is free text in **three**
   incompatible shapes (bare codes, full names, prose with `&` separators). FSIS
   `states` uses full names. Normalize before comparing.
+- `recall_number` is **empty on `Not Yet Classified` rows**. `event_id` is not a
+  safe fallback — it groups recalls and repeats across rows — so the id falls
+  back to `event-<event_id>-<sha1(product)>`. See `openFdaKey`.
 - `code_info` is a structured field with **free-text content** — sometimes a bare
   lot code, sometimes `"None"`, sometimes a paragraph. Store it verbatim and
   unsplit; splitting the prose invents lot codes. openFDA records still never
