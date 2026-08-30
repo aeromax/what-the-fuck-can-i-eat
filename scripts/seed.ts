@@ -11,6 +11,9 @@
 // published state file are the one kind of placeholder that could do harm.
 
 import { writeFileSync } from 'node:fs';
+import { createGeminiClient } from './gemini.ts';
+import { fetchPressRelease } from './pressRelease.ts';
+import { applyVoice } from './voice.ts';
 import { mergeRecalls } from './merge.ts';
 import { fetchFdaRssRecalls } from './sources/fdaRss.ts';
 import { fetchFsis } from './sources/fsis.ts';
@@ -37,15 +40,40 @@ if (!openfda.reachable && !rss.reachable && !fsis.reachable) {
 const fetched = [...openfda.recalls, ...rss.recalls, ...fsis.recalls];
 const { recalls, review, mergedCount } = mergeRecalls(fetched);
 
-writeFileSync(out, `${JSON.stringify(recalls, null, 2)}\n`);
+// Voice runs only when a key is present. Without one the seed still writes a
+// complete, publishable file — every record keeps its plain product name and
+// verbatim government reason, which is the same fallback a Gemini outage
+// produces (docs/design.md §6). The preview is honest either way.
+const apiKey = process.env.GEMINI_API_KEY ?? '';
+let voiced = recalls;
+
+if (apiKey === '') {
+  console.log('\nGEMINI_API_KEY not set — skipping voice. Records publish with');
+  console.log('their government reason, exactly as they would during an outage.');
+} else {
+  const outcome = await applyVoice(recalls, {
+    client: createGeminiClient(apiKey),
+    // Only the cited government page for THIS record is ever fetched, and only
+    // for records that need extraction. docs/design.md §2: one page per call.
+    fetchPageText: (recall) => fetchPressRelease(recall.sourceUrl),
+    onWarn: (message) => console.warn(`  voice: ${message}`),
+  });
+  voiced = outcome.recalls;
+  console.log(`\nvoice: ${outcome.voiced} voiced, ${outcome.enriched} enriched, ${outcome.failed} fell back`);
+  if (outcome.dropped.length > 0) {
+    console.log(`  dropped ${outcome.dropped.length} extracted values not found in their source page`);
+  }
+}
+
+writeFileSync(out, `${JSON.stringify(voiced, null, 2)}\n`);
 // Ambiguous pairs go to a human, and BOTH records stay published — a duplicate
 // row is cheap, a wrong merge is not (docs/design.md §6).
 writeFileSync(reviewOut, `${JSON.stringify(review, null, 2)}\n`);
 
-console.log(`wrote ${recalls.length} records to data/recalls.json`);
+console.log(`wrote ${voiced.length} records to data/recalls.json`);
 console.log(`  ${fetched.length} fetched, ${mergedCount} merged away`);
-console.log(`  ${recalls.filter((r) => r.headline === null).length} awaiting voice (step 7)`);
-console.log(`  ${recalls.filter((r) => r.confidence === 'verified').length} verified, ${recalls.filter((r) => r.confidence === 'extracted').length} extracted`);
+console.log(`  ${voiced.filter((r) => r.headline === null).length} awaiting voice`);
+console.log(`  ${voiced.filter((r) => r.confidence === 'verified').length} verified, ${voiced.filter((r) => r.confidence === 'extracted').length} extracted`);
 if (review.length > 0) {
   console.log(`  ${review.length} ambiguous pair(s) in data/review.json — both records still published`);
   for (const entry of review) {

@@ -572,9 +572,16 @@ training data.
   top-level.
 - **There is no `response.parsed`.** Only `.text`, typed `string | undefined`.
   `JSON.parse` plus Zod validation is mandatory, not defensive.
-- **No built-in Zod support.** If bridging via `z.toJSONSchema()`, delete the
-  `"~standard"` key it adds — `JSON.stringify` won't strip it and Gemini enforces
-  a keyword allowlist.
+- **No built-in Zod support.** The guidance previously recorded here was wrong
+  and dangerous; corrected 2026-08-30 against `zod@4.5.1`. `z.toJSONSchema()`
+  attaches `~standard` as a non-enumerable, non-configurable own property, so
+  `JSON.stringify` already omits it and `delete` throws `TypeError` in strict
+  mode. Sanitise by structural round-trip.
+  The real hazard is Gemini's keyword allowlist: `z.toJSONSchema` emits
+  `$schema`, `minLength`, `default`, `const` and `maxLength` for schemas already
+  in `src/recall.ts` (`.min(1)`, `.default([])`). A targeted strip of `~standard`
+  would still have sent rejected keywords. Filter to the allowlist and convert
+  `const` into a single-valued `enum`.
 - Pass the API key **explicitly**. The README says the auto-detected env var is
   `GOOGLE_API_KEY`; the maintainers' codegen guide says `GEMINI_API_KEY`. They
   contradict each other.

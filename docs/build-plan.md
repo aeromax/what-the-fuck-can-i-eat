@@ -251,7 +251,28 @@ different products.
 
 </details>
 
-## Step 7 — voice (Gemini)
+## Step 7 — voice (Gemini) ⚠️ built, NOT live-verified — 2026-08-30
+
+Delivered: `scripts/gemini.ts` (transport), `scripts/voice.ts` (prompts and
+orchestration), 44 new tests (181 total). Built by two concurrent agents against
+a fixed interface, then reviewed and corrected.
+
+**No live call has ever been made.** There is no `GEMINI_API_KEY` on this
+machine, so prompt quality, real `displayName` output, and whether Gemini honours
+the span-copying instruction are all unmeasured. The acceptance criterion asking
+for a hand-check of the first batch of display names is **outstanding**. Set the
+key in a local `.env` and run `npm run seed` to close this out.
+
+Verified offline against stubs: 64 records in, 64 out; extraction runs only for
+`fdaRss` records; a re-run makes **zero** API calls; and total API failure (null
+or thrown) still publishes all 64 with facts intact and no voice.
+
+Two corrections to recorded traps came out of this, both in design §8:
+`z.toJSONSchema`'s `~standard` key advice was backwards AND would have thrown,
+and the real hazard is Gemini's keyword allowlist, which zod violates in five
+ways for schemas already in `src/recall.ts`.
+
+<details><summary>Original acceptance criteria</summary>
 
 Two jobs in one script, both constrained by design §2.
 
@@ -288,6 +309,8 @@ findable by string search in the source page; `brand`, `company`, `product`,
 `displayName` names the food in its own `product` text — spot-check the whole
 batch by hand the first time, since this is the only model-written string that
 sits in the large type.
+
+</details>
 
 ## Step 8 — refresh orchestrator
 

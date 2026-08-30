@@ -167,9 +167,21 @@ These were each found the hard way. None are hypothetical.
 - `responseMimeType` and `responseSchema` nest under **`config`**, never top-level.
 - **There is no `response.parsed`.** Only `.text`, typed `string | undefined`.
   `JSON.parse` plus Zod validation is mandatory, not defensive.
-- **No built-in Zod support.** If bridging via `z.toJSONSchema()`, delete the
-  `"~standard"` key it adds — `JSON.stringify` won't strip it and Gemini enforces a
-  keyword allowlist.
+- **No built-in Zod support**, and the advice this file used to give here was
+  wrong in both halves. Verified against `zod@4.5.1` on 2026-08-30:
+  `z.toJSONSchema()` adds `~standard` as a **non-enumerable, non-configurable**
+  own property, so `JSON.stringify` **does** strip it, and
+  `delete schema['~standard']` **throws `TypeError`** in strict mode — which
+  every ES module is. Following the old note literally crashed on the first call.
+  Round-trip through `JSON.parse(JSON.stringify(...))` instead.
+- **`~standard` was never the real problem.** Gemini enforces a keyword
+  allowlist, and `z.toJSONSchema` emits several non-allowlisted keywords for
+  schemas this project already uses: `$schema`, `minLength` (from `.min(1)`),
+  `default` (from `.default([])`), plus `const` and `maxLength`. Filter against
+  the allowlist rather than stripping named keys; convert `const` to a
+  single-valued `enum` so the constraint survives. See `scripts/gemini.ts`.
+- Use **`responseJsonSchema`**, not `responseSchema`, when passing JSON Schema —
+  the SDK requires `responseSchema` to be omitted when the former is set.
 - Pass the API key **explicitly**. The README says the auto-detected env var is
   `GOOGLE_API_KEY`; the maintainers' codegen guide says `GEMINI_API_KEY`. They
   contradict each other.
