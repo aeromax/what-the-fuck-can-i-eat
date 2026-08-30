@@ -4,14 +4,17 @@ import type { Recall } from '../recall.ts';
 interface Props { recall: Recall }
 const { recall } = Astro.props;
 
-// No headline yet (step 7). The documented fallback is the plain product name
-// and the verbatim government reason — docs/design.md §6, "Gemini failure is
-// not fatal". That is what renders here, so this preview shows the real
-// degraded path rather than invented copy.
-const heading = recall.headline ?? recall.product;
+// The large type is the short food name when we have one. `product` — the
+// government's verbatim spec line — is then shown directly beneath it, because
+// a category name must never be the only identifier on the page (docs/design.md
+// §2.1, rule 1). Until step 7 generates names, displayName is null everywhere
+// and the heading falls back to product, unshortened and honest.
+const heading = recall.displayName ?? recall.product;
+const showsSpecLine = recall.displayName !== null;
 
-// The avoid line is assembled mechanically from government fields. Nothing here
-// is written or inferred; when step 7 lands, `avoidLine` replaces it.
+// Snark lives in headline and nowhere else. Absent until step 7.
+const snark = recall.headline;
+
 const where = recall.nationwide
   ? 'Nationwide'
   : recall.states.length > 0
@@ -24,6 +27,9 @@ const isAlert = recall.classification === 'Public Health Alert';
 <article class="recall">
   <h2>{heading}</h2>
 
+  {showsSpecLine && <p class="spec">{recall.product}</p>}
+  {snark && <p class="snark">{snark}</p>}
+
   {recall.avoidLine
     ? <p class="avoid">{recall.avoidLine}</p>
     : <p class="avoid">
@@ -35,9 +41,7 @@ const isAlert = recall.classification === 'Public Health Alert';
   }
 
   <p class="meta">
-    <span class:list={['tag', isAlert ? 'alert' : 'class']}>
-      {recall.classification}
-    </span>
+    <span class:list={['tag', isAlert ? 'alert' : 'class']}>{recall.classification}</span>
     <span class:list={['tag', recall.confidence]}>{recall.confidence}</span>
     <span class="date">{recall.announcedDate}</span>
     <a href={recall.sourceUrl} rel="noopener">source</a>
@@ -47,17 +51,22 @@ const isAlert = recall.classification === 'Public Health Alert';
 <style>
   .recall { padding: 1.75rem 0; border-bottom: 1px solid var(--rule); }
   h2 {
-    font-size: clamp(1.5rem, 4vw, 2.25rem);
-    line-height: 1.15;
+    font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+    line-height: 1.1;
     font-weight: 650;
-    margin: 0 0 0.6rem;
+    margin: 0 0 0.35rem;
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
+  /* The specific thing recalled. Never omitted when the heading is a category. */
+  .spec { margin: 0 0 0.6rem; font-size: 0.9rem; line-height: 1.45; color: var(--dim); }
+  .snark { margin: 0 0 0.6rem; font-size: 1.05rem; }
   .avoid { margin: 0 0 0.75rem; font-size: 1rem; line-height: 1.5; color: var(--ink); }
   .reason { font-weight: 600; }
-  /* No ::before spacer: compressHTML: true preserves the real whitespace
-     between these spans. If someone ever flips that config to Astro 7's 'jsx'
-     default, the words glue together here first. */
+  /* No ::before spacer: compressHTML: true preserves the real whitespace between
+     these spans. If someone flips that to Astro 7's 'jsx' default, the words
+     glue together here first. */
+  .bit { display: inline; }
   .meta {
     margin: 0;
     display: flex;

@@ -37,8 +37,27 @@ export const RecallSchema = z.object({
   id: z.string().min(1),
 
   // --- Facts. Never model-written. -----------------------------------------
-  /** The food name, shown large. */
+  /**
+   * The government's product text, verbatim. Often a full spec line with pack
+   * sizes and UPCs. Never shortened here and never model-written — `displayName`
+   * exists so this can stay whole.
+   */
   product: z.string().min(1),
+  /**
+   * A short common food name for the large type: "eggs", "ground beef",
+   * "lettuce". Model-written (decision 2026-08-29, docs/design.md §10.6).
+   *
+   * This is a NAMING field, not a factual one, and it is deliberately the only
+   * model-written string allowed anywhere near the product identity. It carries
+   * a specific hazard: a category name generalizes one recalled product into a
+   * whole food group, so "eggs" alone could read as every egg on the shelf.
+   *
+   * It is therefore never rendered alone — the component pairs it with the
+   * identifying detail, and `product` is always still on the record. If it is
+   * null, the page falls back to `product`. Never let a layout show this field
+   * as the sole identifier.
+   */
+  displayName: z.string().nullable().default(null),
   brand: z.string(),
   company: z.string(),
   /** Verbatim government text. Never rewritten, summarised or tidied. */

@@ -44,6 +44,7 @@ eat something. A hallucinated lot code is not a cosmetic bug.
 | anything from FSIS | FSIS structured fields | **Never** |
 | retailers, states, country of origin, lot codes | FDA press-release prose | Yes, extraction only |
 | headline, avoidLine | — | Yes |
+| displayName | the government product text it names | Yes, naming only — see §2.1 |
 
 Four corollaries, none of which may be quietly eroded:
 
@@ -61,6 +62,41 @@ The standing temptation this project will face is to widen the model's factual
 surface to save a scraping step: to let it read the whole page and just return
 everything, rather than parsing a `<dl>` and asking it only for the prose bits.
 Do not. If the `<dl>` parse breaks, fix the parser.
+
+### 2.1 `displayName`, and why it is the one exception
+
+The large type needs a food name — "eggs", "ground beef", "lettuce" — but
+`product` holds the government's spec line, which is unusable as a heading and
+which §2 forbids the model from rewriting. `displayName` resolves that: the model
+writes a short common name for the food, and `product` stays verbatim beside it.
+
+This is a naming task, not a factual one, but it carries a specific hazard that
+must be designed against rather than trusted away:
+
+**A category name generalizes.** One recalled brand of eggs becomes "eggs", which
+a hurried reader can take to mean every egg in the shop. That is a false alarm in
+the safe direction, but it is still wrong, and repeated often enough it trains
+people to ignore the page.
+
+Three rules keep it honest, and none of them are optional:
+
+1. **Never rendered alone.** The identifying detail — brand, pack size, lot
+   codes, the `avoidLine` — is always adjacent. A layout that shows
+   `displayName` as the sole identifier is a bug, not a style choice.
+2. **`product` is never discarded.** It stays on the record verbatim, so the
+   specific thing recalled is always recoverable and always citable.
+3. **Naming only.** The model may name the food it was given. It may not decide
+   whether the food is dangerous, who sold it, or which lots are affected — those
+   come from government columns exactly as before.
+
+Failure is cheap by construction: `displayName` is nullable and the page falls
+back to `product`, so a bad or missing generation costs legibility, never facts.
+
+**Presentation note for step 9.** Rule 1 has a cost worth designing around: some
+`product` values are a full paragraph — one live eggs record lists five pack
+configurations with UPCs across ten lines — so pairing a two-word heading with
+the verbatim text puts a wall of grey under "eggs". Collapsing it behind a
+disclosure control is fine. Removing it is not.
 
 ### What "extraction only" means operationally
 
@@ -86,7 +122,8 @@ Fields (implemented in `src/recall.ts`, step 2):
 | Field | Notes |
 |---|---|
 | `id` | `source:nativeKey`, stable across runs; **not** the cross-source merge key — see §10.1 |
-| `product` | the food name, shown large |
+| `product` | the government's verbatim product text; never shortened, never model-written |
+| `displayName` | short common food name for the large type; model-written, never shown alone — see §2.1 |
 | `brand`, `company` | never model-written |
 | `reason` | verbatim government text, never rewritten |
 | `retailers`, `states`, `countryOfOrigin`, `lotCodes` | structured on the verified tier, model-extracted on the extracted tier |
@@ -414,19 +451,12 @@ Not settled by `CLAUDE.md`; resolve before or during the step they block.
    the safer reading. Step 5 no longer blocked. The remaining work is
    presentational and lands in step 9 — a PHA must not be labelled a recall.
    See §7.
-6. **`product` is not a food name on the openFDA path.** ⚠️ Surfaced by the
-   step-3 preview. §1 promises "food names in large plain type", but openFDA's
-   `product_description` is a full spec line — one live record reads *"Grade A
-   Brown In-shell Chicken eggs packaged in the following configurations: 1.
-   Simple Truth, Natural Cage Free Grain Fed, Medium, 12 Eggs, Net Wt 21 oz (1lb
-   5oz) 596g, UPC 0 11110-87032 0. Distributed by…"*. As a heading it runs four
-   lines and buries the food.
-   Shortening it is not free: §2 forbids the model from touching `product`, so
-   the options are mechanical truncation (brittle — the food name is not always
-   first) or a separate model-written display name held to the same
-   extraction-only standard as lot codes. Decide at step 7, since it determines
-   whether `headline` alone carries the large type. Until then the preview shows
-   the untruncated text, which is honest but ugly.
+6. ~~**`product` is not a food name on the openFDA path.**~~ **Resolved
+   2026-08-29: a model-written `displayName`.** The large type gets a short
+   common food name ("eggs", "ground beef", "lettuce"); `product` stays verbatim
+   on the record. Generation lands in step 7 with the rest of the voice work;
+   the field, the fallback and the never-alone rule are in place from step 3.
+   See §2.1 for the three rules that keep the generalization honest.
 7. **Pet food on the openFDA path.** Now moot in practice — the captured window
    contained none, and RSS items carry a structured `Product Type` that
    identifies them. But openFDA offers no equivalent field, so if a pet-food row

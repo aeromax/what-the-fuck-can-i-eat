@@ -202,8 +202,19 @@ Two jobs in one script, both constrained by design §2.
 - **Extraction call:** given the text of *one* press-release page, return
   `retailers`, `states`, `countryOfOrigin`, `lotCodes`. Spans from the supplied
   text only. One page per call — never two, or facts can blend.
-- **Voice call:** `headline` (snarky) and `avoidLine` (deadpan, factual, the line
-  someone reads while holding the product).
+- **Voice call:** `headline` (snarky), `avoidLine` (deadpan, factual, the line
+  someone reads while holding the product), and `displayName`.
+- **`displayName` rules** (design §2.1) — a short common food name for the large
+  type: "eggs", "ground beef", "lettuce".
+  - One to three words, lowercase, the ordinary name a shopper would use.
+  - It must name the food actually described in the supplied `product` text.
+    Never a guess at a category from the brand or the company name.
+  - No brand, no pack size, no adjective that narrows or widens the hazard
+    ("organic eggs" and "all eggs" are both wrong; "eggs" is right).
+  - When the product is genuinely a compound or unfamiliar item, prefer the
+    government's own head noun over inventing a tidier category.
+  - Returning null is acceptable and safe — the page falls back to `product`.
+    A wrong name is worse than no name.
 - Runs **only for ids lacking a `headline`**.
 - Retry once on failure, then publish the item with its plain product name and
   verbatim reason. Never drop an item for lack of a joke.
@@ -211,7 +222,10 @@ Two jobs in one script, both constrained by design §2.
 **Accept when:** re-running against unchanged input makes zero API calls; a
 forced failure still produces a publishable record; every extracted lot code is
 findable by string search in the source page; `brand`, `company`, `product`,
-`reason` and dates are provably untouched by the model.
+`reason` and dates are provably untouched by the model; and every generated
+`displayName` names the food in its own `product` text — spot-check the whole
+batch by hand the first time, since this is the only model-written string that
+sits in the large type.
 
 ## Step 8 — refresh orchestrator
 

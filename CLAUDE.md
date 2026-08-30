@@ -37,6 +37,7 @@ People read this page to decide whether to eat something.
 | anything from FSIS | FSIS structured fields | **Never** |
 | retailers, states, country of origin, lot codes | FDA press-release prose | Yes, extraction only |
 | headline, avoidLine | — | Yes |
+| displayName | the government product text it names | Yes, naming only |
 
 Corollaries that must not be quietly eroded:
 
@@ -46,6 +47,11 @@ Corollaries that must not be quietly eroded:
 - `reason` is stored verbatim from the government text and is never rewritten.
 - Snark belongs in `headline` only. `avoidLine` stays deadpan — it is the line
   someone reads while holding the product.
+- `displayName` is a short common food name for the large type ("eggs", "ground
+  beef"). It is the only model-written string near the product identity, and it
+  **must never be rendered as the sole identifier** — a category name reads as
+  the whole food group. `product` stays verbatim beside it. See `docs/design.md`
+  §2.1.
 - Never widen the AI's factual surface to "save a scraping step." If the `<dl>`
   parse breaks, fix the parser.
 
