@@ -10,10 +10,11 @@
 // the page exists to tell people what not to eat, and invented rows in the
 // published state file are the one kind of placeholder that could do harm.
 
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import type { Recall } from '../src/recall.ts';
 import { createGeminiClient } from './gemini.ts';
 import { fetchPressRelease } from './pressRelease.ts';
-import { applyVoice } from './voice.ts';
+import { applyVoice, carryVoiceForward } from './voice.ts';
 import { mergeRecalls } from './merge.ts';
 import { fetchFdaRssRecalls } from './sources/fdaRss.ts';
 import { fetchFsis } from './sources/fsis.ts';
@@ -44,14 +45,26 @@ const { recalls, review, mergedCount } = mergeRecalls(fetched);
 // complete, publishable file — every record keeps its plain product name and
 // verbatim government reason, which is the same fallback a Gemini outage
 // produces (docs/design.md §6). The preview is honest either way.
+// Carry forward whatever voice is already committed BEFORE deciding what needs
+// generating. Without this the fresh fetch looks entirely ungenerated and the
+// whole page is rewritten every run — docs/design.md §6.
+let previous: Recall[] = [];
+try {
+  previous = JSON.parse(readFileSync(out, 'utf8')) as Recall[];
+} catch {
+  // First run, or an unreadable file. Nothing to carry.
+}
+const withPriorVoice = carryVoiceForward(previous, recalls);
+console.log(`carried voice forward for ${withPriorVoice.filter((r) => r.headline !== null).length} records`);
+
 const apiKey = process.env.GEMINI_API_KEY ?? '';
-let voiced = recalls;
+let voiced = withPriorVoice;
 
 if (apiKey === '') {
   console.log('\nGEMINI_API_KEY not set — skipping voice. Records publish with');
   console.log('their government reason, exactly as they would during an outage.');
 } else {
-  const outcome = await applyVoice(recalls, {
+  const outcome = await applyVoice(withPriorVoice, {
     client: createGeminiClient(apiKey),
     // Only the cited government page for THIS record is ever fetched, and only
     // for records that need extraction. docs/design.md §2: one page per call.

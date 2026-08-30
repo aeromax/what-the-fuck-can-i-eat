@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import {
   DEFAULT_MODEL,
+  FALLBACK_MODEL,
   type GenerateContentFn,
   createGeminiClient,
   toGeminiSchema,
@@ -45,13 +46,32 @@ describe('generate', () => {
     expect(client.callCount()).toBe(1);
   });
 
-  it('retries exactly once on malformed JSON, then gives up', async () => {
-    const { fn } = fakeTransport([{ text: 'not json at all' }]);
+  it('retries once on the primary, then tries the fallback model', async () => {
+    const { fn, params } = fakeTransport([
+      { text: 'not json at all' },
+      { text: 'still not json' },
+      { text: 'nor this' },
+    ]);
     const client = createGeminiClient('k', DEFAULT_MODEL, fn);
 
     expect(await client.generate(args)).toBeNull();
-    // One try plus exactly one retry. docs/design.md §6.
-    expect(client.callCount()).toBe(2);
+    // One try plus one retry on the primary (docs/design.md §6), then a single
+    // attempt on the fallback. Observed live 2026-08-30: the primary model
+    // returned 503 for minutes while the lite model served normally, so without
+    // the fallback an entire run produces no voice at all.
+    expect(client.callCount()).toBe(3);
+    expect(params[0]!.model).toBe(DEFAULT_MODEL);
+    expect(params[1]!.model).toBe(DEFAULT_MODEL);
+    expect(params[2]!.model).toBe(FALLBACK_MODEL);
+  });
+
+  it('does not use the fallback when the primary succeeds', async () => {
+    const { fn, params } = fakeTransport([{ text: '{"headline":"eggs","tags":[]}' }]);
+    const client = createGeminiClient('k', DEFAULT_MODEL, fn);
+
+    expect(await client.generate(args)).not.toBeNull();
+    expect(client.callCount()).toBe(1);
+    expect(params.every((c) => c.model === DEFAULT_MODEL)).toBe(true);
   });
 
   it('rejects well-formed JSON that does not match the schema', async () => {
@@ -77,11 +97,15 @@ describe('generate', () => {
   });
 
   it('never throws when the API throws', async () => {
-    const { fn } = fakeTransport([new Error('503 Service Unavailable')]);
+    const { fn } = fakeTransport([
+      new Error('503 Service Unavailable'),
+      new Error('503 Service Unavailable'),
+      new Error('503 Service Unavailable'),
+    ]);
     const client = createGeminiClient('k', DEFAULT_MODEL, fn);
 
     await expect(client.generate(args)).resolves.toBeNull();
-    expect(client.callCount()).toBe(2);
+    expect(client.callCount()).toBe(3);
   });
 
   it('succeeds on the retry when the first attempt fails', async () => {

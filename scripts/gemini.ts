@@ -156,22 +156,46 @@ function realTransport(apiKey: string): GenerateContentFn {
   return (params) => client.models.generateContent(params);
 }
 
-/** Attempts per call: one try, then exactly one retry. docs/design.md §6. */
+/** Attempts per call on the primary model: one try, then one retry. §6. */
 const MAX_ATTEMPTS = 2;
+
+/**
+ * Pause before the retry.
+ *
+ * Observed live on 2026-08-30: the primary model returned
+ * `503 UNAVAILABLE — "This model is currently experiencing high demand"`. An
+ * IMMEDIATE retry against a transient overload is close to useless, so the one
+ * retry design §6 allows is spent after a short wait rather than instantly.
+ */
+const RETRY_DELAY_MS = 1500;
+
+/**
+ * Tried once if the primary model is still failing.
+ *
+ * Also observed live: `gemini-flash-latest` was 503 for several minutes while
+ * `gemini-flash-lite-latest` served normally. Without a fallback a busy primary
+ * means an entire run produces no voice at all. Voice is written once and never
+ * regenerated, so a handful of records getting the lite model is a far smaller
+ * cost than a run that silently generates nothing.
+ */
+export const FALLBACK_MODEL = 'gemini-flash-lite-latest';
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function createGeminiClient(
   apiKey: string,
   model: string = DEFAULT_MODEL,
   transport?: GenerateContentFn,
+  fallbackModel: string = FALLBACK_MODEL,
 ): GeminiClient {
   const send = transport ?? realTransport(apiKey);
   let calls = 0;
 
-  async function attempt<T>(args: GenerateArgs<T>): Promise<T | null> {
+  async function attempt<T>(args: GenerateArgs<T>, useModel: string): Promise<T | null> {
     calls += 1;
 
     const response = await send({
-      model,
+      model: useModel,
       contents: args.userText,
       // responseMimeType and responseSchema nest under `config`, never at the
       // top level. Verified against GenerateContentParameters in the installed
@@ -200,13 +224,24 @@ export function createGeminiClient(
   return {
     async generate<T>(args: GenerateArgs<T>): Promise<T | null> {
       for (let i = 0; i < MAX_ATTEMPTS; i += 1) {
+        if (i > 0) await sleep(RETRY_DELAY_MS);
         try {
-          const result = await attempt(args);
+          const result = await attempt(args, model);
           if (result !== null) return result;
         } catch {
           // Swallowed on purpose: a thrown API error, a malformed JSON body and
           // a schema mismatch are all the same outcome to the caller — no voice
           // for this record, which publishes anyway.
+        }
+      }
+
+      // Primary exhausted. One try on the fallback before giving up, because an
+      // overloaded primary would otherwise mean a whole run with no voice.
+      if (fallbackModel !== '' && fallbackModel !== model) {
+        try {
+          return await attempt(args, fallbackModel);
+        } catch {
+          // Same as above: no voice, record still publishes.
         }
       }
       return null;

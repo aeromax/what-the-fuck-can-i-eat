@@ -182,6 +182,10 @@ These were each found the hard way. None are hypothetical.
   single-valued `enum` so the constraint survives. See `scripts/gemini.ts`.
 - Use **`responseJsonSchema`**, not `responseSchema`, when passing JSON Schema —
   the SDK requires `responseSchema` to be omitted when the former is set.
+- `gemini-2.5-flash` returns **404, no longer available** (2026-08-30). Use the
+  `gemini-flash-latest` alias: a pinned id fails closed, meaning no voice at all.
+  The primary model does return `503` under load, so there is a delayed retry and
+  a `gemini-flash-lite-latest` fallback.
 - Pass the API key **explicitly**. The README says the auto-detected env var is
   `GOOGLE_API_KEY`; the maintainers' codegen guide says `GEMINI_API_KEY`. They
   contradict each other.
@@ -263,7 +267,11 @@ These were each found the hard way. None are hypothetical.
   product name and the verbatim government reason. An item is never dropped for
   lack of a joke.
 - **Never regenerate existing voice.** Gemini runs only for ids lacking a
-  `headline`. This keeps the voice stable and cost near zero.
+  `headline`. This keeps the voice stable and cost near zero. **This requires
+  loading the committed `recalls.json` and calling `carryVoiceForward` before
+  generating** — a fresh source fetch always looks entirely unvoiced, so without
+  it every run rewrites the whole page. Broken once already; see build plan
+  step 7.
 - **A run that changes nothing must not commit.** Most of the four daily runs will
   find no news; exit early when output is byte-identical to what is committed.
 - **Snapshots overwrite in place.** Accumulating timestamped files would add

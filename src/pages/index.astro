@@ -40,9 +40,11 @@ const mergedIds = new Set(recalls.flatMap((r) => r.mergedFrom.map((m) => m.id)))
         <h1>what the fuck can i eat</h1>
         <p class="sub">US food recalls that are currently active.</p>
         <p class="wip">
-          Preview build. Facts are real government data; the snark isn't written yet,
-          so every row falls back to its verbatim recall reason.
-          {awaitingVoice} of {recalls.length} awaiting voice.
+          Preview build. Every fact comes from the cited government page; the
+          headline and the avoid-line are model-written.
+          {awaitingVoice > 0
+            ? `${awaitingVoice} of ${recalls.length} rows are still awaiting voice and fall back to their verbatim recall reason.`
+            : `All ${recalls.length} rows have voice.`}
         </p>
       </header>
 

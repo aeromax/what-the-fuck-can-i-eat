@@ -10,7 +10,7 @@ import {
   protectedFieldsIntact,
   verifyExtraction,
   voiceInput,
-} from '../scripts/voice.ts';
+  carryVoiceForward,} from '../scripts/voice.ts';
 import type { GeminiClient } from '../scripts/gemini.ts';
 import { RecallSchema, type Recall } from '../src/recall.ts';
 
@@ -386,5 +386,58 @@ describe('voice output handling', () => {
     const client = stubClient({ voice: goodVoice });
     const result = await applyVoice([base], { client });
     expect(RecallSchema.safeParse(result.recalls[0]).success).toBe(true);
+  });
+});
+
+describe('carrying voice forward between runs', () => {
+  const voiced = {
+    ...base,
+    id: 'openfda:x-1',
+    displayName: 'eggs',
+    headline: 'A yolk that did not land.',
+    avoidLine: 'Avoid the eggs.',
+    retailers: ['Kroger'],
+  };
+  // A fresh fetch always produces records with no voice — voice lives only in
+  // the committed file, never at the source.
+  const fresh = { ...base, id: 'openfda:x-1' };
+
+  it('restores voice onto a freshly fetched record', () => {
+    const [carried] = carryVoiceForward([voiced], [fresh]);
+    expect(carried!.headline).toBe(voiced.headline);
+    expect(carried!.displayName).toBe('eggs');
+    expect(carried!.avoidLine).toBe(voiced.avoidLine);
+  });
+
+  it('makes a second run generate nothing', async () => {
+    // The regression this exists for: without carry-forward the voiced count
+    // went DOWN between live runs, because every run rewrote the whole page and
+    // transient failures reshuffled which records happened to succeed.
+    const carried = carryVoiceForward([voiced], [fresh]);
+    let calls = 0;
+    const client = {
+      async generate() {
+        calls += 1;
+        return null;
+      },
+      callCount: () => calls,
+    };
+    await applyVoice(carried, { client });
+    expect(calls).toBe(0);
+  });
+
+  it('never lets stale voice override fresh facts', () => {
+    // Facts always come from the new fetch, so an upstream correction still
+    // reaches the page.
+    const corrected = { ...fresh, reason: 'Corrected reason.', company: 'New Co' };
+    const [carried] = carryVoiceForward([{ ...voiced, reason: 'Old reason.' }], [corrected]);
+    expect(carried!.reason).toBe('Corrected reason.');
+    expect(carried!.company).toBe('New Co');
+  });
+
+  it('leaves genuinely new records unvoiced', () => {
+    const brandNew = { ...base, id: 'openfda:brand-new' };
+    const [carried] = carryVoiceForward([voiced], [brandNew]);
+    expect(carried!.headline).toBeNull();
   });
 });

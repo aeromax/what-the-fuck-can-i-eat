@@ -436,3 +436,40 @@ function finalise(original: Recall, candidate: Recall, onWarn: (m: string) => vo
 
   return parsed.data;
 }
+
+
+/**
+ * Carries existing voice forward onto freshly fetched records.
+ *
+ * Without this, "never regenerate existing voice" (docs/design.md §6) cannot
+ * hold: every run re-fetches from the sources and produces records with
+ * `headline: null`, so `applyVoice` would regard the entire page as ungenerated
+ * and rewrite it — multiplying cost on every run and changing the voice under
+ * the reader for no reason.
+ *
+ * Caught on the first live run, where the voiced count went DOWN between runs
+ * (50 to 47) as transient API failures reshuffled which records happened to
+ * succeed that time.
+ *
+ * Only voice fields cross over. Facts always come from the fresh fetch, so a
+ * correction upstream still reaches the page.
+ */
+export function carryVoiceForward(previous: readonly Recall[], current: readonly Recall[]): Recall[] {
+  const byId = new Map(previous.map((r) => [r.id, r]));
+
+  return current.map((recall) => {
+    const old = byId.get(recall.id);
+    if (old === undefined) return recall;
+
+    return {
+      ...recall,
+      displayName: recall.displayName ?? old.displayName,
+      headline: recall.headline ?? old.headline,
+      avoidLine: recall.avoidLine ?? old.avoidLine,
+      // Extraction is a paid model call too, so its results are kept unless the
+      // fresh record already has better (structured) values.
+      retailers: recall.retailers.length > 0 ? recall.retailers : old.retailers,
+      countryOfOrigin: recall.countryOfOrigin ?? old.countryOfOrigin,
+    };
+  });
+}

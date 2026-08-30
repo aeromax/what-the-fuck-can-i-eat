@@ -251,21 +251,37 @@ different products.
 
 </details>
 
-## Step 7 — voice (Gemini) ⚠️ built, NOT live-verified — 2026-08-30
+## Step 7 — voice (Gemini) ✅ done and live-verified 2026-08-30
 
 Delivered: `scripts/gemini.ts` (transport), `scripts/voice.ts` (prompts and
 orchestration), 44 new tests (181 total). Built by two concurrent agents against
 a fixed interface, then reviewed and corrected.
 
-**No live call has ever been made.** There is no `GEMINI_API_KEY` on this
-machine, so prompt quality, real `displayName` output, and whether Gemini honours
-the span-copying instruction are all unmeasured. The acceptance criterion asking
-for a hand-check of the first batch of display names is **outstanding**. Set the
-key in a local `.env` and run `npm run seed` to close this out.
+**Live-verified against the real API.** All 64 records are voiced and named.
+Hand-checked as the criteria require: zero `avoidLine`s contain a state or lot
+code absent from their own record, and comparing the published file against a
+fresh source fetch shows **zero protected-field drift** across 47 records.
 
-Verified offline against stubs: 64 records in, 64 out; extraction runs only for
-`fdaRss` records; a re-run makes **zero** API calls; and total API failure (null
-or thrown) still publishes all 64 with facts intact and no voice.
+Three findings only a live run could produce:
+
+- **`gemini-2.5-flash` is 404, no longer available.** A pinned id fails closed —
+  every call errors and no record ever gets voice — so the default is the
+  `gemini-flash-latest` alias.
+- **The primary model returned `503 UNAVAILABLE` for an extended period** while
+  `gemini-flash-lite-latest` served normally. The one permitted retry now waits
+  before firing (an immediate retry against an overload is useless), and a single
+  fallback-model attempt follows it.
+- **"Never regenerate existing voice" was silently broken.** `seed.ts` rebuilt
+  from the sources each run and never loaded the committed `recalls.json`, so
+  every run saw an unvoiced page and rewrote it. It surfaced as the voiced count
+  going DOWN between runs (50 to 47) as transient failures reshuffled which
+  records succeeded. `carryVoiceForward` fixes it; with it, runs converge
+  monotonically (47 carried, then 57, then all 64) and a settled page generates
+  nothing. **Step 8's orchestrator must call it too.**
+
+Known cosmetic issue: 7 of 64 display names exceed the 1-3 word guidance
+("chocolate coconut almond bites"). All name the right food; none is wrong or
+misleading, so they are left alone rather than regenerated.
 
 Two corrections to recorded traps came out of this, both in design §8:
 `z.toJSONSchema`'s `~standard` key advice was backwards AND would have thrown,

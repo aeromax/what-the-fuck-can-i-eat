@@ -1,8 +1,54 @@
 [
   {
+    "id": "fdaRss:everything-sprouts-llc-expands-voluntarily-recall-include-robust-radish-mix-due-potential-e-coli-and",
+    "product": "Robust Radish Mix, 5oz Cups",
+    "displayName": "radish mix",
+    "brand": "Everything Sprouts",
+    "company": "Everything Sprouts, LLC",
+    "reason": "Potential to be contaminated with Shiga toxin-producing Escherichia coli (STEC) or Salmonella.",
+    "announcedDate": "2026-08-28",
+    "classification": null,
+    "retailers": [],
+    "states": [],
+    "distributionRaw": null,
+    "nationwide": false,
+    "countryOfOrigin": null,
+    "lotCodes": [],
+    "source": "fdaRss",
+    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/everything-sprouts-llc-expands-voluntarily-recall-include-robust-radish-mix-due-potential-e-coli-and",
+    "confidence": "extracted",
+    "mergedFrom": [],
+    "headline": "Sprouts playing Russian roulette with your salad again.",
+    "avoidLine": "Avoid 5oz cups of Robust Radish Mix from Everything Sprouts with lot codes 223, 226, 230, or 233, distributed in Minnesota and Wisconsin due to potential Shiga toxin-producing Escherichia coli or Salmonella contamination."
+  },
+  {
+    "id": "fdaRss:panorama-produce-recalls-mangoes-due-possible-salmonella-contamination",
+    "product": "Mangoes",
+    "displayName": "mangoes",
+    "brand": "Martina",
+    "company": "Panorama Produce",
+    "reason": "Potential contamination with Salmonella",
+    "announcedDate": "2026-08-28",
+    "classification": null,
+    "retailers": [
+      "Walmart"
+    ],
+    "states": [],
+    "distributionRaw": null,
+    "nationwide": false,
+    "countryOfOrigin": "Mexico",
+    "lotCodes": [],
+    "source": "fdaRss",
+    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/panorama-produce-recalls-mangoes-due-possible-salmonella-contamination",
+    "confidence": "extracted",
+    "mergedFrom": [],
+    "headline": "A refreshing tropical treat, now with extra salmonella.",
+    "avoidLine": "Avoid Martina mangoes with lot code 4584 and UPC 07503061948050, distributed in Connecticut, New Jersey, New York, and Pennsylvania."
+  },
+  {
     "id": "fsis:018-2026",
     "product": "Cardboard boxes containing 100 pieces of “BUFFALO CHICKEN RANGOON” and “Sell By” dates from July 8, 2026, to June 29, 2027, represented on the label. Cardboard boxes containing 120 pieces of “BENEDETTO’S BUFFALO CHICKEN MOZZARELLA STICK” and “Sell By” dates from July 8, 2026, to June 29, 2027, represented on the label.",
-    "displayName": null,
+    "displayName": "buffalo chicken appetizers",
     "brand": "",
     "company": "",
     "reason": "Produced Without Benefit of Inspection",
@@ -24,19 +70,21 @@
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/shanghai-ravioli-corporation-recalls-not-ready-eat-frozen-buffalo-chicken-products",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, inspectors were not invited to the party.",
+    "avoidLine": "Avoid Buffalo Chicken Rangoon and Benedetto's Buffalo Chicken Mozzarella Stick in 100-piece and 120-piece cardboard boxes with Sell By dates from July 8, 2026, to June 29, 2027, distributed in Maine, Massachusetts, New Hampshire, Rhode Island, and Vermont."
   },
   {
     "id": "fdaRss:jaimes-foods-atx-issues-allergy-alert-undeclared-egg-allergen-jaimes-spanish-village-jalapeno-ranch",
     "product": "Jalapeno Ranch Dressing",
-    "displayName": null,
+    "displayName": "jalapeno ranch dressing",
     "brand": "Jaime’s Spanish Village",
     "company": "Jaime’s Foods ATX",
     "reason": "contains undeclared eggs",
     "announcedDate": "2026-08-25",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "Central Market"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -46,19 +94,21 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/jaimes-foods-atx-issues-allergy-alert-undeclared-egg-allergen-jaimes-spanish-village-jalapeno-ranch",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Yet another ranch dressing trying to hide its secret egg agenda.",
+    "avoidLine": "Avoid Jaime’s Spanish Village Jalapeno Ranch Dressing sold at Central Market in Texas, featuring lot codes 199284564923, 69, 86, 108, 113, 116, or 121, due to undeclared eggs."
   },
   {
     "id": "fdaRss:better-bakehouse-snack-company-recalling-certain-lots-donutful-chocolate-dipped-vanilla-cake-donuts",
     "product": "Chocolate Dipped Vanilla Cake Donuts",
-    "displayName": null,
+    "displayName": "chocolate dipped vanilla cake donuts",
     "brand": "Donutful",
     "company": "The Better Bakehouse Snack Company",
     "reason": "Undeclared milk allergen",
     "announcedDate": "2026-08-24",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "Amazon.com"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -68,13 +118,13 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/better-bakehouse-snack-company-recalling-certain-lots-donutful-chocolate-dipped-vanilla-cake-donuts",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, chocolate dipped vanilla cake donuts have an undocumented dairy preference.",
+    "avoidLine": "Avoid Donutful Chocolate Dipped Vanilla Cake Donuts with UPC 3 50041 39210 3, best-by date 9/15/2026, and lot number 26078, sold nationwide on Amazon.com, due to an undeclared milk allergen."
   },
   {
     "id": "fdaRss:everything-sprouts-llc-recalls-alfalfa-sprouts-due-potential-e-coli-and-salmonella-risk",
     "product": "Alfalfa Sprouts",
-    "displayName": null,
+    "displayName": "alfalfa sprouts",
     "brand": "Everything Sprouts, Calco",
     "company": "Everything Sprouts, LLC",
     "reason": "Potential to be contaminated with Salmonella and Shiga toxin-producing Escherichia coli (STEC)",
@@ -90,19 +140,21 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/everything-sprouts-llc-recalls-alfalfa-sprouts-due-potential-e-coli-and-salmonella-risk",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Yet another good reason to view sprouts with deep suspicion.",
+    "avoidLine": "Avoid Everything Sprouts and Calco alfalfa sprouts distributed in Minnesota and Wisconsin, including lot numbers 860014523113, 860014523120, 850079470149, and lots 222, 223, 225, 226, and 230, due to potential contamination with Salmonella and STEC."
   },
   {
     "id": "fdaRss:prince-bakery-inc-issues-allergy-alert-undeclared-milk-and-sesame-prince-bakery-breads",
     "product": "Variety of Breads",
-    "displayName": null,
+    "displayName": "bread",
     "brand": "Prince",
     "company": "Prince Bakery Inc.",
     "reason": "Undeclared milk and sesame",
     "announcedDate": "2026-08-19",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "bodegas and small retail markets"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -112,13 +164,13 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/prince-bakery-inc-issues-allergy-alert-undeclared-milk-and-sesame-prince-bakery-breads",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, milk and sesame were trying to be incognito.",
+    "avoidLine": "Avoid various breads from Prince, distributed by Prince Bakery Inc. and sold at bodegas and small retail markets, due to undeclared milk and sesame."
   },
   {
     "id": "openfda:event-99453-e0f7146c",
     "product": "MARKON BLEND LETT/ROM 80/20 WITH SEP BAGGIES 4/5# Iceberg, Romaine, Carrots, Red Cabbage products.",
-    "displayName": null,
+    "displayName": "salad blend",
     "brand": "",
     "company": "Taylor Farms de Mexico S. de R.L. de C.V.",
     "reason": "Potential Cyclospora contamination.",
@@ -164,13 +216,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=event_id%3A%2299453%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently your salad has decided to ruin your week.",
+    "avoidLine": "Avoid Markon Blend Lett/Rom 80/20 with Sep Baggies distributed by Taylor Farms de Mexico with lot codes TFMX183A05 (7/21/2026), TFMX184A02 (7/22/2026), TFMX187B02 (7/25/2026), TFMX189A03 (7/27/2026), TFMX190A03 (7/28/2026), TFMX190B01 (7/28/2026), TFMX191A02 (7/29/2026), and TFMX194B02 (8/1/2026) due to potential Cyclospora contamination."
   },
   {
     "id": "openfda:h-1224-2026",
     "product": "Vodka Tomato Sauce, NET WT. 24 oz / 680g, glass jar packed 12 jars in a carton.",
-    "displayName": null,
+    "displayName": "vodka tomato sauce",
     "brand": "",
     "company": "SHEANDRO LLC",
     "reason": "Label declares cream and cheese, but Milk is not declared",
@@ -190,13 +242,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1224-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "When dairy is on the ingredient list but somehow forgot to make the allergy warning list.",
+    "avoidLine": "Avoid SHEANDRO LLC Vodka Tomato Sauce in 24 oz glass jars with Lot Code LZ1 R169 and Expiration Date 06/30/2028, distributed in Florida, because it contains undeclared milk."
   },
   {
     "id": "openfda:h-1228-2026",
     "product": "Dark Chocolate Coconut Almond Bites, 3.17oz, Plastic Pouches, 10 Packages per case.",
-    "displayName": null,
+    "displayName": "chocolate coconut almond bites",
     "brand": "",
     "company": "Bazzini LLC",
     "reason": "Undeclared peanuts",
@@ -216,13 +268,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1228-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing ruins a coconut almond bite quite like an unannounced peanut.",
+    "avoidLine": "Avoid Bazzini Dark Chocolate Coconut Almond Bites in 3.17oz plastic pouches with lot codes B15354, B15356, B15357, B15360, B15361, and B15363 distributed in Washington."
   },
   {
     "id": "openfda:h-1229-2026",
     "product": "Grade A Brown In-shell Chicken eggs packaged in the following configurations:   1.  Simple Truth, Natural Cage Free Grain Fed, Medium, 12 Eggs, Net Wt 21 oz (1lb 5oz) 596g, UPC 0 11110-87032 0.  Distributed by The Kroger Co., Cincinnati, OH  45202.   2.  Simple Truth, Natural Cage Free Grain Fed, Large, 12 Eggs, Net Wt 24 oz (1lb 8oz) 681g, UPC 0 11110-79770 4.   Distributed by The Kroger Co., Cincinnati, OH  45202.   3.  Simple Truth, Natural Cage Free Grain Fed, Large, 18 Eggs, Net Wt 36 oz (2lb 4oz) 1,031g, UPC 0 11110-89310 9.  Distributed by The Kroger Co., Cincinnati, OH  45202.   4.   Simple Truth, Natural Cage Free Grain Fed, Large, 24 Eggs, Net Wt 48 oz (3lb) 1,360g, UPC 0 11110-15097 4.    Distributed by The Kroger Co., Cincinnati, OH  45202.   5.  Grade A CFB Large Egg, Bulk - BROWN, TICTAC, 900 doz, Distributed by MPS Egg Farms 14374 E State Hwy 21, Byran, TX 77808.    Keep Refrigerated.",
-    "displayName": null,
+    "displayName": "eggs",
     "brand": "",
     "company": "MIDWEST POULTRY SERVC C/O H & LELECTRIC",
     "reason": "Possible Salmonella Enteritidis",
@@ -247,13 +299,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1229-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Even the cage-free birds are unionizing against us via salmonella.",
+    "avoidLine": "Avoid Simple Truth and MPS Egg Farms brown in-shell chicken eggs with code P-1950 or 0840962, Julian dates between 157 and 184, and Best By/Sell By dates between July 20 and August 17, 2026. Distributed in Arkansas, Louisiana, Mississippi, New Mexico, Oklahoma, and Texas."
   },
   {
     "id": "openfda:h-1230-2026",
     "product": "Grade A White In-shell Chicken eggs packaged in the following configurations:   1.  Kroger, Medium, 12 Eggs, Net Wt 21 oz (1lb 5oz) 596g, UPC 0 11110-60902 1.  Distributed by The Kroger Co., Cincinnati, OH  45202.   2.  Kroger, Medium, 30 Eggs, Net Wt 52.5 oz (3lb 4.5oz) 596g, UPC 0 11110-60980 9.  Distributed by The Kroger Co., Cincinnati, OH  45202.   3.  Kroger, Large 12 Eggs, Net Wt 24 oz (1lb 8oz) 681g, UPC 0 11110-60903 8.  Distributed by The Kroger Co., Cincinnati, OH  45202.   4.  Kroger, Large 18 Eggs, Net Wt 36 oz (2lb 4oz) 1.03kg, UPC 0 11110-60933 5.  Distributed by The Kroger Co., Cincinnati, OH  45202.   5.  Kroger, Large 60 Eggs, Net Wt 7lb 8oz (3.40kg), UPC 0 11110-60933 5.  Distributed by The Kroger Co., Cincinnati, OH  45202.    6.  Kroger, Extra Large 12 Eggs, Net Wt 27 oz (1lb 11oz) 766g, UPC 0 11110-60904 5.  Distributed by The Kroger Co., Cincinnati, OH  45202.   7.  Kroger, Jumbo 12 Eggs, Net Wt 30 oz (1lb 14oz) 851g, UPC 0 11110-60905 2.  Distributed by The Kroger Co., Cincinnati, OH  45202.    Packed by Tx Lic #613171, 800 Wabash Rd, N. Manchester, IN  46962.    8.  Brookshire's farm fresh, Large 6 Eggs, Net Wt 12 oz (341g), UPC 0 92825-09564 4.  Distributed by:  Brookshire Grocery Company, P.O. Box 1411, Tyler, TX  75710-1411.   9.  Brookshire's farm fresh, Large 12 Eggs, Net Wt 24 oz (1lb 8oz) 681g, UPC 0 92825-09555 2.  Distributed by:  Brookshire Grocery Company, P.O. Box 1411, Tyler, TX  75710-1411.   10.   Brookshire's farm fresh, Large 18 Eggs, Net Wt 36 oz (2lb 4oz) 1.03kg, UPC 0 92825-09556 9.  Distributed by:  Brookshire Grocery Company, P.O. Box 1411, Tyler, TX  75710-1411.   11.  Brookshire's farm fresh, Large 36 Total Eggs TWIN PACK (18 Each), Net Wt 36 oz (2lb 4oz) 1.03kg, UPC 0 92825-10980 8.  Distributed by:  Brookshire Grocery Company, P.O. Box 1411, Tyler, TX  75710-1411.   12.  Super 1 Foods Large 60 Eggs, Net Wt 120 oz (7lbs8oz) 3.4kg, UPC 0 92825-09563 7.  Distributed by:  Brookshire Grocery Company, P.O. Box 1411, Tyler, TX  75710-1411.   13.  Brookshire's farm fresh, Extra Large 18 Eggs, Net Wt 40.5 oz (2lb 8.5oz) 1.15kg, UPC 0 92825-09560 6.  Distributed by:  Brookshire Grocery Company, P.O. Box 1411, Tyler, TX  75710-1411.   14.  Brookshire's farm fresh, Jumbo 12 Eggs, Net Wt 30 oz (1lb 14oz) 851g, UPC 0 92825-09558 3.  Distributed by:  Brookshire Grocery Company, P.O. Box 1411, Tyler, TX  75710-1411.   Packed by MPS Egg Farms, 14374 E State Hwy 21, Byran, TX  77808.    15.  Country Morning Medium 12 Eggs, Net Wt 21 oz (1lb 5oz) 596g, UPC 0 78566-00104 5.   16.  Country Morning Large 12 Eggs, Net Wt 24 oz (1lb 8oz) 681g, UPC 0 78566-20000 4.   17.  Country Morning Large 18 Eggs, Net Wt  36 oz (2lb 4oz) 1.03kg, UPC 0 78566-00503 6.   18.  Country Morning Large 2 1/2 Dozen Eggs, UPC 0 79307-00516 2.   19.  Country Morning Extra Large 12 Eggs, Net Wt 27 oz (1lb 11oz) 766g, UPC 0 78566-00102 1.   20.  Country Morning Jumbo 12 Eggs, Net Wt 30 oz (1lb 14oz) 851g, UPC 0 78566-00101 4. 21.  Cal-Maine Sunups 2 1/2 Dozen Eggs, UPC 0 28621-30498 7.    Packed by Tx Lic #s. 0840962, 0840961 MPS Egg Farms, 2750 County Road 1011, Center, TX  75935.    Bulk Product packaged as follows:   22.  Medium Grade A JD 183, 15 dozen, MPS Egg Farms TX Lic. No. 0840961, 14374 E Hwy 21, Byran, TX  77808.   23.  Medium Grade A JD 158, 30 dozen, MPS Egg Farms TX Lic. No. 0840961, 14374 E Hwy 21, Byran, TX  77808.   24.  Large Grade A JD 193, 15 dozen, MPS Egg Farms TX Lic. No. 0840961, 14374 E Hwy 21, Byran, TX  77808.   25.  Large Grade A JD 193, 30 dozen MPS Egg Farms TX Lic. No. 0840961, 14374 E Hwy 21, Byran, TX  77808.   26.  Grade A Large Egg JD 208, 900 dozen, Distributed by MPS Egg Farms, 14374 E Hwy 21, Byran, TX  77808.   27.  Extra Large Grade A, JD 193, 15 dozen, MPS Egg Farms TX Lic. No. 0840961, 14374 E Hwy 21, Byran, TX  77808.   28.  Jumbo Grade A, JD 175, 16.67 Dozen, MPS Egg Farms TX Lic. No. 0840961, 14374 E Hwy 21, Byran, TX  77808.    Keep Refrigerated at or Below 45-Degrees F.",
-    "displayName": null,
+    "displayName": "eggs",
     "brand": "",
     "company": "MIDWEST POULTRY SERVC C/O H & LELECTRIC",
     "reason": "Possible Salmonella Enteritidis",
@@ -278,13 +330,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1230-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, chickens are not exempt from summer troubles.",
+    "avoidLine": "Avoid Kroger, Brookshire's farm fresh, Super 1 Foods, Country Morning, and Cal-Maine eggs with code P-1950 or 0840962, Julian Dates between 157 and 184, and Best By/Sell By dates between July 20 - August 17, 2026, distributed in Arkansas, Louisiana, Mississippi, New Mexico, Oklahoma, and Texas."
   },
   {
     "id": "fdaRss:updated-dreyers-grand-ice-cream-inc-issues-voluntary-recall-select-outshine-fruit-bars-due-possible",
     "product": "Outshine Fruit Bars",
-    "displayName": null,
+    "displayName": "fruit bars",
     "brand": "Outshine",
     "company": "Dreyer’s Grand Ice Cream, Inc.",
     "reason": "Possible foreign material contamination with glass",
@@ -300,13 +352,13 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/updated-dreyers-grand-ice-cream-inc-issues-voluntary-recall-select-outshine-fruit-bars-due-possible",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing says refreshing quite like a surprise shard of glass.",
+    "avoidLine": "Avoid Outshine Fruit Bars with lot codes LLA616903, LLA617003, LLA617103, LLA617203, LLA617303, LLA617403, LLA617503, LLA617603, LLA620303, LLA620403, LLA620503, LLA620603, LLA620703, LLA620803, LLA620903, LLA621003, LLA621103, LLA621203, LLA621303, LLA621403, LLA621503, LLA621603, LLA616803, LLA619703, LLA619803, LLA619903, LLA620003, LLA620103, LLA620203, LLA617703, LLA617803, LLA617903, LLA618003, LLA618103, LLA618203, LLA618303, LLA618403, LLA618503, LLA619003, LLA619103, LLA619203, LLA619303, LLA619403, LLA619503, LLA618603, LLA618703, LLA618803, LLA618903, LLA619603, LLA603840, LLA605540, LLA605640, LLA605740, and LLA605940 due to possible foreign material contamination with glass."
   },
   {
     "id": "fdaRss:l-nutra-issues-allergy-alert-undeclared-tree-nuts-prolon-brand-apulian-almond-cocoa-spread",
     "product": "Apulian Almond & Cocoa Spread",
-    "displayName": null,
+    "displayName": "almond and cocoa spread",
     "brand": "Prolon",
     "company": "L-Nutra",
     "reason": "Undeclared cashews, pistachios and/or hazelnut",
@@ -322,13 +374,13 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/l-nutra-issues-allergy-alert-undeclared-tree-nuts-prolon-brand-apulian-almond-cocoa-spread",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A spread that apparently decided to branch out into an unannounced tree nut medley.",
+    "avoidLine": "Avoid Prolon Apulian Almond & Cocoa Spread with UPC 850040360530 and lot code L2755 due to undeclared cashews, pistachios, and/or hazelnuts."
   },
   {
     "id": "fsis:016-2026",
     "product": "50-g plastic bag packages containing “CRISPY FISH SKIN CRACKERS, SALTED EGG.” 50-g plastic bag packages containing “FISH SKIN CRACKERS, SPICY FLAVOUR” 50-g plastic bag packages containing “UN CHI CRISP FISH SKIN, Wasabi Flavour” 50-g plastic bag packages containing “UN CHI CRISP FISH SKIN, Laver Flavour.”",
-    "displayName": null,
+    "displayName": "fish skin crackers",
     "brand": "",
     "company": "",
     "reason": "Import Violation",
@@ -346,13 +398,13 @@
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/asian-america-trading-inc--recalls-ineligible-siluriformes-fish-products-imported",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Turns out importing fish skin snacks without telling the government is frowned upon.",
+    "avoidLine": "Avoid 50-gram plastic bags of Crispy Fish Skin Crackers (Salted Egg), Fish Skin Crackers (Spicy Flavour), Un Chi Crisp Fish Skin (Wasabi Flavour), and Un Chi Crisp Fish Skin (Laver Flavour) distributed in California."
   },
   {
     "id": "fsis:017-2026",
     "product": "8-oz. glass jars containing “Gangothri Goat Pickle” 8-oz. glass jars containing “Gangothri Gongura Goat Pickle” 8-oz. glass jars containing “Gangothri Chicken Pickle” 8-oz. glass jars containing “Gangothri Gongura Chicken Pickle”",
-    "displayName": null,
+    "displayName": "meat pickles",
     "brand": "",
     "company": "",
     "reason": "Produced Without Benefit of Inspection",
@@ -368,19 +420,21 @@
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/indus-foods-llc-dba-gangothri-foods-recalls-ready-eat-pickled-goat-and-chicken",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "For when you want your meat preservation to be entirely unregulated.",
+    "avoidLine": "Avoid 8-oz. glass jars of Gangothri Goat Pickle, Gangothri Gongura Goat Pickle, Gangothri Chicken Pickle, and Gangothri Gongura Chicken Pickle distributed nationwide because they were produced without benefit of inspection."
   },
   {
     "id": "fdaRss:exotique-foods-inc-recalls-momchipz-veggie-chips-broccoli-florets-cauliflower-due-undeclared-wheat",
     "product": "Veggie Chips Broccoli Florets & Cauliflower",
-    "displayName": null,
+    "displayName": "veggie chips",
     "brand": "Momchipz",
     "company": "Exotique Foods Inc",
     "reason": "undeclared wheat",
     "announcedDate": "2026-08-14",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "Amazon.com"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -390,19 +444,21 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/exotique-foods-inc-recalls-momchipz-veggie-chips-broccoli-florets-cauliflower-due-undeclared-wheat",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Ah yes, the classic vegetable experience: hidden wheat.",
+    "avoidLine": "Avoid Momchipz Veggie Chips Broccoli Florets & Cauliflower with UPC 6 28634 44216 6 and Best Before date 2026 AUGUST 31, sold at Amazon.com, due to undeclared wheat."
   },
   {
     "id": "fdaRss:hampton-grocers-inc-recalls-its-8-ounce-packages-lacnola-lactation-granola-because-possible-health",
     "product": "Granola",
-    "displayName": null,
+    "displayName": "granola",
     "brand": "The Hampton Grocer",
     "company": "The Hampton Grocer, Inc.",
     "reason": "Potential to be Contaminated with Salmonella",
     "announcedDate": "2026-08-14",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "Amazon"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -412,19 +468,31 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/hampton-grocers-inc-recalls-its-8-ounce-packages-lacnola-lactation-granola-because-possible-health",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Breakfast comes with a side of salmonella this week.",
+    "avoidLine": "Avoid The Hampton Grocer granola with Lot HGLC-102125 or Lot HGLC-021326, which was sold nationwide through Amazon and has the potential to be contaminated with Salmonella."
   },
   {
     "id": "fdaRss:updated-grand-central-bakery-seattle-recalls-potato-sourdough-bread-due-possible-foreign-object",
     "product": "Potato Sourdough",
-    "displayName": null,
+    "displayName": "potato sourdough",
     "brand": "Grand Central Bakery",
     "company": "Grand Central Bakery",
     "reason": "may contain pieces of metal",
     "announcedDate": "2026-08-13",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "Central Co-op",
+      "Fred Meyer Stores",
+      "Hilltop Red Apple",
+      "Ken's Markets",
+      "Marketime Foods",
+      "PCC Markets",
+      "QFC Stores",
+      "Thriftway Stores",
+      "Whole Foods Markets",
+      "Yakima Fruit Markets",
+      "Metropolitan Markets"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -434,19 +502,21 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/updated-grand-central-bakery-seattle-recalls-potato-sourdough-bread-due-possible-foreign-object",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Extra crunch nobody asked for.",
+    "avoidLine": "Avoid Grand Central Bakery Potato Sourdough with UPC 733163001576, sold at Central Co-op, Fred Meyer Stores, Hilltop Red Apple, Ken's Markets, Marketime Foods, PCC Markets, QFC Stores, Thriftway Stores, Whole Foods Markets, Yakima Fruit Markets, and Metropolitan Markets because it may contain pieces of metal."
   },
   {
     "id": "fdaRss:hardies-fresh-foods-recalls-jalapenos-because-possible-health-risk",
     "product": "Pepper Jalapenos",
-    "displayName": null,
+    "displayName": "jalapenos",
     "brand": "Dairyland Produce LLC",
     "company": "Dairyland Produce LLC",
     "reason": "Potential Salmonella Contamination",
     "announcedDate": "2026-08-12",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "Costco"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -456,19 +526,21 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/hardies-fresh-foods-recalls-jalapenos-because-possible-health-risk",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing says a good time quite like bonus salmonella in your peppers.",
+    "avoidLine": "Avoid Dairyland Produce LLC Pepper Jalapenos sold at Costco in Texas with lot codes X2741775, X2741859, X2744163, X2744706, X2746349, X2746490, and X2748743 due to potential Salmonella contamination."
   },
   {
     "id": "fdaRss:kettle-cuisine-recalls-marketside-tomato-bisque-soup-kit-sold-exclusively-walmart-stores-because",
     "product": "Tomato Bisque Soup Kit 14oz (397g)",
-    "displayName": null,
+    "displayName": "tomato bisque",
     "brand": "Marketside",
     "company": "Kettle Cuisine LLC",
     "reason": "Potential to be contaminated with Listeria monocytogenes",
     "announcedDate": "2026-08-12",
     "classification": null,
-    "retailers": [],
+    "retailers": [
+      "Walmart"
+    ],
     "states": [],
     "distributionRaw": null,
     "nationwide": false,
@@ -478,13 +550,13 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/kettle-cuisine-recalls-marketside-tomato-bisque-soup-kit-sold-exclusively-walmart-stores-because",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, soup kits can come with a side of listeria.",
+    "avoidLine": "Avoid Marketside Tomato Bisque Soup Kit 14oz (397g) with lot code 194346474004 and best-by date 8/22/26, sold at Walmart."
   },
   {
     "id": "fdaRss:whole-foods-market-announces-recall-select-salsas-guacamole-pico-de-gallo-and-prepared-foods",
     "product": "Finished products such as dips, salsa, guacamole, and more containing jalapeno.",
-    "displayName": null,
+    "displayName": "jalapeno dips",
     "brand": "Whole Foods Market",
     "company": "Whole Foods Market",
     "reason": "Potential Salmonella Contamination",
@@ -500,13 +572,13 @@
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/whole-foods-market-announces-recall-select-salsas-guacamole-pico-de-gallo-and-prepared-foods",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Turns out the jalapenos came with an unwanted side of salmonella.",
+    "avoidLine": "Avoid Whole Foods Market finished products containing jalapeno, such as dips, salsa, and guacamole, with the specified lot codes and date ranges distributed in Arkansas, Illinois, Indiana, Iowa, Kentucky, Louisiana, Michigan, Missouri, Ohio, Oklahoma, Texas, and Wisconsin due to potential Salmonella contamination."
   },
   {
     "id": "openfda:h-1192-2026",
     "product": "Spicy Breakfast Burrito sold under the following brand names: FRESH & READY FOODS Spicy Breakfast Burrito Net Wt. 8.2 oz (232g) UPC 1 00001 00029 7 and Sprig & Sprout Spicy Breakfast Burrito IN A SPICY TORTILLA NET WEIGHT 8.3oz (234g) Contains: Egg, Milk, Wheat. MG Foods Charlotte, NC 28272",
-    "displayName": null,
+    "displayName": "breakfast burrito",
     "brand": "",
     "company": "M.G. Foods, Inc.",
     "reason": "Undeclared Soy. The firm received complaints of sausage in the burritos. Upon review the firm discovered the sausage contains soy which is not listed on the label.",
@@ -533,13 +605,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1192-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, a surprise side of sausage was not what the label meant.",
+    "avoidLine": "Avoid Fresh & Ready Foods and Sprig & Sprout Spicy Breakfast Burritos with a Fresh Thru date of 07/20/26, distributed in Alabama, Georgia, Kentucky, North Carolina, South Carolina, Tennessee, Virginia, and West Virginia, due to undeclared soy from sausage."
   },
   {
     "id": "openfda:h-1193-2026",
     "product": "Flexible food pouch (3-layer foil, spouted, #CP6088), manufactured for packaging Pumpkin Tree Peter Rabbit Organics Banana & Strawberry, 4 oz food puree, UPC 815367010780.",
-    "displayName": null,
+    "displayName": "food pouch",
     "brand": "",
     "company": "CHEER PACK",
     "reason": "Flexible food pouch may release thin plastic strips into food.",
@@ -559,13 +631,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1193-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing screams snack time quite like a side of thin plastic strips.",
+    "avoidLine": "Avoid Cheer Pack flexible food pouches, part #CP6088 and customer part #31720, manufactured between 10/25/25 and 10/31/25 with lot numbers LSS20100005297, LSS2010000598, LSS20100005300, LSS20100005301, LSS 20100005302, LSS20100005303, LSS20100005304, LSS2015306, LSS20100005307, LSS20100005308, LSS20100005309, and LSS20100005310, distributed in Oregon."
   },
   {
     "id": "openfda:h-1194-2026",
     "product": "\"***Hondashi 0.25oz***\" seasoning packed in silver plastic/metallic pouch, pouches packed in brown paperboard cartons (600 packets/carton), Carton label reads in part as \"***Hondashi 0.25oz*600bags/ctn, Ingredients: salt, sodium glutamate, bonito, cornstarch, maltodextrin, water, flavored sodium nucleotide, glucose, soybean protein powder Allergen: Soybean, 1025 Ave S, Ste 150, Grand Prairie, TX 75050***\"",
-    "displayName": null,
+    "displayName": "seasoning",
     "brand": "",
     "company": "Pack'n Fresh LLC",
     "reason": "Allergen missing from contains statement: fish",
@@ -586,13 +658,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1194-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Fish is in the dashi, which is generally how dashi works, except on the label.",
+    "avoidLine": "Avoid Pack'n Fresh LLC Hondashi 0.25oz seasoning pouches and cartons with lot numbers OA00822015, Z2412426123, Z2424526232, Z2435226351, Z2507827077, and Z2524927248, distributed in California and New Jersey."
   },
   {
     "id": "openfda:h-1195-2026",
     "product": "Big Way Hot Pot \"Hot Pot Miso Paste\"; 1kg (35.3oz) unit package. Product is packaged in generic bulk packaging.",
-    "displayName": null,
+    "displayName": "hot pot miso paste",
     "brand": "",
     "company": "Big Way Ca Inc",
     "reason": "Undeclared milk from lactose.",
@@ -610,13 +682,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1195-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Miso paste with a side of undeclared dairy.",
+    "avoidLine": "Avoid Big Way Hot Pot Miso Paste in 1kg units, Item No. CKJ19067, Lot 20251106Z1-1, and Expiration NOV/05/2026, due to undeclared milk from lactose."
   },
   {
     "id": "openfda:h-1196-2026",
     "product": "Ashfiat Alharamain Energy Support 250ml/8fl. oz.",
-    "displayName": null,
+    "displayName": "energy support",
     "brand": "",
     "company": "AKKARCO LLC",
     "reason": "Undeclared tadalafil",
@@ -634,13 +706,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1196-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A little too much extra kick.",
+    "avoidLine": "Avoid Ashfiat Alharamain Energy Support 250ml/8fl. oz., distributed nationwide, with Batch No: ENGOT24, EXP: OCT 2028, and UPC: 1234561870003 due to undeclared tadalafil."
   },
   {
     "id": "openfda:h-1197-2026",
     "product": "Sliced Korean Halibut with Soy sauce, Wasabi, Vinegar Chili Paste; Keep Frozen; Net WT: 12.2OZ (374g); UPC: 6 78108 16991 4",
-    "displayName": null,
+    "displayName": "sliced halibut",
     "brand": "",
     "company": "Eunha Fisheries Co., LTD",
     "reason": "Foreign Manufacturer label contains Undeclared allergen ingredients Wheat, Soy, Sesame, Yellow #5 and Blue #1 in Frozen Flounder Products.",
@@ -661,13 +733,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1197-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A subtle blend of fish and an impressive rainbow of undeclared allergens.",
+    "avoidLine": "Avoid Eunha Fisheries Co., LTD Sliced Korean Halibut with Soy sauce, Wasabi, Vinegar Chili Paste with a Best By date of 2026.05.07, distributed in California and New Jersey."
   },
   {
     "id": "openfda:h-1198-2026",
     "product": "FLOUNDER SASHIMI WITH SAUCE; Keep Frozen; Net WT: 300g; UPC: 8 809342 366186",
-    "displayName": null,
+    "displayName": "flounder sashimi",
     "brand": "",
     "company": "Eunha Fisheries Co., LTD",
     "reason": "Foreign Manufacturer label contains Undeclared allergen ingredients Wheat, Soy, Sesame, Yellow #5 and Blue #1 in Frozen Flounder Products.",
@@ -688,13 +760,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1198-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A whole rainbow of undeclared ingredients, plus wheat and soy for good measure.",
+    "avoidLine": "Avoid Eunha Fisheries Co., LTD Frozen Flounder Sashimi with Sauce, Net WT: 300g, with Best By dates 2026.07.11 and 2026.12.08, and UPC 8 809342 366186, distributed in California and New Jersey."
   },
   {
     "id": "openfda:h-1199-2026",
     "product": "Clover Hill Dairy LLP, Soft Ricotta (Requeson), and Soft Ricotta with Jalapenos (Requeson Con Chile). Sold in 2- and 5-gallon buckets, and 10oz, 12oz, and 14oz individually packaged food grade clamshell containers. The 5- and 2-gallon buckets are shrink wrapped. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "soft ricotta",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -716,13 +788,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1199-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A nice side of listeria with your cheese.",
+    "avoidLine": "Avoid Clover Hill Dairy soft ricotta and soft ricotta with jalapenos with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1200-2026",
     "product": "Clover Hill Dairy LLP, Smoked Pepper Cheese Varieties (Jalapeno Cheddar), sold in 1/2-lb and 1-lb units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "smoked pepper cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -744,13 +816,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1200-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Because nothing ruins a cheese plate quite like a bacterial infection.",
+    "avoidLine": "Avoid Clover Hill Dairy Jalapeno Cheddar smoked pepper cheese with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1201-2026",
     "product": "Clover Hill Dairy LLP, Soft Cuajada in Brine, sold in five (5) gallon and two (2) gallon buckets. Unknown information: labeling. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "soft cuajada",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -772,13 +844,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1201-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Ah yes, the secret ingredient in unlabelled buckets: Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy Soft Cuajada in Brine sold in five-gallon and two-gallon buckets with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1202-2026",
     "product": "Clover Hill Dairy LLP, Soft Cuajada (vacuum sealed), sold in 14oz- and 2.5 lb clam shells, and 5-lb bags.  Unknown information: labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "soft cuajada",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -800,13 +872,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1202-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Cheese shouldn't come with bonus listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy Soft Cuajada sold in 14oz and 2.5 lb clam shells, and 5-lb bags with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1203-2026",
     "product": "Clover Hill Dairy LLP, Cuajada (vacuum sealed), sold in 30-lb boxes. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cuajada",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -828,13 +900,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1203-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Another day, another unexpected side of listeria with your cheese.",
+    "avoidLine": "Avoid Clover Hill Dairy Cuajada in 30-lb boxes with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1204-2026",
     "product": "Clover Hill Dairy LLP, Soft Cuajada crumbs. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "soft cuajada crumbs",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -856,13 +928,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1204-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A nice side of Listeria with your cheese crumbs.",
+    "avoidLine": "Avoid Clover Hill Dairy LLP Soft Cuajada crumbs with lot code AA051526, distributed in Maryland, New York, and Virginia, due to Listeria monocytogenes contamination."
   },
   {
     "id": "openfda:h-1205-2026",
     "product": "Clover Hill Dairy LLP, Mild Cheese Variety (Yummy Cheddar, White Cheddar, White Colby, Monterey Jack, Marble Jack). Sold in 1/2-lb, 1-lb, 2.5-lb, 5-lb, and 40-lb units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese variety",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -884,13 +956,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1205-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A nice variety of cheese, plus extra Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy mild cheese varieties including Yummy Cheddar, White Cheddar, White Colby, Monterey Jack, and Marble Jack, with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1206-2026",
     "product": "Clover Hill Dairy LLP, mild cheese variety (Snack Pack Assorted Regular Mild Stix White Colby, Marble Jack, Yummy Cheddar). Sold in approximate 0.40-lb (6.4oz) units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -912,13 +984,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1206-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A mild cheese variety that is wildly unsafe to eat.",
+    "avoidLine": "Avoid Clover Hill Dairy mild cheese variety snack packs, including Snack Pack Assorted Regular Mild Stix White Colby, Marble Jack, and Yummy Cheddar, with lot code AA051526 distributed in Maryland, New York, and Virginia due to Listeria monocytogenes contamination."
   },
   {
     "id": "openfda:h-1207-2026",
     "product": "Clover Hill Dairy LLP, Mild Cheese Variety (3-in-a-pack assorted White Colby, Marble Jack, Yummy Cheddar). Sold in approximate 0.20-lb (3.2oz) units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -940,13 +1012,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1207-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A mild cheese variety with a wild listeria surprise.",
+    "avoidLine": "Avoid Clover Hill Dairy LLP Mild Cheese Variety 3-in-a-pack with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1208-2026",
     "product": "Clover Hill Dairy LLP, mild cheese variety (Fresh Cheddar Curd). Sold in approximate 0.75-lb and 1.5-lb box units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese curds",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -968,13 +1040,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1208-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Fresh cheddar curd, now with an unlisted side of Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy mild cheese variety Fresh Cheddar Curd with lot code AA051526, sold in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1209-2026",
     "product": "Clover Hill Dairy LLP, sharp cheese variety (Cheddar, Yummy Cheddar, White Cheddar, Monterey Jack). Sold in approximate 1/2-lb, 1-lb, 2.5-lb, and 5-lb units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -996,13 +1068,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1209-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Another day, another dairy product contaminated with listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy LLP sharp cheese varieties including Cheddar, Yummy Cheddar, White Cheddar, and Monterey Jack with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1210-2026",
     "product": "Clover Hill Dairy LLP, Sharp Cheese Snack Pack Sharp Stix White or Yellow. Sold in approximate 0.40-lb (6.4oz) units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese snack pack",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -1024,13 +1096,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1210-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A sharp snack with an unexpectedly blunt side.",
+    "avoidLine": "Avoid Clover Hill Dairy Sharp Cheese Snack Pack Sharp Stix White or Yellow with lot code AA051526, distributed in Maryland, New York, and Virginia, due to Listeria monocytogenes contamination."
   },
   {
     "id": "openfda:h-1211-2026",
     "product": "Clover Hill Dairy LLP, Flavored Cheese (horseradish). Sold in approximate 1/2-lb, 1-lb, 2.5-lb, 5-lb, and 40-lb units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -1052,13 +1124,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1211-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing ruins a cheese board quite like a side of Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy flavored cheese with horseradish, lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1212-2026",
     "product": "Clover Hill Dairy LLP, Flavored Cheese (Old Bay Cheddar). Sold in approximate 1/2-lb, 1-lb, 2.5-lb, 5-lb, and 40-lb units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -1080,13 +1152,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1212-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Because ordinary cheese apparently wasn't adventurous enough.",
+    "avoidLine": "Avoid Clover Hill Dairy Old Bay Cheddar flavored cheese with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1213-2026",
     "product": "Clover Hill Dairy LLP, Pepper Jack Cheese Varieties (Jalapeno Cheddar, Pepper Jack, Sizzlin Colby with Habanero Peppers). Sold in approximate 1/2-lb, 1-lb, 2.5-lb, 5-lb, and 40-lb units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "pepper jack cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -1108,13 +1180,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1213-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Spicy cheese comes with an uninvited side of Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy Pepper Jack Cheese varieties, including Jalapeno Cheddar, Pepper Jack, and Sizzlin Colby with Habanero Peppers, with lot code AA051526 sold in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1214-2026",
     "product": "Clover Hill Dairy LLP, Pepper Jack Cheese Varieties (Snack Pack Assorted Pepperjack Stix (Jalapeno Cheddar, Pepper Jack)). Sold in approximate 0.40-lb (6.4oz) units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "pepper jack cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -1136,13 +1208,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1214-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing says snack time quite like a side of Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy Pepper Jack Cheese Varieties, specifically the Snack Pack Assorted Pepperjack Stix including Jalapeno Cheddar and Pepper Jack, with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1215-2026",
     "product": "Clover Hill Dairy LLP, Pepper Jack Cheese Varieties (3-in-a-Pack Assorted Jalapeno Cheddar, Pepper Jack, Sizzling Colby). Sold in approximate 0.20-lb (3.2oz) units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "pepper jack cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -1164,13 +1236,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1215-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing ruins a cheese snack quite like a side of Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy LLP Pepper Jack Cheese Varieties, including 3-in-a-Pack Assorted Jalapeno Cheddar, Pepper Jack, and Sizzling Colby, with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1216-2026",
     "product": "Clover Hill Dairy LLP, Smoked Cheddar Cheese Varieties (Cheddar, White Cheddar). Sold in 1/2-lb and 1-lb units. Unknown information: packaging, labeling, or total quantity of product distributed. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "smoked cheddar cheese",
     "brand": "",
     "company": "Clover Hill Dairy, LLC",
     "reason": "Product contaminated with Listeria monocytogenes.",
@@ -1192,13 +1264,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1216-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Another day, another dairy product that wants to ruin your week with Listeria.",
+    "avoidLine": "Avoid Clover Hill Dairy LLP Smoked Cheddar Cheese Varieties (Cheddar, White Cheddar) sold in 1/2-lb and 1-lb units with lot code AA051526, distributed in Maryland, New York, and Virginia."
   },
   {
     "id": "openfda:h-1217-2026",
     "product": "La Colonia Foods Salvadoreno Requeson Soft Ricotta, Net Wt: 14 oz (367g), packaged into retail-sized clear plastic containers. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "soft ricotta",
     "brand": "",
     "company": "La Colonia Foods Llc",
     "reason": "Products may be contaminated with Listeria monocytogenes.",
@@ -1219,13 +1291,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1217-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A nice block of soft ricotta with a side of Listeria.",
+    "avoidLine": "Avoid La Colonia Foods Salvadoreno Requeson Soft Ricotta in 14 oz clear plastic containers with lot code Colonia1023, distributed in Maryland and Virginia."
   },
   {
     "id": "openfda:h-1218-2026",
     "product": "Selectos Latinos Requeson Salvadoreno Ricotta Style Salvadorean Cheese, Net Weight 14 oz, packed into retail-sized clear plastic containers.  Keep refrigerated.",
-    "displayName": null,
+    "displayName": "salvadorean cheese",
     "brand": "",
     "company": "La Colonia Foods Llc",
     "reason": "Products may be contaminated with Listeria monocytogenes.",
@@ -1246,13 +1318,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1218-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Another day, another artisanal dairy product trying to take you down.",
+    "avoidLine": "Avoid Selectos Latinos Requeson Salvadoreno Ricotta Style Salvadorean Cheese in 14 oz clear plastic containers with lot code Selec1008, distributed in Maryland and Virginia."
   },
   {
     "id": "openfda:h-1219-2026",
     "product": "Selectos Latinos Requeson Mexicano Mexican Cottage Cheese, Net Weight 16 oz, packed into retail-sized clear plastic containers. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "cottage cheese",
     "brand": "",
     "company": "La Colonia Foods Llc",
     "reason": "Products may be contaminated with Listeria monocytogenes.",
@@ -1273,13 +1345,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1219-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Another day, another dairy product playing host to listeria.",
+    "avoidLine": "Avoid Selectos Latinos Requeson Mexicano Mexican Cottage Cheese in 16 oz clear plastic containers with lot code Selec1011, distributed in Maryland and Virginia."
   },
   {
     "id": "openfda:h-1220-2026",
     "product": "Requeson, bulk product from Clover Hill Dairy packed into a plastic 18-lb bucket. Unknown labeling information. Keep refrigerated.",
-    "displayName": null,
+    "displayName": "requeson",
     "brand": "",
     "company": "La Colonia Foods Llc",
     "reason": "Products may be contaminated with Listeria monocytogenes.",
@@ -1300,13 +1372,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1220-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Bulk cheese making a bid for your hospital bill.",
+    "avoidLine": "Avoid the 18-pound plastic bucket of Requeson from Clover Hill Dairy, distributed by La Colonia Foods Llc in Maryland and Virginia, bearing lot code Lact1032."
   },
   {
     "id": "openfda:h-1221-2026",
     "product": "Ultimate Mother's Day Wangshin Doenjang Aged 3 Years 9 oz. Korean Traditional Premium Soybean Paste UPC: 8 809897 940169",
-    "displayName": null,
+    "displayName": "soybean paste",
     "brand": "",
     "company": "JINA F&C",
     "reason": "Product label allergen \"contains\" statement does not include anchovy(fish)",
@@ -1324,13 +1396,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1221-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Mother's Day gets a surprise side of undisclosed fish.",
+    "avoidLine": "Avoid Ultimate Mother's Day Wangshin Doenjang Aged 3 Years, 9 oz., with best by dates of March 28, 2027, June 01, 2027, August 15, 2027, August 25, 2027, and October 15, 2027, as it contains undeclared anchovy."
   },
   {
     "id": "openfda:h-1222-2026",
     "product": "Zen Principle Naturals Moringa Leaf Powder dietary supplement, 900mg capsules, 180 capsules per PET white bottle. Intended Use: take 2 capsules per day. Route of Administration: OraI. Manufactured for Zen Principle 774 Mays Blvd Incline Village, NV 89451.  The product is offered as a 1-pack (180 capsules; Amazon code/FNSKU X000ZJJ4FT) and as a 2-pack (twin pack, 360 capsules; Amazon code/FNSKU X00159YJXP).",
-    "displayName": null,
+    "displayName": "moringa leaf powder capsules",
     "brand": "",
     "company": "FACTORY6, INC.",
     "reason": "Possible Salmonella in Moringa Leaf Powder product.",
@@ -1350,13 +1422,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1222-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Your superfood supplement is bringing some uninvited bacteria to the party.",
+    "avoidLine": "Avoid Zen Principle Naturals Moringa Leaf Powder 900mg capsules in 180-count bottles, including 1-packs (Amazon FNSKU X000ZJJ4FT) and 2-packs (Amazon FNSKU X00159YJXP), with lot code A6FF4 and Best By date 11/2028 distributed in Nevada."
   },
   {
     "id": "openfda:h-1223-2026",
     "product": "Pumpkin Tree Peter Rabbit Organics Banana & Strawberry fruit puree, 4oz/113g pouch, UPC 815367010780, PTO Item 10720.  Distributed by: PT Organics Ltd, 333 South State St, Suite V-142, Lake Oswego, OR 97034.  Product is pasteurized blend of banana and strawberry purees sold in single serve spouted flexible film pouch (4oz/113g) with red cap. It is intended for consumption by children aged +6 months.  Each master case contains 10/4oz. pouches of PT Organics Banana Strawberry 1006034. The bar code on master case label is 00815367010797.",
-    "displayName": null,
+    "displayName": "fruit puree",
     "brand": "",
     "company": "PT Organics Limited",
     "reason": "Possible foreign object (thin, soft plastic strands).",
@@ -1398,13 +1470,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1223-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A fruit pouch with an unexpected side of thin, soft plastic strands.",
+    "avoidLine": "Avoid Peter Rabbit Organics Banana & Strawberry fruit puree pouches in 4oz sizes with production lane number 4 on the yellow right seam and Best By Dates of 01/19/2027, 01/20/2027, 03/17/2027, 03/18/2027, 05/14/2027, or 05/15/2027."
   },
   {
     "id": "openfda:h-1237-2026",
     "product": "KC Everyday Mac & Cheese, 3lb x 6.  Item # 20609055.  6 - 3 lb pouches, Net Wt:  18 lb. (8.16Kg).  Fully Cooked.  Keep Frozen.  Distributed By:  Kerry Inc, Beloit, WI  53511.",
-    "displayName": null,
+    "displayName": "mac and cheese",
     "brand": "",
     "company": "Kerry, Inc",
     "reason": "Undeclared allergen (egg)",
@@ -1428,123 +1500,112 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1237-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, the cheese sauce also brought an egg to the party.",
+    "avoidLine": "Avoid KC Everyday Mac & Cheese distributed by Kerry Inc, with item number 20609055 and lot numbers 0011849964, 0011988192, or 0012085206, if you have an egg allergy."
   },
   {
     "id": "fdaRss:frankies-organic-issues-allergy-alert-undeclared-milk-frankies-organic-plant-based-vegan-cheddar",
     "product": "Plant Based Snack",
-    "displayName": null,
+    "displayName": "plant based snack",
     "brand": "Frankie’s Organic",
     "company": "Frankie’s Organic Foods Inc.",
     "reason": "Undeclared milk",
     "announcedDate": "2026-08-11",
     "classification": null,
-    "retailers": [],
-    "states": [],
+    "retailers": [
+      "PCC Markets",
+      "Earth Fare Stores"
+    ],
+    "states": [
+      "Florida",
+      "South Carolina",
+      "Washington"
+    ],
     "distributionRaw": null,
     "nationwide": false,
     "countryOfOrigin": null,
-    "lotCodes": [],
+    "lotCodes": [
+      "05 16 2027",
+      "816929000089"
+    ],
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/frankies-organic-issues-allergy-alert-undeclared-milk-frankies-organic-plant-based-vegan-cheddar",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Dairy sneaks its way into the plant-based snack aisle.",
+    "avoidLine": "Avoid Frankie's Organic Plant Based Snack with lot code 05 16 2027 and UPC 816929000089, distributed in Florida, South Carolina, and Washington."
   },
   {
     "id": "fdaRss:lidl-us-recalls-vitasia-asian-style-wok-spice-mix-due-potential-salmonella-contamination",
     "product": "Spice Mix 1.58 oz",
-    "displayName": null,
+    "displayName": "spice mix",
     "brand": "Vitasia Chinese Style",
     "company": "Lidl US Trading",
     "reason": "Potential to be contaminated with Salmonella",
     "announcedDate": "2026-08-11",
     "classification": null,
     "retailers": [],
-    "states": [],
+    "states": [
+      "Delaware",
+      "Georgia",
+      "Maryland",
+      "New Jersey",
+      "New York",
+      "North Carolina",
+      "Pennsylvania",
+      "South Carolina",
+      "Virginia"
+    ],
     "distributionRaw": null,
     "nationwide": false,
     "countryOfOrigin": null,
-    "lotCodes": [],
+    "lotCodes": [
+      "UPC 4335619355491",
+      "Lot # 155846",
+      "BBD JUN 2028"
+    ],
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/lidl-us-recalls-vitasia-asian-style-wok-spice-mix-due-potential-salmonella-contamination",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A little extra salmonella with your Chinese style.",
+    "avoidLine": "Avoid Vitasia Chinese Style Spice Mix (1.58 oz) with UPC 4335619355491, Lot # 155846, and BBD JUN 2028."
   },
   {
     "id": "fdaRss:recall-jalapeno-avocado-dressing-because-possible-health-risk",
     "product": "Salad dressing",
-    "displayName": null,
+    "displayName": "salad dressing",
     "brand": "Salata",
     "company": "Salata Dressings, LLC.",
     "reason": "Potential to be contaminated with Salmonella",
     "announcedDate": "2026-08-11",
     "classification": null,
-    "retailers": [],
-    "states": [],
+    "retailers": [
+      "HEB"
+    ],
+    "states": [
+      "Texas"
+    ],
     "distributionRaw": null,
     "nationwide": false,
     "countryOfOrigin": null,
-    "lotCodes": [],
+    "lotCodes": [
+      "11/05/2026",
+      "11/13/2026",
+      "11/18/2026",
+      "11/25/2026"
+    ],
     "source": "fdaRss",
     "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/recall-jalapeno-avocado-dressing-because-possible-health-risk",
     "confidence": "extracted",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
-  },
-  {
-    "id": "fdaRss:taylor-fresh-foods-recalls-products-made-jalapeno-peppers-because-possible-health-risk",
-    "product": "Finished products (e.g. dips, salsa, guacamole and more) containing jalapeno",
-    "displayName": null,
-    "brand": "Trader Joe’s, Freshness Guaranteed and more",
-    "company": "Taylor Fresh Foods",
-    "reason": "Possible Salmonella Contamination",
-    "announcedDate": "2026-08-09",
-    "classification": null,
-    "retailers": [],
-    "states": [],
-    "distributionRaw": null,
-    "nationwide": false,
-    "countryOfOrigin": null,
-    "lotCodes": [],
-    "source": "fdaRss",
-    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/taylor-fresh-foods-recalls-products-made-jalapeno-peppers-because-possible-health-risk",
-    "confidence": "extracted",
-    "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
-  },
-  {
-    "id": "fdaRss:naturebest-precut-produce-llc-voluntarily-recalls-products-containing-jalapenos-due-potential",
-    "product": "Finished products such as Pico de Gallo, Stuffed Mushrooms, and Soup-mix Containing Jalapeno.",
-    "displayName": null,
-    "brand": "NatureBest, HEB",
-    "company": "NatureBest Precut & Produce LLC",
-    "reason": "Potential for contamination with Salmonella",
-    "announcedDate": "2026-08-08",
-    "classification": null,
-    "retailers": [],
-    "states": [],
-    "distributionRaw": null,
-    "nationwide": false,
-    "countryOfOrigin": null,
-    "lotCodes": [],
-    "source": "fdaRss",
-    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/naturebest-precut-produce-llc-voluntarily-recalls-products-containing-jalapenos-due-potential",
-    "confidence": "extracted",
-    "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing ruins a healthy lunch quite like a side of salmonella.",
+    "avoidLine": "Avoid Salata brand salad dressing sold at HEB in Texas with best by dates 11/05/2026, 11/13/2026, 11/18/2026, and 11/25/2026 due to potential contamination with Salmonella."
   },
   {
     "id": "fsis:015-2026",
     "product": "10-lb. cardboard boxes containing 2- to 5-lb. pieces of “Midamar Premium Beef Pastrami” with case code “19410” printed on the box label. Various weight 20- to 30-lb. cardboard boxes containing 2-3 pieces of “BEA’S BEST COOKED CORNED BEEF BRISKET” with case code “18919” printed on the box label. Various weight 20- to 30-lb. cardboard boxes containing 2-3 pieces of “KIRSCH DELICATESSEN STYLE COOKED CORNED BEEF BRISKET” with case code “19751” printed on the box label.",
-    "displayName": null,
+    "displayName": "beef pastrami and corned beef",
     "brand": "",
     "company": "City Foods, Inc./Bea's Best Corned Beef",
     "reason": "Product Contamination",
@@ -1560,13 +1621,13 @@
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/city-foods-inc--recalls-ready-eat-pastrami-and-corned-beef-products-due-possible",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Because you needed your deli meats seasoned with unexpected contaminants.",
+    "avoidLine": "Avoid Midamar Premium Beef Pastrami with case code 19410, Bea's Best Cooked Corned Beef Brisket with case code 18919, and Kirsch Delicatessen Style Cooked Corned Beef Brisket with case code 19751 distributed nationwide."
   },
   {
     "id": "fsis:pha-08082026-01",
     "product": "FSIS Issues Public Health Alert for Various Meat and Poultry Products Containing FDA-Regulated Jalapeños That Have Been Recalled Due To Possible Salmonella Contamination",
-    "displayName": null,
+    "displayName": "meat and poultry products",
     "brand": "",
     "company": "",
     "reason": "Product Contamination",
@@ -1582,13 +1643,13 @@
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/fsis-issues-public-health-alert-various-meat-and-poultry-products-containing-fda-0",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Yet another reason to view jalapeños with deep suspicion.",
+    "avoidLine": "Avoid various meat and poultry products containing FDA-regulated jalapeños distributed nationwide due to possible Salmonella contamination."
   },
   {
     "id": "fsis:013-2026",
     "product": "Various weight cardboard boxes containing “FRIGORIFICO GORINA SAIC” boneless beef “TOP SIRLOIN BUTT” (“CUADRIL SIN TAPA”) Various weight cardboard boxes containing “FRIGORIFICO GORINA SAIC” boneless beef “EYE ROUND” (“PECETO”) Various weight cardboard boxes containing “FRIGORIFICO GORINA SAIC” boneless beef “TOPSIDE CAP OFF” (“NALGA AD S/TAPA”) Various weight cardboard boxes containing “FRIGORIFICO GORINA SAIC” boneless beef “FLAT” (“CARNAZA CUADRADA”) Various weight cardboard boxes containing “FRIGORIFICO GORINA SAIC” boneless beef “KNUCKLE” (“BOLA DE LOMO”)",
-    "displayName": null,
+    "displayName": "boneless beef",
     "brand": "",
     "company": "",
     "reason": "Import Violation",
@@ -1607,13 +1668,13 @@
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/corte-argentino-usa-llc-recalls-raw-beef-products-imported-without-benefit-import",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Turns out importing meat requires more than just hoping for the best.",
+    "avoidLine": "Avoid Frigorifico Gorina SAIC boneless beef products including top sirloin butt, eye round, topside cap off, flat, and knuckle in various weight cardboard boxes, distributed in Florida and Texas due to an import violation."
   },
   {
     "id": "fsis:014-2026",
     "product": "13.75-oz. boxes containing Al Kabeer spicy “Zing Fish Fillets Breaded Partially Cooke\"d Swai Fish Fillets” 10.58-oz. boxes containing Al Kabeer “Fish Sticks Breaded Swai Fish\" 330-g boxes containing Al Kabeer “Breaded Fish Fillets”",
-    "displayName": null,
+    "displayName": "fish fillets",
     "brand": "",
     "company": "",
     "reason": "Import Violation",
@@ -1638,13 +1699,13 @@
     "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/shan-distribution-network-inc--recalls-ineligible-frozen-siluriformes-breaded-fish",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Apparently, paperwork is just as dangerous as bones.",
+    "avoidLine": "Avoid Al Kabeer spicy Zing Fish Fillets Breaded Partially Cooked Swai Fish Fillets in 13.75-oz. boxes, Fish Sticks Breaded Swai Fish in 10.58-oz. boxes, and Breaded Fish Fillets in 330-g boxes distributed in Illinois, Indiana, Iowa, Michigan, Minnesota, Missouri, Ohio, and Wisconsin due to an import violation."
   },
   {
     "id": "openfda:h-1189-2026",
     "product": "Requeson (soft ricotta) 1 lb. packed into a clear clamshell package with no labeling information. \"Requeson\" is handwritten in black marker on the top lid of the clamshell package. No lot code or UPC.",
-    "displayName": null,
+    "displayName": "requeson",
     "brand": "",
     "company": "Nelson & Isa Lacteos LLC",
     "reason": "Products may be contaminated with Listeria monocytogenes.",
@@ -1662,13 +1723,13 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1189-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "Nothing says artisan quality like a Sharpie.",
+    "avoidLine": "Avoid Nelson & Isa Lacteos LLC Requeson (soft ricotta) 1 lb. sold in clear clamshell packages with handwritten \"Requeson\" in black marker on the top lid, distributed in New York."
   },
   {
     "id": "openfda:h-1190-2026",
     "product": "Mellish Island Super Skin; Dietary Supplement; 60 Capsules, 2 per day;  Distributed by Mellish Island Corp. UPC: 8 58792 00332 3",
-    "displayName": null,
+    "displayName": "dietary supplement",
     "brand": "",
     "company": "Mellish Island Corp",
     "reason": "Firm's finished product label does not declare the source of marine collagen which was determined to be fish.",
@@ -1686,7 +1747,7 @@
     "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1190-2026%22",
     "confidence": "verified",
     "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
+    "headline": "A fishy surprise that managed to completely slip past the label.",
+    "avoidLine": "Avoid Mellish Island Super Skin dietary supplement in 60-capsule bottles with UPC 8 58792 00332 3, lot CA1G24, and an expiration date of 08-2027, because the label fails to declare that the marine collagen source is fish."
   }
 ]
