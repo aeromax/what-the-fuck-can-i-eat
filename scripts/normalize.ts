@@ -1,8 +1,8 @@
 import type { z } from 'zod';
 import { type Recall, RecallSchema, makeId, slugFromUrl } from '../src/recall.ts';
 import type { PressReleaseFactsT } from './pressRelease.ts';
-import type { OpenFdaRow } from './sourceSchemas.ts';
-import { parseDistribution } from './states.ts';
+import type { FsisRecord, OpenFdaRow } from './sourceSchemas.ts';
+import { normalizeStateNames, parseDistribution } from './states.ts';
 
 type OpenFdaRowT = z.infer<typeof OpenFdaRow>;
 
@@ -111,6 +111,78 @@ export function normalizeFdaRss(link: string, facts: PressReleaseFactsT): Recall
     // Canonicalised to https: the feed emits http:// links.
     sourceUrl: link.replace(/^http:\/\//, 'https://'),
     confidence: 'extracted',
+
+    displayName: null,
+    headline: null,
+    avoidLine: null,
+  });
+}
+
+/** FSIS embeds HTML entities in plain-text fields ("Bea&#039;s Best"). */
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&#0?39;|&apos;|&rsquo;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+type FsisRecordT = z.infer<typeof FsisRecord>;
+
+/** FSIS classes map onto the model's; anything else is passed through as-is. */
+function fsisClassification(value: string): 'Class I' | 'Class II' | 'Public Health Alert' | null {
+  switch (value) {
+    case 'Class I':
+    case 'Class II':
+    case 'Public Health Alert':
+      return value;
+    default:
+      // Class III is excluded by the inclusion rule and should never reach here.
+      return null;
+  }
+}
+
+/**
+ * FSIS record -> Recall, on the `verified` tier. Structured government columns
+ * only; no model, ever (docs/design.md §2 forbids AI anywhere near FSIS data).
+ */
+export function normalizeFsis(row: FsisRecordT): Recall {
+  const { states, nationwide } = normalizeStateNames(row.field_states);
+
+  // field_product_items is the itemised product list and carries the pack sizes
+  // and sell-by codes. It is empty on some records — notably Public Health
+  // Alerts, where the products are listed on a linked page — so the government's
+  // own title is the fallback rather than inventing a description.
+  const items = row.field_product_items.map(decodeEntities).filter(Boolean);
+  const product = items.length > 0 ? items.join(' ') : decodeEntities(row.field_title);
+
+  return RecallSchema.parse({
+    id: makeId('fsis', row.field_recall_number),
+
+    product,
+    // FSIS has no brand column.
+    brand: '',
+    // field_establishment is populated on well under half of records. Empty is
+    // honest; parsing the company out of the title would be inference.
+    company: row.field_establishment.map(decodeEntities).filter(Boolean).join(', '),
+    reason: row.field_recall_reason.map(decodeEntities).filter(Boolean).join('; '),
+    announcedDate: row.field_recall_date,
+    classification: fsisClassification(row.field_recall_classification),
+
+    retailers: [],
+    states,
+    distributionRaw: row.field_states.join(', ') || null,
+    nationwide,
+    countryOfOrigin: null,
+    // FSIS publishes labels as a PDF filename, not as lot codes. The codes live
+    // in the product items prose, which is kept verbatim in `product`.
+    lotCodes: [],
+
+    source: 'fsis',
+    sourceUrl: row.field_recall_url.replace(/^http:\/\//, 'https://'),
+    confidence: 'verified',
 
     displayName: null,
     headline: null,

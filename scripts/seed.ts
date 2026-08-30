@@ -12,6 +12,7 @@
 
 import { writeFileSync } from 'node:fs';
 import { fetchFdaRssRecalls } from './sources/fdaRss.ts';
+import { fetchFsis } from './sources/fsis.ts';
 import { fetchOpenFda } from './sources/openfda.ts';
 
 const out = new URL('../data/recalls.json', import.meta.url);
@@ -22,7 +23,10 @@ console.log(`openFDA: reachable=${openfda.reachable} — ${openfda.note}`);
 const rss = await fetchFdaRssRecalls();
 console.log(`FDA RSS: reachable=${rss.reachable} — ${rss.note}`);
 
-if (!openfda.reachable && !rss.reachable) {
+const fsis = await fetchFsis();
+console.log(`FSIS:    reachable=${fsis.reachable} — ${fsis.note}`);
+
+if (!openfda.reachable && !rss.reachable && !fsis.reachable) {
   // Degrade, never blank: leave whatever is already committed in place.
   console.error('all sources unreachable; leaving data/recalls.json untouched.');
   process.exit(1);
@@ -32,7 +36,7 @@ if (!openfda.reachable && !rss.reachable) {
 // RSS shows up twice here. That is the honest preview of an unmerged pipeline,
 // and duplicate rows are the cheap failure the merge rules are designed around
 // (docs/design.md §6) — better visible here than papered over.
-const recalls = [...openfda.recalls, ...rss.recalls].sort((a, b) =>
+const recalls = [...openfda.recalls, ...rss.recalls, ...fsis.recalls].sort((a, b) =>
   a.announcedDate === b.announcedDate
     ? a.id.localeCompare(b.id)
     : b.announcedDate.localeCompare(a.announcedDate),

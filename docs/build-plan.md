@@ -161,7 +161,28 @@ array of one.
 
 </details>
 
-## Step 5 — FSIS via impit ⚠️ **the risky one**
+## Step 5 — FSIS via impit ✅ done 2026-08-29 (with one caveat)
+
+Delivered: `scripts/sources/fsis.ts`, FSIS normalization, 13 new tests (105
+total). A live run returns 8 of 2,023 records — 7 Class I and 1 Public Health
+Alert — in about half a second.
+
+**The TLS block is real and was observed today.** Plain `fetch()` returned HTTP
+403 on `www.fsis.usda.gov` HTML pages while the API endpoint returned 200, so the
+block is path-dependent rather than gone. `impit` got through both. Keep it.
+
+⚠️ **The runner half of this step's acceptance criteria is NOT met.** It works
+from this machine; whether it works from a GitHub Actions runner is still
+unproven, and CI is currently switched off. If FSIS is ever silently blocked in
+CI, meat, poultry and egg recalls vanish while the page still looks complete —
+which is why `fetchFsis` reports a loud warning on zero records and the footer
+names which sources were reachable. Re-test this before step 10 ships.
+
+Four data findings folded into design §4: `field_states` contains the literal
+"Nationwide", `field_establishment` is populated on under half of records,
+`field_product_items` is empty on PHAs, and FSIS publishes no lot codes at all.
+
+<details><summary>Original acceptance criteria</summary>
 
 Meat, poultry, eggs. Do this before building anything on top of it.
 
@@ -184,6 +205,8 @@ proving this on CI is the entire reason the step is here.
 
 **If it fails on CI:** stop and raise it. The fallbacks all change the project's
 shape and are a product decision, not an implementation detail.
+
+</details>
 
 ## Step 6 — merge
 

@@ -13,15 +13,17 @@ Spawn subagents to accomplish smaller tasks. Subagents can be used for:
 
 and anything else necessary. 
 
-## Project status: two sources of three wired up
+## Project status: all three sources wired up, nothing merged
 
-As of 2026-08-29, build steps 1–4 are done. openFDA (verified tier, 39 records)
-and FDA RSS + press-release parsing (extracted tier, 17 records) both fetch and
-normalize live data; 82 tests pass offline against captured fixtures. FSIS is not
-wired up, nothing is merged or deduped, there is no voice, and the page is a
-provisional preview.
+As of 2026-08-29, build steps 1–5 are done. All three sources fetch and normalize
+live data — openFDA 39, FDA RSS 17, FSIS 8 — and 105 tests pass offline against
+captured fixtures. Nothing is merged or deduped, there is no voice, and the page
+is a provisional preview.
 
-**Continue at `docs/build-plan.md` step 5 — the risky one.** Do not improvise off this file
+⚠️ FSIS is proven from this machine only. Whether `impit` gets through from a
+GitHub Actions runner is still unverified; see build plan step 5.
+
+**Continue at `docs/build-plan.md` step 6 (merge).** Do not improvise off this file
 alone — the build plan carries per-step acceptance criteria and the order
 matters (the riskiest unknown is deliberately step 5, not step 8).
 
@@ -214,6 +216,12 @@ These were each found the hard way. None are hypothetical.
   using `impit` regardless — an intermittent block is worse than a permanent one,
   and the dependency is already paid for. Do not simplify to `fetch()`, and do
   not try to fix a future block with headers.
+- `field_states` can contain the literal `"Nationwide"`, which a state-name
+  filter drops — leaving a nationwide alert looking local. Handle it explicitly.
+- `field_establishment` is populated on well under half of records; FSIS also
+  publishes **no lot codes** (`field_labels` is a PDF filename). Plain-text
+  fields carry HTML entities and must be decoded.
+- The FSIS snapshot stores the **selected** records, not the 12.9 MB raw feed.
 - **`field_active_notice` is not the recency filter** — exactly one of 2,023 live
   records is `"True"`. Use `field_recall_date` (ISO, unlike openFDA's YYYYMMDD).
 - `field_recall_classification` has a fourth value, `Public Health Alert`, which

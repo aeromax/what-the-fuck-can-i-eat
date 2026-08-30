@@ -71,12 +71,26 @@ export function parseDistribution(text: string): Distribution {
   return { states: [...found].sort(), nationwide };
 }
 
-/** FSIS already emits full names; this just normalises casing and drops junk. */
-export function normalizeStateNames(names: string[]): string[] {
+/**
+ * FSIS emits full names in an array — but not only names. A nationwide recall
+ * carries the literal value "Nationwide" in `field_states`, which is not a
+ * state and which a name-matching filter drops on the floor. Dropping it turns
+ * a nationwide public health alert into a record affecting nowhere, and an
+ * empty state list reads as "not near me".
+ */
+export function normalizeStateNames(names: string[]): Distribution {
   const out = new Set<string>();
-  for (const n of names) {
-    const hit = BY_NAME.get(n.trim().toLowerCase()) ?? STATES[n.trim().toUpperCase()];
+  let nationwide = false;
+
+  for (const raw of names) {
+    const n = raw.trim();
+    if (NATIONWIDE.test(n)) {
+      nationwide = true;
+      continue;
+    }
+    const hit = BY_NAME.get(n.toLowerCase()) ?? STATES[n.toUpperCase()];
     if (hit) out.add(hit);
   }
-  return [...out].sort();
+
+  return { states: [...out].sort(), nationwide };
 }

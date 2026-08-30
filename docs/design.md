@@ -267,6 +267,22 @@ contradict pre-2026 training data. Trust these over recollection.
   §7 and open question 5.
 - Every recall appears **twice**, once per `langcode`. Filter to `English` or the
   page double-counts every meat recall.
+- **`field_states` is not only states.** A nationwide recall carries the literal
+  string `"Nationwide"` in that array, which a name-matching filter silently
+  drops — turning a nationwide public health alert into a record affecting
+  nowhere, and an empty state list reads as "not near me". 3 of 8 live records
+  in the window are nationwide.
+- **`field_establishment` is populated on well under half of records** (5 of 12
+  in the captured window), so it is not a reliable company column. Empty is
+  honest; parsing the company out of `field_title` would be inference.
+- **`field_product_items` is empty on Public Health Alerts**, which list their
+  products on a linked page. `field_title` is the fallback.
+- **FSIS publishes no lot codes.** `field_labels` holds a PDF filename
+  (`Recall-018-2026-Labels.pdf`), not codes; the codes are inside the
+  `field_product_items` prose, which is kept verbatim in `product`. So the
+  design's claim that FSIS is "fully structured" is true of class, date, states
+  and reason — but not of lot codes.
+- Plain-text fields carry HTML entities (`Bea&#039;s Best`). Decode on the way in.
 - A June 2026 API change flipped fields from comma-joined strings to arrays.
   Confirmed 2026-08-29: `field_states`, `field_product_items`,
   `field_establishment`, `field_labels`, `field_distro_list`,
@@ -313,6 +329,14 @@ Committed snapshots exist for one reason: when the page is wrong, you need to be
 able to tell whether the government said it or the model invented it. Git history
 is the audit trail, which is why snapshots overwrite in place rather than
 accumulating timestamped files (that would add hundreds of megabytes a year).
+
+**FSIS snapshots the selected records, not the raw response** (decided at step 5).
+The full feed is 12.9 MB of 2,023 records, almost all of them years old and
+irrelevant; committing it on every change would add gigabytes of git history a
+year — the same cost the "no timestamped files" rule exists to avoid. The
+selected subset is 38 KB and answers the audit question completely for
+everything actually published. openFDA and RSS are small enough to snapshot
+whole.
 
 ## 6. Pipeline behaviour
 

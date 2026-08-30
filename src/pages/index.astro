@@ -14,8 +14,8 @@ const recalls: Recall[] = raw.map((r) => RecallSchema.parse(r));
 
 const sources = [
   { name: 'openFDA', live: true },
-  { name: 'FDA RSS', live: false },
-  { name: 'FSIS', live: false },
+  { name: 'FDA RSS', live: true },
+  { name: 'FSIS', live: true },
 ];
 const awaitingVoice = recalls.filter((r) => r.headline === null).length;
 ---
@@ -52,8 +52,8 @@ const awaitingVoice = recalls.filter((r) => r.headline === null).length;
           ))}
         </p>
         <p class="note">
-          FDA RSS and FSIS are not wired up yet (build steps 4 and 5), so meat,
-          poultry and egg recalls are missing from this preview entirely.
+          Preview build: records are not yet deduplicated across sources (build
+          step 6), so the same recall may appear more than once.
         </p>
       </footer>
     </main>
