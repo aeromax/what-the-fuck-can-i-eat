@@ -22,10 +22,11 @@
  * works with JavaScript disabled and is keyboard-accessible without any
  * scripting or ARIA of our own.
  *
- * The collapsed summary carries the four things a reader needs to decide
+ * The collapsed summary carries the five things a reader needs to decide
  * whether to open the row:
  *
  *   - the item name in large type
+ *   - the snark headline, as an editorial aside directly beneath it
  *   - the government's verbatim `product` spec line
  *   - the plain-English severity label
  *   - the announcement date
@@ -39,10 +40,11 @@
  * The severity label sits in the same slot on EVERY row, including the
  * "Severity not yet assigned by FDA" case. Rendering it conditionally made
  * ungraded rows read as a different kind of thing rather than as the same
- * thing pending a grade.
+ * thing pending a grade. Because that label always states the ungraded case in
+ * words, there is no ungraded EYEBROW — it would have duplicated the label
+ * from the slot reserved for what the label cannot say.
  *
- * Expanding adds the snark headline, the avoid-line, the confidence tag and
- * the source link.
+ * Expanding adds the avoid-line, the confidence tag and the source link.
  *
  * Contract with the page: Props is `{ recall }`. `variant` is optional and
  * only adjusts the top rule when the page wants to mark this row as one half
@@ -83,17 +85,22 @@ const definitionTitle = severity.agency
   : severity.definition;
 
 const isPHA = recall.classification === 'Public Health Alert';
-const isUnclassified = recall.classification === null;
 const isExtracted = recall.confidence === 'extracted';
 
 // One eyebrow at a time, ordered by structural weight.
+//
+// There is deliberately NO "Severity not yet assigned" eyebrow. The severity
+// label renders unconditionally in `.glance` a few lines below, and on an
+// ungraded row it already reads "Severity not yet assigned by FDA" — so the
+// eyebrow was saying the same thing twice, in the slot reserved for the one
+// fact the severity label does NOT carry. The two surviving variants both pass
+// that test: "not a recall" and "extracted from prose" are claims about what
+// kind of record this is, which no severity label states.
 const eyebrow: string | null = isPHA
   ? 'Public health alert — not a recall'
-  : isUnclassified
-    ? 'Severity not yet assigned'
-    : isExtracted
-      ? 'Details extracted from press release'
-      : null;
+  : isExtracted
+    ? 'Details extracted from press release'
+    : null;
 
 // The raw source ids are internal jargon.
 const sourceLabel =
@@ -122,6 +129,11 @@ const dataConfidence = recall.confidence;
 
         <h2>{heading}</h2>
 
+        {/* The editorial aside. A <span> and not a <p>: this sits inside the
+            <summary>, where a block element would be invalid nesting — a hard
+            compile error in Astro 7. Display is set to block in the CSS. */}
+        {snark && <span class="snark">{snark}</span>}
+
         {/* Never behind the toggle — design §2.1 rule 1. */}
         {showsSpecLine && <span class="spec">{recall.product}</span>}
 
@@ -135,8 +147,6 @@ const dataConfidence = recall.confidence;
     </summary>
 
     <div class="body">
-      {snark && <p class="snark">{snark}</p>}
-
       {recall.avoidLine
         ? <p class="avoid">{recall.avoidLine}</p>
         : <p class="avoid">
@@ -274,6 +284,22 @@ const dataConfidence = recall.confidence;
     color: var(--ink);
   }
 
+  /* Snark rides in italic serif so it reads as an aside, and cannot be mistaken
+     for the deadpan avoid-line further down. It sits between the name and the
+     spec line: the joke is a comment on the headline, and putting it after the
+     spec would make it read as a comment on the pack sizes. The spec line still
+     follows immediately, so the name is never the reader's only identifier. */
+  .snark {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 54ch;
+  }
+
   /* The specific thing recalled. It lives in the summary, so collapsing a row
      can never leave a category name standing alone — design §2.1 rule 1.
      Clamped to three lines while closed because some openFDA spec lines run to
@@ -306,17 +332,6 @@ const dataConfidence = recall.confidence;
   }
 
   /* --- Body content ----------------------------------------------------- */
-
-  /* Snark rides in italic serif so it reads as an aside, and cannot be
-     mistaken for the deadpan avoid-line below it. */
-  .snark {
-    margin: 0 0 0.75rem;
-    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-    font-style: italic;
-    font-size: 1.05rem;
-    line-height: 1.4;
-    color: var(--ink);
-  }
 
   /* The load-bearing sentence. The line someone reads while holding the
      product, so it is the largest thing in the body. */

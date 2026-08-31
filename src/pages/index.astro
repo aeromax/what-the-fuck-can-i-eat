@@ -120,12 +120,7 @@ const extractedCount = recalls.length - verifiedCount;
           </span>
         </h1>
 
-        <p class="thesis">
-          Recalls and alerts active right now. Brand, product, reason and dates
-          are the government's own words, from the page linked on every row. The
-          headline and the short name are model-written, and the row says which
-          rows had their details read out of prose rather than a database column.
-        </p>
+        <p class="subhead">Whatever you want! Except for the following:</p>
 
         <dl class="counts" aria-label="Summary">
           <div>
@@ -203,6 +198,19 @@ const extractedCount = recalls.length - verifiedCount;
             Source reachability will appear here after the first pipeline run.
           </p>
         )}
+
+        {/* The page's central safety property, stated in plain English. This
+            used to sit under the title; the subhead replaced it there, so it
+            lives here now. It must never simply disappear — the per-row band
+            and eyebrow carry the distinction visually, but a reader deciding
+            whether to trust a line is owed the sentence too. See CLAUDE.md,
+            "AI writes voice. Government APIs supply facts." */}
+        <p class="provenance">
+          Brand, product, reason and dates are the government's own words, taken
+          from the page linked on every row. The headline and the short food name
+          are model-written, and each row says whether its details came from a
+          database column or were read out of press-release prose.
+        </p>
 
         <p class="colophon">
           {awaitingVoice > 0 && (
@@ -312,12 +320,16 @@ const extractedCount = recalls.length - verifiedCount;
   .word { display: block; }
   .accent { color: var(--alarm); }
 
-  .thesis {
+  /* The setup line. The list below is the punchline, so this is sized as a
+     subhead rather than as body copy — big enough to be read as part of the
+     title block, quiet enough not to compete with the banner above it. */
+  .subhead {
     margin: 1.5rem 0 0;
-    font: 400 1.0625rem/1.55 var(--serif);
-    font-style: italic;
-    color: var(--dim);
-    max-width: 34rem;
+    font: 400 clamp(1.25rem, 4vw, 1.75rem)/1.25 var(--serif);
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    max-width: 24ch;
+    text-wrap: balance;
   }
 
   .counts {
@@ -455,6 +467,16 @@ const extractedCount = recalls.length - verifiedCount;
     margin: 0.4rem 0 1.5rem;
     font-style: italic;
     color: var(--dim);
+  }
+
+  .provenance {
+    margin: 0 0 1rem;
+    padding-left: 0.9rem;
+    border-left: 1px dashed var(--rule);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 34rem;
   }
 
   .colophon {
