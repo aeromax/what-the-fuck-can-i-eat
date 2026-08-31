@@ -36,8 +36,8 @@
 
 import { pathToFileURL } from 'node:url';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { z } from 'zod';
 import type { Recall } from '../src/recall.ts';
+import type { MetaFile, SourceReport } from '../src/meta.ts';
 import { createGeminiClient } from './gemini.ts';
 import { mergeRecalls, type ReviewEntry } from './merge.ts';
 import { fetchPressRelease } from './pressRelease.ts';
@@ -56,34 +56,12 @@ export interface SourceOutcome {
   note: string;
 }
 
-export interface SourceReport {
-  name: 'openFDA' | 'FDA RSS' | 'FSIS';
-  reachable: boolean;
-  note: string;
-  count: number;
-}
-
-export interface MetaFile {
-  /** Order is display order; the page renders them left-to-right in the footer. */
-  sources: SourceReport[];
-}
-
-/**
- * Runtime schema for `data/meta.json`. Kept next to `MetaFile` so the parsed
- * shape and the static type cannot drift. The page validates the file against
- * this on import so a corrupt meta.json fails the build rather than rendering a
- * silently wrong footer.
- */
-export const SourceReportSchema = z.object({
-  name: z.enum(['openFDA', 'FDA RSS', 'FSIS']),
-  reachable: z.boolean(),
-  note: z.string(),
-  count: z.number().int().nonnegative(),
-});
-
-export const MetaSchema = z.object({
-  sources: z.array(SourceReportSchema),
-});
+// `MetaFile`/`MetaSchema` moved to `src/meta.ts` so the page can validate
+// `data/meta.json` without importing this module — refresh.ts transitively pulls
+// in impit and the Gemini client, neither of which belongs on the render path.
+// Re-exported here so refresh's own callers and tests keep one import site.
+export { MetaSchema, SourceReportSchema } from '../src/meta.ts';
+export type { MetaFile, SourceReport };
 
 /** The voice step, injected so tests can drive it without touching Gemini. */
 export type Voicer = (recalls: Recall[]) => Promise<Recall[]>;
