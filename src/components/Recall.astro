@@ -39,12 +39,12 @@
  * works with JavaScript disabled and is keyboard-accessible without any
  * scripting or ARIA of our own.
  *
- * The collapsed summary carries four things:
+ * The collapsed summary carries four things, in this order:
  *
  *   - the item name in large type
- *   - the snark headline, as an editorial aside directly beneath it
+ *   - the announcement date, as a small dateline under it
+ *   - the snark headline, as an editorial aside
  *   - the plain-English severity label
- *   - the announcement date
  *
  * `product` moved BEHIND the toggle on 2026-08-31, at the user's explicit
  * direction. This is a deliberate relaxation of docs/design.md §2.1 rule 1,
@@ -138,14 +138,21 @@ const dataConfidence = recall.confidence;
       <span class="head-text">
         <h2>{heading}</h2>
 
+        {/* A dateline, sitting between the name and the joke the way a kicker
+            sits under a headline. Same formatting and the same EDT/EST label
+            src/dates.ts computes per date — never a fixed offset. */}
+        <span class="date">{announced.text} {announced.zone}</span>
+
         {/* The editorial aside. A <span> and not a <p>: this sits inside the
             <summary>, where a block element would be invalid nesting — a hard
             compile error in Astro 7. Display is set to block in the CSS. */}
         {snark && <span class="snark">{snark}</span>}
 
+        {/* Severity renders on EVERY row, unconditionally, including the 18
+            ungraded ones that read "Severity not yet assigned by FDA". See the
+            note at the top of this file. */}
         <span class="glance">
           <span class="tag severity" title={definitionTitle}>{severity.label}</span>
-          <span class="date">{announced.text} {announced.zone}</span>
         </span>
       </span>
 
@@ -178,15 +185,27 @@ const dataConfidence = recall.confidence;
 </article>
 
 <style>
-  /* Local token fallbacks so this component renders correctly even when the
-     page has not set --rule / --dim / --ink / --bg on :root. Page-level values
-     win because they cascade in first. */
-  .recall {
-    --rule: var(--rule, #e5e5e5);
-    --dim:  var(--dim,  #5b5b5b);
-    --ink:  var(--ink,  #111);
-    --bg:   var(--bg,   #fff);
+  /* Local token fallbacks live at each USE site — `var(--dim, #5b5b5b)` — and
+     deliberately NOT as `--dim: var(--dim, ...)` declarations here.
 
+     That self-referential form is a cycle: a custom property may not reference
+     itself, so the declaration was invalid at computed-value time, the var()
+     then resolved to nothing, `color` fell back to `inherit`, and every dim
+     thing in the row rendered at full ink. It made the spec line, the date
+     and the severity row exactly as dark as the heading. Found 2026-08-31 by
+     reading computed styles in a browser; it is invisible to the type checker
+     and to any test that does not render.
+
+     Declaring literal values here instead would be worse: .recall is a more
+     specific element than :root, so the row would then IGNORE the page's
+     palette rather than defer to it.
+
+     Consequence worth knowing: the use-site fallbacks are the LIGHT values, so
+     a standalone render with no page palette stays light in both schemes. Only
+     the band colours below swap on their own. In this project index.astro sets
+     the dark palette on :root, which the row inherits, so the page is correct
+     in both. */
+  .recall {
     --band-severe:   #b91c1c;
     --band-moderate: #b45309;
     --band-unknown:  #9ca3af;
@@ -195,7 +214,7 @@ const dataConfidence = recall.confidence;
 
     position: relative;
     padding-left: 1.25rem;
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule, #e5e5e5);
 
     /* The band. Colour = severity. Style = confidence. */
     border-left: 4px solid var(--band, transparent);
@@ -230,7 +249,7 @@ const dataConfidence = recall.confidence;
 
   /* Review-pair marker. The page groups the two rows; this only lightens the
      top rule so the halves read as a pair rather than two separate items. */
-  .recall[data-variant="reviewPair"] { border-top: 1px dashed var(--rule); }
+  .recall[data-variant="reviewPair"] { border-top: 1px dashed var(--rule, #e5e5e5); }
 
   /* --- Disclosure ------------------------------------------------------- */
 
@@ -265,8 +284,8 @@ const dataConfidence = recall.confidence;
     width: 0.7rem;
     height: 0.7rem;
     margin-top: 0.15rem;
-    border-right: 2px solid var(--dim);
-    border-bottom: 2px solid var(--dim);
+    border-right: 2px solid var(--dim, #5b5b5b);
+    border-bottom: 2px solid var(--dim, #5b5b5b);
     transform: rotate(45deg);
     transform-origin: center;
   }
@@ -280,13 +299,28 @@ const dataConfidence = recall.confidence;
   /* --- Summary content -------------------------------------------------- */
 
   h2 {
-    margin: 0 0 0.35rem;
+    margin: 0 0 0.3rem;
     font-size: clamp(1.7rem, 5vw, 2.5rem);
     line-height: 1.05;
     font-weight: 800;
     letter-spacing: -0.025em;
     text-wrap: balance;
-    color: var(--ink);
+    color: var(--ink, #111);
+  }
+
+  /* The dateline. Set small, uppercase and letterspaced so it reads as a
+     timestamp attached to the heading rather than as a second line of it —
+     the one thing it must not do is look like a subtitle. Tabular figures keep
+     the dates aligned down the column while scrolling. */
+  .date {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--dim, #5b5b5b);
+    font-variant-numeric: tabular-nums;
   }
 
   /* Snark rides in italic serif so it reads as an aside, and cannot be mistaken
@@ -301,19 +335,21 @@ const dataConfidence = recall.confidence;
     font-style: italic;
     font-size: 1.05rem;
     line-height: 1.4;
-    color: var(--ink);
+    color: var(--ink, #111);
     max-width: 54ch;
   }
 
-  /* Severity and date. Rendered on every row, in this slot, unconditionally —
-     including "Severity not yet assigned by FDA". */
+  /* Severity. Rendered on every row, in this slot, unconditionally — including
+     "Severity not yet assigned by FDA". The date used to share this row and now
+     sits under the heading, but the container stays: it is the slot, and a
+     second collapsed tag would belong here rather than anywhere new. */
   .glance {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 0.75rem;
     align-items: center;
     font-size: 0.78rem;
-    color: var(--dim);
+    color: var(--dim, #5b5b5b);
   }
 
   /* --- Body content ----------------------------------------------------- */
@@ -327,7 +363,7 @@ const dataConfidence = recall.confidence;
     margin: 0 0 0.9rem;
     font-size: 0.9rem;
     line-height: 1.45;
-    color: var(--dim);
+    color: var(--dim, #5b5b5b);
   }
 
   /* The load-bearing sentence. The line someone reads while holding the
@@ -336,7 +372,7 @@ const dataConfidence = recall.confidence;
     margin: 0 0 0.9rem;
     font-size: 1.05rem;
     line-height: 1.5;
-    color: var(--ink);
+    color: var(--ink, #111);
     max-width: 60ch;
   }
   .reason { font-weight: 600; }
@@ -352,14 +388,14 @@ const dataConfidence = recall.confidence;
     gap: 0.5rem 0.75rem;
     align-items: center;
     font-size: 0.78rem;
-    color: var(--dim);
+    color: var(--dim, #5b5b5b);
   }
 
   /* --- Shared atoms ----------------------------------------------------- */
 
   .tag {
     padding: 0.15rem 0.5rem;
-    border: 1px solid var(--rule);
+    border: 1px solid var(--rule, #e5e5e5);
     border-radius: 2px;
     font-variant: all-small-caps;
     letter-spacing: 0.04em;
@@ -374,10 +410,8 @@ const dataConfidence = recall.confidence;
 
   .recall[data-confidence="extracted"] .tag.tier { border-style: dashed; }
 
-  .date { font-variant-numeric: tabular-nums; }
-
-  a { color: var(--dim); text-decoration: underline; text-underline-offset: 2px; }
-  a:hover { color: var(--ink); }
+  a { color: var(--dim, #5b5b5b); text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: var(--ink, #111); }
   a:focus-visible { outline: 2px solid var(--band-alert-a); outline-offset: 2px; }
   @media (prefers-reduced-motion: no-preference) {
     a { transition: color 120ms ease; }
@@ -387,11 +421,6 @@ const dataConfidence = recall.confidence;
      lighter so they hold contrast on a dark ground without going neon. */
   @media (prefers-color-scheme: dark) {
     .recall {
-      --rule: var(--rule, #2a2a2a);
-      --dim:  var(--dim,  #a1a1a1);
-      --ink:  var(--ink,  #f4f4f4);
-      --bg:   var(--bg,   #0d0d0d);
-
       --band-severe:   #f87171;
       --band-moderate: #fbbf24;
       --band-unknown:  #6b7280;
