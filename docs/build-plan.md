@@ -328,7 +328,7 @@ sits in the large type.
 
 </details>
 
-## Step 8 — refresh orchestrator
+## Step 8 — refresh orchestrator ✅
 
 `scripts/refresh.ts` wires steps 3–7 together.
 
@@ -341,6 +341,30 @@ sits in the large type.
 **Accept when:** killing each source in turn still publishes a complete-looking
 page with an honest footer; two consecutive runs against unchanged upstream data
 produce no second commit; `recalls.json` is never written empty.
+
+<details>
+<summary>Landed 2026-08-31 — retrospective</summary>
+
+- Refresh is a DI-shaped module (`export async function refresh(deps)`) with a
+  thin entry-point guarded by `import.meta.url === pathToFileURL(argv[1])`, so
+  tests import it without triggering the pipeline. Real deps live in
+  `realDeps()` at the bottom of the file.
+- Meta went into a sibling `data/meta.json` rather than extending the shape of
+  `recalls.json` — the current preview page imports `recalls.json` as a plain
+  `Recall[]` and reshaping it would break step 9's starting point. Step 9
+  consumes `data/meta.json` for the footer.
+- Deliberately no `lastChecked` timestamp is written into meta. If we did,
+  every run would tick it and every run would commit — defeating the whole
+  point of the byte-identical rule. The page reads the file mtime / git commit
+  timestamp instead.
+- Sources already handle their own snapshots (`writeFileSync` in each
+  `scripts/sources/*.ts`), so refresh doesn't duplicate that.
+- The zero-record-reachable-source warning covers the named FSIS failure mode
+  in CLAUDE.md — reachable=true, count=0 must be loud, or a silent block on
+  meat and poultry recalls looks like "no news today".
+- Tests: 8 new (194 total, was 186), covering all five acceptance points,
+  fully offline via stubbed source outcomes and voice fn.
+</details>
 
 ## Step 9 — the page
 

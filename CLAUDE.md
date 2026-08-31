@@ -13,12 +13,14 @@ Spawn subagents to accomplish smaller tasks. Subagents can be used for:
 
 and anything else necessary. 
 
-## Project status: sources wired up and merged, no voice yet
+## Project status: pipeline complete, page and CI still to build
 
-As of 2026-08-30, build steps 1–6 are done. All three sources fetch and normalize
-live data — openFDA 39, FDA RSS 17, FSIS 7 — and merge.ts dedupes across them;
-134 tests pass offline against captured fixtures. There is no voice yet and the
-page is a provisional preview.
+As of 2026-08-31, build steps 1–8 are done. All three sources fetch and
+normalize live data — openFDA 39, FDA RSS 17, FSIS 7 — merge.ts dedupes across
+them, voice.ts runs Gemini for extraction and snark, and refresh.ts is the
+production orchestrator with degrade-never-blank, byte-identical short-circuit,
+and a `data/meta.json` sidecar listing reachable sources for the footer.
+194 tests pass offline against captured fixtures.
 
 Merge finds nothing to merge in live data, correctly: openFDA's report_date lags
 recall initiation by a median of 69 days, so its 30-day window and the RSS window
@@ -27,8 +29,8 @@ are disjoint. The merge path is covered by fixtures built on real records.
 ⚠️ FSIS is proven from this machine only. Whether `impit` gets through from a
 GitHub Actions runner is still unverified; see build plan step 5.
 
-**Continue at `docs/build-plan.md` step 7 (voice).** Do not improvise off this file
-alone — the build plan carries per-step acceptance criteria and the order
+**Continue at `docs/build-plan.md` step 9 (the page).** Do not improvise off this
+file alone — the build plan carries per-step acceptance criteria and the order
 matters (the riskiest unknown is deliberately step 5, not step 8).
 
 ## What this is
@@ -112,8 +114,13 @@ npm run refresh    the full data pipeline (needs GEMINI_API_KEY)
 npm run check      astro check (type checking)
 ```
 
-⚠️ `npm run refresh` runs `scripts/refresh.ts`, which does not exist yet (build
-step 8). Every other script works.
+`npm run refresh` runs `scripts/refresh.ts` — the production entry point.
+It fetches all three sources, merges, carries voice forward from the committed
+`data/recalls.json` (never regenerates), applies voice for new records only,
+and exits without writing when output is byte-identical to what is committed.
+On empty output it exits 1 and leaves `data/recalls.json` untouched
+(degrade-never-blank). Requires `GEMINI_API_KEY`; without one, records publish
+with their government reason as the outage-fallback rendering.
 
 `refresh` runs TypeScript directly through Node's native type stripping — there
 is no build step for the pipeline. That means `scripts/` must stay within
