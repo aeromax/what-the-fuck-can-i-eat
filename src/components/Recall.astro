@@ -1,36 +1,51 @@
 ---
 /**
- * One recall row.
+ * One recall row, collapsible.
  *
- * Design notes (step 9a). Two things a hurried reader has to see without
- * reading fine print:
+ * Design notes (step 9a, extended 9d). Three things a hurried reader has to
+ * see without reading fine print:
  *
  *  1. How serious is this?              (Class I vs Class II vs unclassified)
  *  2. How solid are the facts?          (verified vs extracted)
- *  3. And separately: is this a recall at all, or a Public Health Alert?
- *     A PHA is not a recall — nothing has been withdrawn — and a page that
- *     labelled it as one would be stating something the government did not
- *     (docs/design.md §7).
+ *  3. Is this a recall at all, or a Public Health Alert? A PHA is not a
+ *     recall — nothing has been withdrawn — and a page that labelled it as
+ *     one would be stating something the government did not (design §7).
  *
- * The left band on each row encodes 1 and 2 simultaneously: its COLOUR is the
- * severity tone from src/severity.ts (red / amber / neutral) and its STYLE is
- * the confidence tier (solid = verified, dashed = extracted, dotted =
- * unclassified). A PHA gets a diagonal hazard-tape band instead — visually
- * distinct from every recall tone at a glance, without shouting louder than a
- * Class I red band would.
+ * The left band encodes 1 and 2 at once: its COLOUR is the severity tone from
+ * src/severity.ts (red / amber / neutral) and its STYLE is the confidence tier
+ * (solid = verified, dashed = extracted, dotted = unclassified). A PHA gets a
+ * diagonal hazard-tape band instead — distinct from every recall tone at a
+ * glance, without shouting louder than a Class I. A text eyebrow carries the
+ * same distinctions in words for anyone who cannot see the band.
  *
- * A text eyebrow carries the same distinctions in words for anyone who cannot
- * see the band ("Public health alert — not a recall" / "Severity not yet
- * assigned" / "Details extracted from press release"). At most one eyebrow
- * shows; PHA wins over unclassified wins over extracted.
+ * COLLAPSED / EXPANDED (step 9d). Built on native <details>/<summary>, so it
+ * works with JavaScript disabled and is keyboard-accessible without any
+ * scripting or ARIA of our own.
  *
- * Everything else is deliberately quiet — the band and the eyebrow are the
- * whole signature. The food name is set heavy and tight so it reads like a
- * label at arm's length; snark rides in italic serif as an editorial aside so
- * it cannot be mistaken for the deadpan avoid-line beneath it.
+ * The collapsed summary carries the four things a reader needs to decide
+ * whether to open the row:
  *
- * Contract (step 9): Props is `{ recall }`. `variant` is optional and only
- * adjusts the top rule when the page wants to signal that this row is one half
+ *   - the item name in large type
+ *   - the government's verbatim `product` spec line
+ *   - the plain-English severity label
+ *   - the announcement date
+ *
+ * `product` stays in the SUMMARY, never behind the toggle. docs/design.md §2.1
+ * rule 1 forbids `displayName` from ever being the sole identifier: "eggs"
+ * alone reads as every egg on the shelf. Collapsed it is clamped to three
+ * lines (some openFDA spec lines run ten), and expanding the row releases the
+ * clamp — but it is always present and always readable.
+ *
+ * The severity label sits in the same slot on EVERY row, including the
+ * "Severity not yet assigned by FDA" case. Rendering it conditionally made
+ * ungraded rows read as a different kind of thing rather than as the same
+ * thing pending a grade.
+ *
+ * Expanding adds the snark headline, the avoid-line, the confidence tag and
+ * the source link.
+ *
+ * Contract with the page: Props is `{ recall }`. `variant` is optional and
+ * only adjusts the top rule when the page wants to mark this row as one half
  * of a `data/review.json` pair — visuals remain correct when unset.
  */
 import { formatEastern } from '../dates.ts';
@@ -44,8 +59,9 @@ interface Props {
 const { recall, variant = 'primary' } = Astro.props;
 
 // docs/design.md §2.1 rule 1: displayName must never be the sole identifier.
-// When the model has named a food, we show that in the large type and print
-// the government's verbatim product line directly beneath.
+// When the model has named a food, the large type takes that name and the
+// government's verbatim product line prints directly beneath it — inside the
+// summary, so collapsing the row can never strip the identifying detail.
 const heading = recall.displayName ?? recall.product;
 const showsSpecLine = recall.displayName !== null;
 
@@ -88,7 +104,7 @@ const sourceLabel =
       : 'USDA FSIS';
 
 // data-* attributes drive the band; they are the only styling hook the CSS
-// below needs, which keeps class-list churn out of the markup.
+// needs, which keeps class-list churn out of the markup.
 const dataTone = severity.tone;
 const dataConfidence = recall.confidence;
 ---
@@ -99,29 +115,44 @@ const dataConfidence = recall.confidence;
   data-confidence={dataConfidence}
   data-variant={variant}
 >
-  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <details class="row">
+    <summary class="head">
+      <span class="head-text">
+        {eyebrow && <span class="eyebrow">{eyebrow}</span>}
 
-  <h2>{heading}</h2>
+        <h2>{heading}</h2>
 
-  {showsSpecLine && <p class="spec">{recall.product}</p>}
-  {snark && <p class="snark">{snark}</p>}
+        {/* Never behind the toggle — design §2.1 rule 1. */}
+        {showsSpecLine && <span class="spec">{recall.product}</span>}
 
-  {recall.avoidLine
-    ? <p class="avoid">{recall.avoidLine}</p>
-    : <p class="avoid">
-        <span class="reason">{recall.reason}</span>
-        {recall.company && <span class="bit">Recalled by {recall.company}.</span>}
-        {where && <span class="bit">Distributed: {where}.</span>}
-        {recall.lotCodes.length > 0 && <span class="bit">Codes: {recall.lotCodes.join(' / ')}</span>}
+        <span class="glance">
+          <span class="tag severity" title={definitionTitle}>{severity.label}</span>
+          <span class="date">{announced.text} {announced.zone}</span>
+        </span>
+      </span>
+
+      <span class="chev" aria-hidden="true"></span>
+    </summary>
+
+    <div class="body">
+      {snark && <p class="snark">{snark}</p>}
+
+      {recall.avoidLine
+        ? <p class="avoid">{recall.avoidLine}</p>
+        : <p class="avoid">
+            <span class="reason">{recall.reason}</span>
+            {recall.company && <span class="bit">Recalled by {recall.company}.</span>}
+            {where && <span class="bit">Distributed: {where}.</span>}
+            {recall.lotCodes.length > 0 && <span class="bit">Codes: {recall.lotCodes.join(' / ')}</span>}
+          </p>
+      }
+
+      <p class="meta">
+        <span class="tag tier">{recall.confidence === 'verified' ? 'Verified data' : 'Extracted from prose'}</span>
+        <a href={recall.sourceUrl} rel="noopener">{sourceLabel}</a>
       </p>
-  }
-
-  <p class="meta">
-    <span class="tag severity" title={definitionTitle}>{severity.label}</span>
-    <span class="tag tier">{recall.confidence === 'verified' ? 'Verified data' : 'Extracted from prose'}</span>
-    <span class="date">{announced.text} {announced.zone}</span>
-    <a href={recall.sourceUrl} rel="noopener">{sourceLabel}</a>
-  </p>
+    </div>
+  </details>
 </article>
 
 <style>
@@ -141,27 +172,25 @@ const dataConfidence = recall.confidence;
     --band-alert-b:  #fde68a;
 
     position: relative;
-    padding: 1.75rem 0 1.75rem 1.25rem;
+    padding-left: 1.25rem;
     border-bottom: 1px solid var(--rule);
 
     /* The band. Colour = severity. Style = confidence. */
     border-left: 4px solid var(--band, transparent);
   }
 
-  /* The two halves of the encoding. Kept as attribute selectors so the
-     markup carries no redundant class list. */
+  /* The two halves of the encoding. Attribute selectors so the markup carries
+     no redundant class list. */
   .recall[data-tone="severe"]   { --band: var(--band-severe); }
   .recall[data-tone="moderate"] { --band: var(--band-moderate); }
   .recall[data-tone="unknown"]  { --band: var(--band-unknown); }
 
-  .recall[data-confidence="extracted"]      { border-left-style: dashed; }
-  .recall[data-tone="unknown"]              { border-left-style: dotted; }
+  .recall[data-confidence="extracted"] { border-left-style: dashed; }
+  .recall[data-tone="unknown"]         { border-left-style: dotted; }
 
   /* Public Health Alert: a diagonal hazard-tape band instead of a flat colour,
-     drawn as a pseudo-element that covers the flat left border. A PHA is not
-     a recall (docs/design.md §7) and this is what makes that visible at a
-     glance. The flat border underneath is set transparent for this tone so
-     nothing shows through the tape. */
+     drawn as a pseudo-element over the flat left border. A PHA is not a recall
+     (design §7) and this is what makes that visible at a glance. */
   .recall[data-tone="alert"] { border-left-color: transparent; }
   .recall[data-tone="alert"]::before {
     content: '';
@@ -177,19 +206,56 @@ const dataConfidence = recall.confidence;
     );
   }
 
-  /* Reviewer pair marker. A page wrapper groups the two rows visually; this
-     just lightens the top rule so the halves read as a pair rather than as
-     two independent items. */
-  .recall[data-variant="reviewPair"] {
-    border-top: 1px dashed var(--rule);
-    padding-top: 1.25rem;
+  /* Review-pair marker. The page groups the two rows; this only lightens the
+     top rule so the halves read as a pair rather than two separate items. */
+  .recall[data-variant="reviewPair"] { border-top: 1px dashed var(--rule); }
+
+  /* --- Disclosure ------------------------------------------------------- */
+
+  .head {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    /* A comfortable phone target: the whole summary is the hit area, and the
+       vertical padding keeps it well past 44px on the shortest possible row. */
+    padding: 1.25rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  /* Our own affordance replaces the default triangle, which sat at the wrong
+     optical position beside 2.5rem type. */
+  .head::-webkit-details-marker { display: none; }
+  .head:focus-visible {
+    outline: 2px solid var(--band-alert-a);
+    outline-offset: 3px;
   }
 
-  /* Eyebrow. Small, deliberate, and coloured to match the row's honesty
-     signal — the alert eyebrow gets the amber tone; the pending and
-     extracted eyebrows stay neutral so they don't compete with severity. */
+  .head-text { flex: 1 1 auto; min-width: 0; }
+
+  /* Chevron. Points down when closed, up when open. */
+  .chev {
+    flex: 0 0 auto;
+    align-self: center;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-top: 0.15rem;
+    border-right: 2px solid var(--dim);
+    border-bottom: 2px solid var(--dim);
+    transform: rotate(45deg);
+    transform-origin: center;
+  }
+  .row[open] .chev { transform: rotate(-135deg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .chev { transition: transform 160ms ease; }
+  }
+
+  .body { padding-bottom: 1.5rem; }
+
+  /* --- Summary content -------------------------------------------------- */
+
   .eyebrow {
-    margin: 0 0 0.35rem;
+    display: block;
+    margin-bottom: 0.35rem;
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.09em;
@@ -197,8 +263,6 @@ const dataConfidence = recall.confidence;
     color: var(--dim);
   }
   .recall[data-tone="alert"] .eyebrow { color: var(--band-alert-a); }
-  .recall[data-tone="severe"] .eyebrow,
-  .recall[data-tone="moderate"] .eyebrow { color: var(--dim); }
 
   h2 {
     margin: 0 0 0.35rem;
@@ -210,17 +274,41 @@ const dataConfidence = recall.confidence;
     color: var(--ink);
   }
 
-  /* The specific thing recalled. Never omitted when the heading is a category
-     — see docs/design.md §2.1 rule 1. */
+  /* The specific thing recalled. It lives in the summary, so collapsing a row
+     can never leave a category name standing alone — design §2.1 rule 1.
+     Clamped to three lines while closed because some openFDA spec lines run to
+     ten; opening the row releases the clamp. Clamped, not hidden. */
   .spec {
-    margin: 0 0 0.75rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
     font-size: 0.9rem;
     line-height: 1.45;
     color: var(--dim);
   }
+  .row[open] .spec {
+    display: block;
+    overflow: visible;
+  }
 
-  /* Snark rides in italic serif so it reads as an aside, not as the reason to
-     avoid the food. Ideal typographic distance from .avoid below. */
+  /* Severity and date. Rendered on every row, in this slot, unconditionally —
+     including "Severity not yet assigned by FDA". */
+  .glance {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--dim);
+  }
+
+  /* --- Body content ----------------------------------------------------- */
+
+  /* Snark rides in italic serif so it reads as an aside, and cannot be
+     mistaken for the deadpan avoid-line below it. */
   .snark {
     margin: 0 0 0.75rem;
     font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
@@ -230,8 +318,8 @@ const dataConfidence = recall.confidence;
     color: var(--ink);
   }
 
-  /* The load-bearing sentence. Slightly larger and heavier than the surround
-     because this is the line someone reads while holding the product. */
+  /* The load-bearing sentence. The line someone reads while holding the
+     product, so it is the largest thing in the body. */
   .avoid {
     margin: 0 0 0.9rem;
     font-size: 1.05rem;
@@ -254,6 +342,9 @@ const dataConfidence = recall.confidence;
     font-size: 0.78rem;
     color: var(--dim);
   }
+
+  /* --- Shared atoms ----------------------------------------------------- */
+
   .tag {
     padding: 0.15rem 0.5rem;
     border: 1px solid var(--rule);
@@ -263,7 +354,7 @@ const dataConfidence = recall.confidence;
     line-height: 1.4;
     white-space: nowrap;
   }
-  /* Severity tag borrows the band colour, so the two signals agree. */
+  /* The severity tag borrows the band colour, so the two signals agree. */
   .recall[data-tone="severe"]   .tag.severity { border-color: var(--band-severe);   color: var(--band-severe);   font-weight: 700; }
   .recall[data-tone="moderate"] .tag.severity { border-color: var(--band-moderate); color: var(--band-moderate); }
   .recall[data-tone="alert"]    .tag.severity { border-color: var(--band-alert-a);  color: var(--band-alert-a);  font-weight: 700; }
@@ -272,13 +363,16 @@ const dataConfidence = recall.confidence;
   .recall[data-confidence="extracted"] .tag.tier { border-style: dashed; }
 
   .date { font-variant-numeric: tabular-nums; }
+
   a { color: var(--dim); text-decoration: underline; text-underline-offset: 2px; }
   a:hover { color: var(--ink); }
   a:focus-visible { outline: 2px solid var(--band-alert-a); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) {
+    a { transition: color 120ms ease; }
+  }
 
-  /* Dark mode. Only tokens are swapped; layout is untouched. Band colours are
-     nudged toward higher lightness so they hold contrast on a dark ground
-     without becoming neon. */
+  /* Dark mode. Only tokens swap; layout is untouched. Band colours are nudged
+     lighter so they hold contrast on a dark ground without going neon. */
   @media (prefers-color-scheme: dark) {
     .recall {
       --rule: var(--rule, #2a2a2a);
@@ -292,9 +386,5 @@ const dataConfidence = recall.confidence;
       --band-alert-a:  #fbbf24;
       --band-alert-b:  #78350f;
     }
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    a { transition: color 120ms ease; }
   }
 </style>

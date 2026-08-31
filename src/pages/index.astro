@@ -304,7 +304,10 @@ const extractedCount = recalls.length - verifiedCount;
   .answer {
     text-align: left;
     padding-left: clamp(0.6rem, 2.5vw, 1.25rem);
-    border-left: 1px dashed var(--rule);
+    /* Same weight and style as the band down the left of each recall row, so the
+       page reads as one system. Neutral colour: unlike a row's band, the title
+       has no severity to encode. */
+    border-left: 4px solid var(--rule);
   }
   .word { display: block; }
   .accent { color: var(--alarm); }
@@ -483,7 +486,7 @@ const extractedCount = recalls.length - verifiedCount;
       padding-left: 0;
       padding-top: 0.5rem;
       border-left: none;
-      border-top: 1px dashed var(--rule);
+      border-top: 4px solid var(--rule);
       align-self: stretch;
     }
     .src { grid-template-columns: 4.5rem 1rem 1fr; }
