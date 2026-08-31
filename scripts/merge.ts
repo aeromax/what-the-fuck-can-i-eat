@@ -1,4 +1,5 @@
-import type { Recall } from '../src/recall.ts';
+import { z } from 'zod';
+import { RecallSchema, type Recall } from '../src/recall.ts';
 
 // Cross-source dedupe and the extracted -> verified upgrade.
 //
@@ -351,6 +352,27 @@ export interface ReviewEntry {
   scores: MatchScores;
   records: Recall[];
 }
+
+/**
+ * Runtime schema for a review-file entry. Kept alongside `ReviewEntry` so the
+ * static type and the parsed shape can never drift. The page validates
+ * `data/review.json` against `z.array(ReviewEntrySchema)` on the way in — a
+ * malformed file should fail the build rather than render half a page.
+ */
+export const MatchScoresSchema = z.object({
+  company: z.number(),
+  product: z.number(),
+  reason: z.number(),
+  sharedLotCodes: z.number(),
+  sharedProductTokens: z.number(),
+  brandMatch: z.boolean(),
+});
+
+export const ReviewEntrySchema = z.object({
+  why: z.string(),
+  scores: MatchScoresSchema,
+  records: z.array(RecallSchema).length(2),
+});
 
 export interface MergeResult {
   /** Deduped records, newest announcement first. Ambiguous pairs stay separate. */

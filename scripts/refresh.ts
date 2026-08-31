@@ -36,6 +36,7 @@
 
 import { pathToFileURL } from 'node:url';
 import { readFileSync, writeFileSync } from 'node:fs';
+import { z } from 'zod';
 import type { Recall } from '../src/recall.ts';
 import { createGeminiClient } from './gemini.ts';
 import { mergeRecalls, type ReviewEntry } from './merge.ts';
@@ -66,6 +67,23 @@ export interface MetaFile {
   /** Order is display order; the page renders them left-to-right in the footer. */
   sources: SourceReport[];
 }
+
+/**
+ * Runtime schema for `data/meta.json`. Kept next to `MetaFile` so the parsed
+ * shape and the static type cannot drift. The page validates the file against
+ * this on import so a corrupt meta.json fails the build rather than rendering a
+ * silently wrong footer.
+ */
+export const SourceReportSchema = z.object({
+  name: z.enum(['openFDA', 'FDA RSS', 'FSIS']),
+  reachable: z.boolean(),
+  note: z.string(),
+  count: z.number().int().nonnegative(),
+});
+
+export const MetaSchema = z.object({
+  sources: z.array(SourceReportSchema),
+});
 
 /** The voice step, injected so tests can drive it without touching Gemini. */
 export type Voicer = (recalls: Recall[]) => Promise<Recall[]>;
