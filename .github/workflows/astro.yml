@@ -1,11 +1,14 @@
-# Sample workflow for building and deploying an Astro site to GitHub Pages
+# Build, verify, and deploy the static site to GitHub Pages.
 #
-# To get started with Astro see: https://docs.astro.build/en/getting-started/
-#
+# The deploy job is gated on the build job, and the build job runs `check` and
+# `test` before `astro build`. A page that is wrong about food recalls is worse
+# than a page that is a few minutes stale, so a type error or a failing test
+# must stop the deployment rather than ship past it.
 name: Deploy Astro site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting the default branch — including the commits the
+  # data refresh workflow makes to data/recalls.json.
   push:
     branches: ["main"]
 
@@ -24,10 +27,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-env:
-  BUILD_PATH: "." # default value when not using subfolders
-  # BUILD_PATH: subfolder
-
 jobs:
   build:
     name: Build
@@ -35,47 +34,53 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Detect package manager
-        id: detect-package-manager
-        run: |
-          if [ -f "${{ github.workspace }}/yarn.lock" ]; then
-            echo "manager=yarn" >> $GITHUB_OUTPUT
-            echo "command=install" >> $GITHUB_OUTPUT
-            echo "runner=yarn" >> $GITHUB_OUTPUT
-            echo "lockfile=yarn.lock" >> $GITHUB_OUTPUT
-            exit 0
-          elif [ -f "${{ github.workspace }}/package.json" ]; then
-            echo "manager=npm" >> $GITHUB_OUTPUT
-            echo "command=ci" >> $GITHUB_OUTPUT
-            echo "runner=npx --no-install" >> $GITHUB_OUTPUT
-            echo "lockfile=package-lock.json" >> $GITHUB_OUTPUT
-            exit 0
-          else
-            echo "Unable to determine package manager"
-            exit 1
-          fi
+
+      # package.json declares node >=22.12.0. Pin an even (LTS) release: the
+      # local machine runs an odd release, which works but is not a supported
+      # line. See CLAUDE.md, "Verified environment constraints".
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: ${{ steps.detect-package-manager.outputs.manager }}
-          cache-dependency-path: ${{ env.BUILD_PATH }}/${{ steps.detect-package-manager.outputs.lockfile }}
+          node-version: "24"
+          cache: npm
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+
       - name: Install dependencies
-        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-        working-directory: ${{ env.BUILD_PATH }}
+        run: npm ci
+
+      # Type-check first: it is the cheapest failure and catches a malformed
+      # Recall shape before the tests spend time on it.
+      - name: Type check
+        run: npm run check
+
+      - name: Test
+        run: npm run test
+
+      # index.astro parses data/recalls.json through the Zod schema at build
+      # time, so a corrupt data commit fails here rather than deploying.
       - name: Build with Astro
         run: |
-          ${{ steps.detect-package-manager.outputs.runner }} astro build \
+          npx --no-install astro build \
             --site "${{ steps.pages.outputs.origin }}" \
             --base "${{ steps.pages.outputs.base_path }}"
-        working-directory: ${{ env.BUILD_PATH }}
+
+      # GEMINI_API_KEY is only ever used by the refresh workflow, never at build
+      # time, and must never carry a PUBLIC_ prefix. Fail loudly if it leaks.
+      - name: Assert no API key in the bundle
+        run: |
+          if grep -rlE 'AIza[0-9A-Za-z_-]{10,}|GEMINI_API_KEY' dist/; then
+            echo "::error::A credential-shaped string reached dist/"
+            exit 1
+          fi
+          echo "dist/ is clean"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ env.BUILD_PATH }}/dist
+          path: dist
 
   deploy:
     environment:
