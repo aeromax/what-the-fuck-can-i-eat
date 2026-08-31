@@ -108,12 +108,16 @@ const extractedCount = recalls.length - verifiedCount;
     <main>
       <header class="masthead">
         <h1 aria-label="what the fuck can i eat">
-          <span class="word">what</span>
-          <span class="word">the</span>
-          <span class="word">fuck</span>
-          <span class="word">can</span>
-          <span class="word">i</span>
-          <span class="word">eat</span>
+          <span class="half ask">
+            <span class="word">what</span>
+            <span class="word">the</span>
+            <span class="word accent">fuck</span>
+          </span>
+          <span class="half answer">
+            <span class="word">can</span>
+            <span class="word">i</span>
+            <span class="word">eat</span>
+          </span>
         </h1>
 
         <p class="thesis">
@@ -272,18 +276,38 @@ const extractedCount = recalls.length - verifiedCount;
     margin-bottom: 1.25rem;
   }
   h1 {
-    /* The signature: the title as a monospaced banner, one word per line,
-       shouted quietly. The layout carries the tone; nothing else has to. */
-    font: 800 clamp(2.75rem, 12vw, 5.25rem)/0.92 var(--mono);
+    /* The signature: the title as a monospaced banner, split in two across a
+       hairline spine — the swearing on one side, the question on the other.
+       The layout carries the tone; nothing else on the page has to. */
+    font: 800 clamp(2rem, 8.5vw, 4.25rem)/0.92 var(--mono);
     letter-spacing: -0.045em;
     margin: 0;
     color: var(--ink);
     display: flex;
-    flex-direction: column;
+    align-items: stretch;
     gap: 0;
+    /* Content-width, so the rule is exactly as long as the words it divides —
+       and, once the axis rotates on a phone, no longer than them either. */
+    width: fit-content;
+  }
+  .half {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  /* Both halves press against the spine, so the rule reads as the axis of the
+     composition rather than as a divider that happens to sit between them. */
+  .ask {
+    text-align: right;
+    padding-right: clamp(0.6rem, 2.5vw, 1.25rem);
+  }
+  .answer {
+    text-align: left;
+    padding-left: clamp(0.6rem, 2.5vw, 1.25rem);
+    border-left: 1px dashed var(--rule);
   }
   .word { display: block; }
-  .word:nth-child(3) { color: var(--alarm); }
+  .accent { color: var(--alarm); }
 
   .thesis {
     margin: 1.5rem 0 0;
@@ -438,12 +462,30 @@ const extractedCount = recalls.length - verifiedCount;
   }
   .colophon em { font-style: italic; color: var(--ink); }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .word:nth-child(3) { transition: color 0.4s ease; }
-  }
-
+  /* Narrow: the spine turns horizontal and the halves stack. Side-by-side, a
+     phone would have to shrink the type to about a third of its size to fit
+     two mono columns — which is the one thing this page cannot afford, since
+     it is meant to read at arm's length. The rule survives the rotation, so
+     the two-part composition still reads; only its axis changes. */
   @media (max-width: 30rem) {
     main { padding: 1.75rem 1rem 3rem; }
+    h1 {
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: clamp(2.75rem, 13.5vw, 4rem);
+    }
+    .ask {
+      text-align: left;
+      padding-right: 0;
+      padding-bottom: 0.5rem;
+    }
+    .answer {
+      padding-left: 0;
+      padding-top: 0.5rem;
+      border-left: none;
+      border-top: 1px dashed var(--rule);
+      align-self: stretch;
+    }
     .src { grid-template-columns: 4.5rem 1rem 1fr; }
   }
 </style>
