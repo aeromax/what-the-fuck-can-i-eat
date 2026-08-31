@@ -91,8 +91,6 @@ function formatEasternInstant(at: Date): { day: string; time: string; zone: stri
 // claim it qualifies.
 const stamp = lastChecked ? formatEasternInstant(lastChecked) : null;
 const awaitingVoice = recalls.filter((r) => r.headline === null).length;
-const verifiedCount = recalls.filter((r) => r.confidence === 'verified').length;
-const extractedCount = recalls.length - verifiedCount;
 ---
 
 <html lang="en">
@@ -123,20 +121,42 @@ const extractedCount = recalls.length - verifiedCount;
 
         <p class="subhead">Whatever you want! Except for the following:</p>
 
-        <dl class="counts" aria-label="Summary">
-          <div>
-            <dt>Active</dt>
-            <dd><strong>{recalls.length}</strong> recalls and alerts</dd>
+        <div class="strip">
+          <dl class="counts" aria-label="Summary">
+            <div>
+              <dt>Active</dt>
+              <dd><strong>{recalls.length}</strong> recalls and alerts</dd>
+            </div>
+          </dl>
+
+          {/* Hidden until the script reveals it. A no-JS reader never sees a
+              dead button, and the served list order is already the default
+              sort, so nothing is missing without JavaScript. */}
+          <div class="controls" id="sort" hidden>
+            <span class="controls-label" id="sort-label">Sort by</span>
+            <span class="seg" role="group" aria-labelledby="sort-label">
+              <button type="button" class="sortbtn" data-sort="date" aria-pressed="true">
+                <span class="sortbtn-text">Date</span>
+                <span class="dir" aria-hidden="true">&darr;</span>
+              </button>
+              <button type="button" class="sortbtn" data-sort="severity" aria-pressed="false">
+                <span class="sortbtn-text">Severity</span>
+                <span class="dir" aria-hidden="true">&darr;</span>
+              </button>
+            </span>
           </div>
-          <div>
-            <dt>Verified</dt>
-            <dd><strong>{verifiedCount}</strong> from structured columns</dd>
-          </div>
-          <div>
-            <dt>Extracted</dt>
-            <dd><strong>{extractedCount}</strong> from press-release prose</dd>
-          </div>
-        </dl>
+        </div>
+
+        {/* Shown only while the severity sort is active. "Unclassified" is the
+            bottom of that order because the class is genuinely unknown, not
+            because the hazard is mild, and a bare list would imply otherwise
+            (docs/design.md §7). */}
+        <p class="sort-note" id="sort-note" hidden>
+          Unclassified rows sort last because FDA has not graded them yet &mdash;
+          not because they are mild.
+        </p>
+
+        <p class="sr-only" role="status" aria-live="polite" id="sort-status"></p>
       </header>
 
       <section id="list" class="list" aria-label="Active recalls">
@@ -225,6 +245,115 @@ const extractedCount = recalls.length - verifiedCount;
         </p>
       </footer>
     </main>
+
+    <!--
+      Sorting. Deliberately small, dependency-free, and classic (not a module),
+      so it runs from a file:// build as readily as from a server.
+
+      Three properties worth keeping if this is ever edited:
+
+        1. It REORDERS existing nodes. No row data is duplicated into JS — the
+           keys are read from `data-announced` and `data-tone`, which the row
+           already carries. There is one source of truth for a recall and it is
+           the markup Astro rendered.
+        2. It moves nodes with appendChild rather than through a fragment, so a
+           node is never detached from the document. An open <details> keeps its
+           `open` attribute either way, but staying attached also preserves
+           focus if it happens to be inside the list.
+        3. The controls start `hidden` and this script reveals them. Without
+           JavaScript there are no dead buttons, and the served order is already
+           the default sort, so nothing is lost.
+    -->
+    <script is:inline>
+      (function () {
+        var list = document.getElementById('list');
+        var bar = document.getElementById('sort');
+        var note = document.getElementById('sort-note');
+        var status = document.getElementById('sort-status');
+        if (!list || !bar) return;
+
+        var rows = [];
+        var kids = list.children;
+        for (var i = 0; i < kids.length; i++) {
+          if (kids[i].classList.contains('recall')) rows.push(kids[i]);
+        }
+        if (rows.length < 2) return;
+
+        // Descending urgency. A Public Health Alert outranks a Class II on
+        // purpose: it means product is believed to be in commerce with no
+        // recall requested (docs/design.md section 7). Unclassified is last
+        // because the grade is unknown, not because the hazard is small — the
+        // note under the controls says so where a reader can see it.
+        var RANK = { severe: 0, alert: 1, moderate: 2, unknown: 3 };
+
+        // dir -1 puts the strong end first: newest dates, most urgent classes.
+        var key = 'date';
+        var dir = -1;
+
+        function dateOf(el) { return el.getAttribute('data-announced') || ''; }
+        function rankOf(el) {
+          var r = RANK[el.getAttribute('data-tone')];
+          return r === undefined ? RANK.unknown : r;
+        }
+        function byDateDesc(a, b) {
+          var x = dateOf(a), y = dateOf(b);
+          return x < y ? 1 : x > y ? -1 : 0;
+        }
+
+        function compare(a, b) {
+          if (key === 'severity') {
+            var d = (rankOf(a) - rankOf(b)) * (dir === -1 ? 1 : -1);
+            // Within one severity group, always newest first.
+            return d !== 0 ? d : byDateDesc(a, b);
+          }
+          return byDateDesc(a, b) * (dir === -1 ? 1 : -1);
+        }
+
+        var buttons = bar.querySelectorAll('.sortbtn');
+
+        function label() {
+          if (key === 'severity') {
+            return dir === -1
+              ? 'Sorted by severity, most urgent first.'
+              : 'Sorted by severity, least urgent first.';
+          }
+          return dir === -1
+            ? 'Sorted by date, newest first.'
+            : 'Sorted by date, oldest first.';
+        }
+
+        function apply() {
+          var sorted = rows.slice().sort(compare);
+          for (var i = 0; i < sorted.length; i++) list.appendChild(sorted[i]);
+
+          for (var j = 0; j < buttons.length; j++) {
+            var active = buttons[j].getAttribute('data-sort') === key;
+            buttons[j].setAttribute('aria-pressed', active ? 'true' : 'false');
+            // Only the sort in force has a direction, so the idle button is
+            // not left holding a stale glyph that CSS has to hide.
+            var arrow = buttons[j].querySelector('.dir');
+            if (arrow) arrow.textContent = !active ? '' : dir === -1 ? '\u2193' : '\u2191';
+          }
+
+          if (note) note.hidden = key !== 'severity';
+          if (status) status.textContent = label();
+        }
+
+        for (var k = 0; k < buttons.length; k++) {
+          buttons[k].addEventListener('click', function (e) {
+            var next = e.currentTarget.getAttribute('data-sort');
+            // Same sort again flips direction; a different sort starts at its
+            // strong end, which is the reading almost everyone wants first.
+            if (next === key) dir = -dir;
+            else { key = next; dir = -1; }
+            apply();
+          });
+        }
+
+        bar.hidden = false;
+        apply();
+      })();
+    </script>
   </body>
 </html>
 
@@ -334,15 +463,19 @@ const extractedCount = recalls.length - verifiedCount;
     text-wrap: balance;
   }
 
-  .counts {
+  /* The count and the sort controls share one hairline-topped strip: the count
+     says how big the list is, the controls say how it is ordered. */
+  .strip {
     margin: 1.75rem 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-    gap: 0.75rem 1.5rem;
-    border-top: 1px dashed var(--rule);
     padding-top: 1.25rem;
+    border-top: 1px dashed var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
   }
+  .counts { margin: 0; padding: 0; }
   .counts > div { margin: 0; }
   .counts dt {
     font: 600 0.7rem/1.2 var(--mono);
@@ -362,6 +495,76 @@ const extractedCount = recalls.length - verifiedCount;
     letter-spacing: -0.02em;
     color: var(--ink);
     margin-right: 0.3rem;
+  }
+
+  /* --- sort controls ------------------------------------------------------ */
+  /* Quiet by construction: the same mono utility face and dashed hairline as
+     the strip they sit in. Only the ACTIVE sort spends the accent, and only on
+     its border and label — the buttons must not compete with the banner. */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  .controls[hidden] { display: none; }
+  .controls-label {
+    font: 600 0.7rem/1.2 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .seg { display: flex; gap: 0.4rem; }
+  .sortbtn {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4em;
+    /* Comfortable on a phone without becoming a slab. */
+    min-height: 2.25rem;
+    padding: 0.35rem 0.7rem;
+    background: none;
+    border: 1px dashed var(--rule);
+    border-radius: 2px;
+    color: var(--dim);
+    font: 500 0.8rem/1.2 var(--mono);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+  }
+  .sortbtn:hover { color: var(--ink); border-color: var(--dim); }
+  .sortbtn:focus-visible { outline: 2px solid var(--alarm); outline-offset: 2px; }
+  .sortbtn[aria-pressed='true'] {
+    border-style: solid;
+    border-color: var(--alarm);
+    color: var(--alarm);
+    font-weight: 700;
+  }
+  /* The direction arrow only means anything on the sort that is actually in
+     force, so the idle button does not show one. */
+  .sortbtn[aria-pressed='false'] .dir { visibility: hidden; }
+  .dir { font-size: 0.9em; }
+  @media (prefers-reduced-motion: no-preference) {
+    .sortbtn { transition: color 120ms ease, border-color 120ms ease; }
+  }
+
+  .sort-note {
+    margin: 0.85rem 0 0;
+    font: 400 0.85rem/1.5 var(--serif);
+    font-style: italic;
+    color: var(--dim);
+    max-width: 40ch;
+  }
+  .sort-note[hidden] { display: none; }
+
+  /* Visually hidden, still announced. */
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* --- list -------------------------------------------------------------- */

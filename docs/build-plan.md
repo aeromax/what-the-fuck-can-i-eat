@@ -413,6 +413,11 @@ The residual cost is the same shape as the §2.1 relaxation in step 9f: the
 textual provenance signal is one tap away rather than always on screen. Recorded
 here so the acceptance criterion is not read as though nothing changed.
 
+Extended 2026-08-31, also at the user's direction: the header's "Verified" and
+"Extracted" count tiles were replaced by the date/severity sort controls, so the
+page header no longer surfaces the split either. It now lives on the row's tier
+tag when expanded, and in the footer provenance paragraph.
+
 ## Step 10 — GitHub Action
 
 - Cron every six hours; `workflow_dispatch` too.

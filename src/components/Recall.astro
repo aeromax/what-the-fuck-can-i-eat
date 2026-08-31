@@ -119,7 +119,9 @@ const sourceLabel =
       : 'USDA FSIS';
 
 // data-* attributes drive the band; they are the only styling hook the CSS
-// needs, which keeps class-list churn out of the markup.
+// needs, which keeps class-list churn out of the markup. `data-announced` is
+// not styling — it is the page's sort key, read by the header's sort script so
+// it never has to duplicate any record data into JavaScript.
 const dataTone = severity.tone;
 const dataConfidence = recall.confidence;
 ---
@@ -129,6 +131,7 @@ const dataConfidence = recall.confidence;
   data-tone={dataTone}
   data-confidence={dataConfidence}
   data-variant={variant}
+  data-announced={recall.announcedDate}
 >
   <details class="row">
     <summary class="head">
