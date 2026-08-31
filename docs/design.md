@@ -83,6 +83,8 @@ Three rules keep it honest, and none of them are optional:
 1. **Never rendered alone.** The identifying detail — brand, pack size, lot
    codes, the `avoidLine` — is always adjacent. A layout that shows
    `displayName` as the sole identifier is a bug, not a style choice.
+   **Relaxed 2026-08-31 — see "Relaxation" below. This rule no longer holds for
+   the collapsed row.**
 2. **`product` is never discarded.** It stays on the record verbatim, so the
    specific thing recalled is always recoverable and always citable.
 3. **Naming only.** The model may name the food it was given. It may not decide
@@ -97,6 +99,41 @@ back to `product`, so a bad or missing generation costs legibility, never facts.
 configurations with UPCs across ten lines — so pairing a two-word heading with
 the verbatim text puts a wall of grey under "eggs". Collapsing it behind a
 disclosure control is fine. Removing it is not.
+
+### Relaxation of rule 1 (2026-08-31)
+
+**Rule 1 was relaxed at the user's explicit direction.** `product` moved behind
+the row's disclosure control. The collapsed row now identifies an item by
+`displayName` alone, beside the snark headline, the plain-English severity label
+and the announcement date. `product` is one interaction away rather than always
+on screen.
+
+This is recorded rather than argued, because it is a product decision the user
+made with the tradeoff in front of them — but the tradeoff is stated here so
+nobody has to rediscover it.
+
+**The residual risk.** A reader who never expands a row sees only a
+model-written category name. That is precisely the generalization hazard this
+section was written about: one recalled brand of eggs presented as "eggs". The
+mitigation that rule 1 provided — the specific thing being unavoidably visible
+next to the general name — is gone for that reader.
+
+**What still holds, and is not negotiable:**
+
+- `product` is **always in the DOM** and always rendered in the expanded body.
+  It is hidden by a disclosure control, not omitted, not truncated, and not
+  summarised. Every row is one tap from the verbatim text.
+- `product` remains **verbatim government text and never model-written**. Rules
+  2 and 3 above are untouched, as is everything in §2.
+- The expanded body leads with `product`, directly above the `avoidLine`, so
+  the first thing a reader who opens a row sees is which product this is.
+- `displayName` stays nullable, and a null still falls back to `product` in the
+  large type. A missing generation still costs legibility, never facts.
+
+If this page ever grows a second surface — a feed, a share card, an embed —
+this relaxation does **not** travel with it by default. It was granted for the
+collapsed row of the main list, where a disclosure control is present and
+obvious. Re-ask before applying it anywhere a reader cannot expand.
 
 ### What "extraction only" means operationally
 

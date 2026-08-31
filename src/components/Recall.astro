@@ -22,20 +22,25 @@
  * works with JavaScript disabled and is keyboard-accessible without any
  * scripting or ARIA of our own.
  *
- * The collapsed summary carries the five things a reader needs to decide
- * whether to open the row:
+ * The collapsed summary carries four things:
  *
  *   - the item name in large type
  *   - the snark headline, as an editorial aside directly beneath it
- *   - the government's verbatim `product` spec line
  *   - the plain-English severity label
  *   - the announcement date
  *
- * `product` stays in the SUMMARY, never behind the toggle. docs/design.md §2.1
- * rule 1 forbids `displayName` from ever being the sole identifier: "eggs"
- * alone reads as every egg on the shelf. Collapsed it is clamped to three
- * lines (some openFDA spec lines run ten), and expanding the row releases the
- * clamp — but it is always present and always readable.
+ * `product` moved BEHIND the toggle on 2026-08-31, at the user's explicit
+ * direction. This is a deliberate relaxation of docs/design.md §2.1 rule 1,
+ * which previously required `product` to be adjacent to `displayName` at all
+ * times so a model-written category name could never be the sole identifier.
+ * A collapsed row now identifies by `displayName` alone.
+ *
+ * The residual risk is real and is recorded rather than argued away: a reader
+ * who never expands a row sees only a model-written category name, and "eggs"
+ * can read as every egg on the shelf. What still holds is that `product` is
+ * always in the DOM, always verbatim, never model-written, and one tap away —
+ * so the specific thing recalled is recoverable by anyone who looks, and no
+ * fact was lost. See design §2.1, "Relaxation (2026-08-31)".
  *
  * The severity label sits in the same slot on EVERY row, including the
  * "Severity not yet assigned by FDA" case. Rendering it conditionally made
@@ -44,7 +49,8 @@
  * words, there is no ungraded EYEBROW — it would have duplicated the label
  * from the slot reserved for what the label cannot say.
  *
- * Expanding adds the avoid-line, the confidence tag and the source link.
+ * Expanding adds the verbatim `product` line, the avoid-line, the confidence
+ * tag and the source link.
  *
  * Contract with the page: Props is `{ recall }`. `variant` is optional and
  * only adjusts the top rule when the page wants to mark this row as one half
@@ -134,9 +140,6 @@ const dataConfidence = recall.confidence;
             compile error in Astro 7. Display is set to block in the CSS. */}
         {snark && <span class="snark">{snark}</span>}
 
-        {/* Never behind the toggle — design §2.1 rule 1. */}
-        {showsSpecLine && <span class="spec">{recall.product}</span>}
-
         <span class="glance">
           <span class="tag severity" title={definitionTitle}>{severity.label}</span>
           <span class="date">{announced.text} {announced.zone}</span>
@@ -147,6 +150,12 @@ const dataConfidence = recall.confidence;
     </summary>
 
     <div class="body">
+      {/* The government's verbatim product line. Behind the toggle as of
+          2026-08-31 at the user's explicit direction — see docs/design.md
+          §2.1, "Relaxation". It is always in the DOM, always verbatim, and
+          always one tap away; it is no longer always on screen. */}
+      {showsSpecLine && <p class="spec">{recall.product}</p>}
+
       {recall.avoidLine
         ? <p class="avoid">{recall.avoidLine}</p>
         : <p class="avoid">
@@ -229,6 +238,10 @@ const dataConfidence = recall.confidence;
     /* A comfortable phone target: the whole summary is the hit area, and the
        vertical padding keeps it well past 44px on the shortest possible row. */
     padding: 1.25rem 0;
+    /* The summary lost the spec line, so it can now be as short as a heading
+       plus one small row. This floor keeps the tap target comfortable on the
+       shortest possible row without adding space to the tall ones. */
+    min-height: 3.5rem;
     cursor: pointer;
     list-style: none;
   }
@@ -300,26 +313,6 @@ const dataConfidence = recall.confidence;
     max-width: 54ch;
   }
 
-  /* The specific thing recalled. It lives in the summary, so collapsing a row
-     can never leave a category name standing alone — design §2.1 rule 1.
-     Clamped to three lines while closed because some openFDA spec lines run to
-     ten; opening the row releases the clamp. Clamped, not hidden. */
-  .spec {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    overflow: hidden;
-    margin-bottom: 0.6rem;
-    font-size: 0.9rem;
-    line-height: 1.45;
-    color: var(--dim);
-  }
-  .row[open] .spec {
-    display: block;
-    overflow: visible;
-  }
-
   /* Severity and date. Rendered on every row, in this slot, unconditionally —
      including "Severity not yet assigned by FDA". */
   .glance {
@@ -332,6 +325,18 @@ const dataConfidence = recall.confidence;
   }
 
   /* --- Body content ----------------------------------------------------- */
+
+  /* The specific thing recalled, verbatim. It opens the body, directly above
+     the avoid-line, so the first thing an expanded row states is which product
+     this actually is. No line clamp any more: the clamp existed to stop a
+     ten-line openFDA spec string from burying a collapsed row, and nothing is
+     collapsed down here. */
+  .spec {
+    margin: 0 0 0.9rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--dim);
+  }
 
   /* The load-bearing sentence. The line someone reads while holding the
      product, so it is the largest thing in the body. */

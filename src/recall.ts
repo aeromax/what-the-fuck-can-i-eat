@@ -52,10 +52,22 @@ export const RecallSchema = z.object({
    * a specific hazard: a category name generalizes one recalled product into a
    * whole food group, so "eggs" alone could read as every egg on the shelf.
    *
-   * It is therefore never rendered alone — the component pairs it with the
-   * identifying detail, and `product` is always still on the record. If it is
-   * null, the page falls back to `product`. Never let a layout show this field
-   * as the sole identifier.
+   * It WAS therefore never rendered alone. That rule was relaxed on 2026-08-31
+   * at the user's explicit direction: the collapsed row now identifies an item
+   * by this field alone, and `product` sits one tap away inside the row's
+   * disclosure control rather than always beside it. See docs/design.md §2.1,
+   * "Relaxation of rule 1".
+   *
+   * The residual risk is accepted, not solved: a reader who never expands a row
+   * sees only this model-written category name. What still holds is that
+   * `product` is always in the DOM, always rendered in the expanded body,
+   * always verbatim, and never model-written — so the specific thing recalled
+   * is recoverable by anyone who looks. If it is null, the page falls back to
+   * `product`, so a bad generation still costs legibility and never facts.
+   *
+   * The relaxation was granted for the main list's collapsed row, where a
+   * disclosure control is present and obvious. Do not extend it to a surface
+   * where a reader cannot expand — ask first.
    */
   displayName: z.string().nullable().default(null),
   brand: z.string(),
