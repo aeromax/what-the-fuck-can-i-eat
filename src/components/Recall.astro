@@ -15,8 +15,25 @@
  * src/severity.ts (red / amber / neutral) and its STYLE is the confidence tier
  * (solid = verified, dashed = extracted, dotted = unclassified). A PHA gets a
  * diagonal hazard-tape band instead — distinct from every recall tone at a
- * glance, without shouting louder than a Class I. A text eyebrow carries the
- * same distinctions in words for anyone who cannot see the band.
+ * glance, without shouting louder than a Class I.
+ *
+ * There is NO text eyebrow. The row carried one until 2026-08-31, when it was
+ * removed at the user's direction. Where each signal lives now:
+ *
+ *   1. severity — the plain-English label in `.glance`, on every row,
+ *      collapsed, unconditionally. Never behind the toggle.
+ *   2. confidence — the band's style while collapsed, and the `.tag tier`
+ *      ("Verified data" / "Extracted from prose") once expanded.
+ *   3. PHA — its severity label reads "Warning — not recalled, may still be on
+ *      sale", which states "not a recall" in words without a second element
+ *      saying it again, plus the hazard-tape band.
+ *
+ * The cost, recorded rather than argued: collapsed, `extracted` is signalled
+ * only by a 4px dashed border. That is a visual-only channel, and it is the
+ * same trade the user accepted for the `product` line in step 9f — the textual
+ * provenance signal is one tap away instead of always on screen. The footer's
+ * provenance paragraph still states the AI/facts boundary in prose. See
+ * docs/build-plan.md step 9.
  *
  * COLLAPSED / EXPANDED (step 9d). Built on native <details>/<summary>, so it
  * works with JavaScript disabled and is keyboard-accessible without any
@@ -90,23 +107,8 @@ const definitionTitle = severity.agency
   ? `${severity.agency}: ${severity.definition}`
   : severity.definition;
 
-const isPHA = recall.classification === 'Public Health Alert';
-const isExtracted = recall.confidence === 'extracted';
-
-// One eyebrow at a time, ordered by structural weight.
-//
-// There is deliberately NO "Severity not yet assigned" eyebrow. The severity
-// label renders unconditionally in `.glance` a few lines below, and on an
-// ungraded row it already reads "Severity not yet assigned by FDA" — so the
-// eyebrow was saying the same thing twice, in the slot reserved for the one
-// fact the severity label does NOT carry. The two surviving variants both pass
-// that test: "not a recall" and "extracted from prose" are claims about what
-// kind of record this is, which no severity label states.
-const eyebrow: string | null = isPHA
-  ? 'Public health alert — not a recall'
-  : isExtracted
-    ? 'Details extracted from press release'
-    : null;
+// The row has no text eyebrow. Removed 2026-08-31 at the user's direction —
+// see the note at the top of this file for what carries each signal now.
 
 // The raw source ids are internal jargon.
 const sourceLabel =
@@ -131,8 +133,6 @@ const dataConfidence = recall.confidence;
   <details class="row">
     <summary class="head">
       <span class="head-text">
-        {eyebrow && <span class="eyebrow">{eyebrow}</span>}
-
         <h2>{heading}</h2>
 
         {/* The editorial aside. A <span> and not a <p>: this sits inside the
@@ -275,17 +275,6 @@ const dataConfidence = recall.confidence;
   .body { padding-bottom: 1.5rem; }
 
   /* --- Summary content -------------------------------------------------- */
-
-  .eyebrow {
-    display: block;
-    margin-bottom: 0.35rem;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: var(--dim);
-  }
-  .recall[data-tone="alert"] .eyebrow { color: var(--band-alert-a); }
 
   h2 {
     margin: 0 0 0.35rem;

@@ -87,7 +87,8 @@ function formatEasternInstant(at: Date): { day: string; time: string; zone: stri
 // those are the freshest items on the page (FDA grades a recall weeks after the
 // press release, docs/design.md §7) and therefore the ones most likely to still
 // be on a shelf. The confidence distinction is carried per row by Recall.astro's
-// band and eyebrow instead, where it sits next to the claim it qualifies.
+// left band, and by the tier tag inside the row, where it sits next to the
+// claim it qualifies.
 const stamp = lastChecked ? formatEasternInstant(lastChecked) : null;
 const awaitingVoice = recalls.filter((r) => r.headline === null).length;
 const verifiedCount = recalls.filter((r) => r.confidence === 'verified').length;
@@ -201,9 +202,10 @@ const extractedCount = recalls.length - verifiedCount;
 
         {/* The page's central safety property, stated in plain English. This
             used to sit under the title; the subhead replaced it there, so it
-            lives here now. It must never simply disappear — the per-row band
-            and eyebrow carry the distinction visually, but a reader deciding
-            whether to trust a line is owed the sentence too. See CLAUDE.md,
+            lives here now. It matters more since the row's eyebrow was
+            removed on 2026-08-31: collapsed, the per-row band is the only
+            provenance signal, so this is the page's one prose statement of
+            the boundary and must never simply disappear. See CLAUDE.md,
             "AI writes voice. Government APIs supply facts." */}
         <p class="provenance">
           Brand, product, reason and dates are the government's own words, taken

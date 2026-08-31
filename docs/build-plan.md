@@ -385,6 +385,34 @@ produce no second commit; `recalls.json` is never written empty.
 collapse; the page is readable at arm's length on a phone; a reader can tell
 which rows are model-extracted.
 
+### Note on the last criterion (2026-08-31)
+
+"A reader can tell which rows are model-extracted" is now met differently than
+when it was written, at the user's explicit direction. The row carried a text
+eyebrow reading "Details extracted from press release"; that eyebrow was
+removed, along with its Public Health Alert counterpart.
+
+What satisfies the criterion now:
+
+- **Collapsed** — the left band's style: solid = verified, dashed = extracted,
+  dotted = unclassified. This is a **visual-only channel**. A reader who cannot
+  see the band, or who does not know what a dashed border means, gets no
+  provenance signal from a collapsed row.
+- **Expanded** — the `.tag tier` badge, "Verified data" or "Extracted from
+  prose", in words.
+- **Page level** — the footer's provenance paragraph states the AI/facts
+  boundary in prose, on every page load, regardless of which rows are open.
+
+The PHA case does not depend on the eyebrow at all: its severity label reads
+"Warning — not recalled, may still be on sale", which is in the collapsed view
+on every row and states "not a recall" in words. Design §7's requirement that
+the page must never present a PHA as a recall is therefore still met by the
+severity label plus the hazard-tape band.
+
+The residual cost is the same shape as the §2.1 relaxation in step 9f: the
+textual provenance signal is one tap away rather than always on screen. Recorded
+here so the acceptance criterion is not read as though nothing changed.
+
 ## Step 10 — GitHub Action
 
 - Cron every six hours; `workflow_dispatch` too.
