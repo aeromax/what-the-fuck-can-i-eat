@@ -8,9 +8,9 @@
     },
     {
       "name": "FDA RSS",
-      "reachable": false,
-      "note": "HTTP 404",
-      "count": 0
+      "reachable": true,
+      "note": "17 records; skipped 3 pet, 0 unparseable, 0 unreachable",
+      "count": 17
     },
     {
       "name": "FSIS",
