@@ -1,0 +1,22 @@
+{
+  "sources": [
+    {
+      "name": "openFDA",
+      "reachable": true,
+      "note": "40 of 43 rows included",
+      "count": 40
+    },
+    {
+      "name": "FDA RSS",
+      "reachable": false,
+      "note": "HTTP 404",
+      "count": 0
+    },
+    {
+      "name": "FSIS",
+      "reachable": true,
+      "note": "7 of 2023 records included",
+      "count": 7
+    }
+  ]
+}

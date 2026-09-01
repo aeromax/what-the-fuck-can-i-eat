@@ -92,7 +92,9 @@
   "field_labels": [
    "Recall-016-2026-Labels.pdf "
   ],
-  "field_distro_list": [],
+  "field_distro_list": [
+   "RC-016-2026-Retail-List.pdf"
+  ],
   "field_processing": [
    "Fully Cooked - Not Shelf Stable"
   ],
