@@ -35,7 +35,7 @@ blocking.
 
 ---
 
-## Step 1 — Scaffold
+## Step 1 — Scaffold ✅ done 2026-08-29
 
 Create the repository skeleton. Nothing fetches anything yet.
 
@@ -57,6 +57,14 @@ Create the repository skeleton. Nothing fetches anything yet.
 
 **Then:** delete the "none of these exist yet" warning above the command list in
 `CLAUDE.md`.
+
+**Update 2026-09-01.** Both "then" items are done: the `CLAUDE.md` warning is
+gone. The **"and even-numbered" half of the Node criterion was wrong** and is
+superseded — Astro 7.2.9 declares only `node: ">=22.12.0"`, and the local machine
+now runs v25.9.0 (odd) with `install`, `build`, `check` and `test` all passing.
+The rule that survives is *pin CI to an even release*, which the three workflows
+do (Node 24); odd Node is working-but-unsupported locally. See design §8 and the
+`CLAUDE.md` verified-environment section, which is the standing record.
 
 ## Step 2 — Types, schema, fixtures ✅ done 2026-08-29
 
@@ -177,6 +185,12 @@ unproven, and CI is currently switched off. If FSIS is ever silently blocked in
 CI, meat, poultry and egg recalls vanish while the page still looks complete —
 which is why `fetchFsis` reports a loud warning on zero records and the footer
 names which sources were reachable. Re-test this before step 10 ships.
+
+**Update 2026-09-01 (step 10).** CI is no longer switched off, and the re-test
+now has a tool: `.github/workflows/fsis-probe.yml`, a manual-dispatch probe that
+runs the real `fetchFsis()` on a runner and fails the job on a block *or* on
+reachable-but-zero-records. It has not been dispatched, so this caveat stands
+unchanged. See step 10.
 
 Four data findings folded into design §4: `field_states` contains the literal
 "Nationwide", `field_establishment` is populated on under half of records,
@@ -366,7 +380,7 @@ produce no second commit; `recalls.json` is never written empty.
   fully offline via stubbed source outcomes and voice fn.
 </details>
 
-## Step 9 — the page
+## Step 9 — the page ✅ done 2026-08-31
 
 `src/pages/index.astro` and `src/components/Recall.astro`.
 
@@ -418,16 +432,93 @@ Extended 2026-08-31, also at the user's direction: the header's "Verified" and
 page header no longer surfaces the split either. It now lives on the row's tier
 tag when expanded, and in the footer provenance paragraph.
 
-## Step 10 — GitHub Action
+### What the page says it contains (2026-09-01)
 
-- Cron every six hours; `workflow_dispatch` too.
-- `GEMINI_API_KEY` as a repository secret.
-- Commit `recalls.json`, `review.json`, and snapshots only when step 8 says
-  something changed.
-- Resolve open question 4 from design §10 — what publishes `dist/`.
+The header count block was labelled **"Active"** and the `<meta
+name="description">` described the page as listing recalls that are currently
+active. Both now read **"existing recalls and alerts, past 30 days"**.
 
-**Accept when:** a manual dispatch produces either a commit with real changes or
-a clean no-op; the key does not appear anywhere in `dist/`.
+Two corrections in one phrase, and neither is cosmetic:
+
+- **Not "active".** The 30-day window is applied once per source at fetch time
+  and never re-asked; nothing in the pipeline verifies that a recall is still
+  open, and for openFDA the window runs on `report_date` — a median of 69 days
+  after initiation — so the list mixes "recently announced" with "recently
+  reported". "Active" asserted a status check this project does not perform.
+  Design §10 q3 carries the measurement and is now the stated rationale.
+- **"and alerts".** FSIS Public Health Alerts are included deliberately and a PHA
+  is not a recall (design §7). Calling the whole list "recalls" mislabels them at
+  the page level, which is the same error the per-row rule already forbids.
+
+The count itself stays computed from the rendered records. No fixed item count is
+correct for longer than one refresh: ~46 at design time, 64 on 2026-09-01.
+
+## Step 10 — GitHub Action ✅ written 2026-09-01 (never run on GitHub)
+
+Delivered: `.github/workflows/refresh.yml` (the scheduled refresh) and
+`.github/workflows/fsis-probe.yml` (a manual FSIS reachability diagnostic).
+`static.yml` already existed and needed no change — see the deploy finding
+below. `GEMINI_API_KEY` is a repository secret.
+
+`refresh.yml` runs on `cron: "17 */6 * * *"` plus `workflow_dispatch`. The :17 is
+deliberate: scheduled workflows across all of GitHub pile up on the hour, and a
+contended cron is dispatched late or, at peak, dropped — and a dropped run means
+the page silently ages another six hours while still claiming to be current.
+`concurrency: refresh-data` with `cancel-in-progress: false`, a 20-minute
+timeout, Node 24 and `npm ci` mirroring `static.yml`. `npm run refresh` runs
+bare — no `|| true`, no `continue-on-error` — so the two non-zero exits from
+`scripts/refresh.ts` (`refused-empty`, `aborted-unreadable-state`) turn the run
+red, which is the point of them. Change detection is
+`git status --porcelain -- data/` rather than `git diff --quiet`, because
+`data/meta.json` is untracked until the first successful run creates it and
+`git diff` cannot see an untracked file. On a change it commits
+`recalls.json`, `review.json`, `meta.json` and `snapshots/` as
+`github-actions[bot]`, message `data: refresh recalls (<n> records)` from
+`jq 'length'`; on no change it commits nothing at all — a no-op run is a green,
+silent success, not an empty commit in what is supposed to be an audit trail.
+
+**The deploy finding, which is the non-obvious part.** A push made with the
+default `GITHUB_TOKEN` does **not** start another workflow run; GitHub suppresses
+that so workflows cannot trigger themselves recursively. `static.yml` triggers on
+`push: branches: [main]`, so the data commit would land and the site would never
+rebuild — every refresh run green, the published page frozen. The documented
+exceptions are `workflow_dispatch` and `repository_dispatch`, which do create a
+run even from `GITHUB_TOKEN`. `static.yml` already declared `workflow_dispatch`,
+so `refresh.yml` ends with `gh workflow run static.yml --ref main`, gated on data
+having changed. That required no change to `static.yml` and no new secret, which
+is why it won over a PAT (another secret to store, rotate and leak) and over
+`workflow_call` (which would mean editing `static.yml`). It costs `actions: write`
+alongside `contents: write`. Recorded as a trap in `CLAUDE.md`: the step reads as
+redundant beside `static.yml`'s push trigger, and removing it freezes the site
+without turning anything red.
+
+**`fsis-probe.yml` resolves nothing yet, but it is how step 5 gets closed.**
+`workflow_dispatch` only. Three sections: a raw `impit` request (to expose the
+status, content-type and byte size `fetchFsis` does not return), the real
+`fetchFsis()` from `scripts/sources/fsis.ts` — the production path, because a
+probe of a reimplementation proves nothing — and a plain `fetch()` control. Only
+the `impit` leg can fail the job, and reachable-but-zero-records counts as a
+failure, since that is the silent mode the whole FSIS caveat is about. A failing
+plain-`fetch()` leg is reported prominently and stays green: it is the expected
+historical behaviour and evidence for keeping `impit`, not a defect.
+
+**Status of the acceptance criteria: neither half is met.**
+
+- *"A manual dispatch produces either a commit with real changes or a clean
+  no-op"* — **not exercised.** No dispatch has happened; `refresh.yml` has never
+  run on GitHub. The commit and no-op paths are read-only reasoning about the
+  YAML.
+- *"The key does not appear anywhere in `dist/`"* — **not exercised.**
+  `static.yml` greps `dist/` for credential-shaped strings, but that grep has not
+  run against a build made on a runner with the secret present in the repository.
+
+⚠️ **And step 5's runner question is still open.** A local run on 2026-09-01
+gave impit HTTP 200, `application/json`, 12,948,541 bytes, 2,023 records parsed,
+7 after the inclusion rule — and plain `fetch()` identical, so the TLS block once
+again did not reproduce locally. **That proves nothing about a GitHub runner**,
+which has different egress and different IP reputation. It is exactly the
+question `fsis-probe.yml` exists to answer, and it stays open until the workflow
+is dispatched on GitHub.
 
 ---
 

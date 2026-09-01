@@ -1,0 +1,151 @@
+# Refresh the recall data and commit it, then ask the deploy workflow to rebuild.
+#
+# This is the only thing on a schedule in this repository. It runs the same
+# `npm run refresh` a human runs locally, and its whole job is to turn that
+# run's outcome into the right git action: commit when the government said
+# something new, do nothing at all when it did not, and fail loudly when the
+# pipeline refused to publish.
+name: Refresh recall data
+
+on:
+  schedule:
+    # Every six hours, at :17 rather than :00. Scheduled workflows across all of
+    # GitHub pile up on the hour, and a contended cron is dispatched late or, at
+    # peak, dropped entirely. A dropped run means the page silently ages six
+    # more hours while still claiming to be current, so we deliberately sit in
+    # a quieter minute. 00:17, 06:17, 12:17, 18:17 UTC.
+    - cron: "17 */6 * * *"
+
+  # Manual runs from the Actions tab. Step 10's acceptance criterion is a
+  # dispatch producing either a real commit or a clean no-op, so this is not
+  # merely a convenience.
+  workflow_dispatch:
+
+# contents: write so the job can push the data commit back to main.
+# actions: write so it can dispatch static.yml afterwards — see the deploy step.
+permissions:
+  contents: write
+  actions: write
+
+# Two refreshes must never overlap. Both would fetch, both would commit, and the
+# second push would land on a ref the first had already moved, so one run would
+# die on a non-fast-forward after having already spent Gemini calls.
+# cancel-in-progress is false on purpose: killing a run mid-push is a worse
+# failure than making the next one wait, and a skipped scheduled run costs
+# nothing because the following one fetches the same live window.
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Fetch, merge, voice, commit
+    runs-on: ubuntu-latest
+    # The pipeline makes live network calls to three government endpoints plus
+    # Gemini, and the FSIS feed alone is ~12.9 MB. A healthy run is a couple of
+    # minutes; 20 is generous headroom that still kills a hung socket rather
+    # than burning an hour of runner time on it.
+    timeout-minutes: 20
+
+    steps:
+      # The default persist-credentials gives the later push its GITHUB_TOKEN
+      # credentials. Do not turn it off without providing another one.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Mirrors static.yml exactly. package.json declares node >=22.12.0; pin an
+      # even (LTS) release. The local machine runs an odd release, which works
+      # but is not a supported line. See CLAUDE.md, "Verified environment
+      # constraints".
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # scripts/refresh.ts exits non-zero for exactly two outcomes:
+      #   refused-empty            — every source failed; degrade-never-blank
+      #                              kept the committed recalls.json untouched
+      #   aborted-unreadable-state — recalls.json exists but would not parse, so
+      #                              generating voice would have rewritten every
+      #                              headline and paid for it
+      # Both mean "a human needs to look", so the job must go red. Never add
+      # `|| true` or `continue-on-error` here: swallowing these turns a page
+      # that is quietly stale, or about to lose all its voice, into a green run.
+      #
+      # `wrote` and `unchanged` both exit 0. Distinguishing them is the commit
+      # step's job, not this one's.
+      - name: Refresh
+        env:
+          # Repository secret. It must never carry a PUBLIC_ prefix and must
+          # never be exposed to the Astro build — Astro inlines PUBLIC_ vars
+          # into the shipped bundle, and static.yml greps dist/ for exactly that
+          # leak. This workflow does not build the site at all.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npm run refresh
+
+      # refresh.ts already short-circuits on byte-identical output and does not
+      # write in that case, so "did anything change?" reduces to "is the working
+      # tree dirty?". --porcelain rather than `git diff --quiet` because
+      # data/meta.json is not in git yet: the first successful run creates it,
+      # and an untracked file is invisible to `git diff`.
+      - name: Detect data changes
+        id: changed
+        run: |
+          if [ -n "$(git status --porcelain -- data/)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git status --short -- data/
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No data changes — nothing to commit."
+          fi
+
+      # Most of the four daily runs find no news. That must be a green, silent
+      # success: not a failure, and not an empty commit, which would spam the
+      # audit trail git history is supposed to be.
+      - name: Commit and push
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # -A so a brand-new data/meta.json and any removed snapshot are both
+          # staged. data/ is deliberately not gitignored (see .gitignore): the
+          # snapshots are the record that lets you tell whether a wrong page
+          # came from the government or from the model.
+          git add -A data/recalls.json data/review.json data/meta.json data/snapshots/
+
+          COUNT="$(jq 'length' data/recalls.json)"
+          git commit -m "data: refresh recalls (${COUNT} records)"
+          git push
+
+      # The deploy problem, and why this step exists.
+      #
+      # static.yml triggers on `push: branches: [main]`, but a push made with
+      # the default GITHUB_TOKEN does NOT start another workflow — GitHub
+      # suppresses that to stop workflows triggering themselves forever. So the
+      # commit above would land and the site would never rebuild.
+      #
+      # The documented exceptions are `workflow_dispatch` and
+      # `repository_dispatch`: those two DO create a run even from GITHUB_TOKEN.
+      # static.yml already declares `workflow_dispatch`, so dispatching it needs
+      # no change to that file and no new secret — which rules in favour of this
+      # over a PAT (a second secret to store, rotate and leak) and over
+      # `workflow_call` (which would require editing static.yml, and would run
+      # the deploy inside this run rather than as its own).
+      #
+      # Gated on `changed` for the same reason the commit is: an unchanged run
+      # has nothing new to publish, and rebuilding identical bytes every six
+      # hours would bury the real deploys.
+      #
+      # --ref main resolves to the commit just pushed, so the build picks up the
+      # new data rather than the state before it.
+      - name: Trigger deploy
+        if: steps.changed.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run static.yml --ref main

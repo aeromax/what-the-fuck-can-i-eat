@@ -118,8 +118,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>what the fuck can i eat</title>
-    <meta name="description" content="US food recalls active right now, in plain English." />
-    <meta name="robots" content="noindex" />
+    <meta name="description" content="US food recalls from the past 30 days, in plain English." />
 
     <!-- Bebas Neue (display) / Lora (body + snark) / JetBrains Mono (utility).
          Only the faces and weights the CSS actually asks for: Bebas has a single
@@ -145,12 +144,26 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
         <p class="subhead">Whatever you want! Except for the following:</p>
 
         <div class="strip">
-          <dl class="counts" aria-label="Summary">
-            <div>
-              <dt>Active</dt>
-              <dd><strong>{recalls.length}</strong> recalls and alerts</dd>
-            </div>
-          </dl>
+          {/* One sentence, no term/definition split: there is no label left to
+              put in a dt now that "Active" is gone, and an empty or filler
+              term is worse than no dl at all.
+
+              The wording is deliberate. "Active" asserted these were live
+              right now, which the data does not support: openFDA's
+              `report_date` lags recall initiation by a median of 69 days, so
+              its 30-day window means "reported within 30 days" while RSS and
+              FSIS mean "announced within 30 days" (docs/design.md §10 q3).
+              "Existing ... past 30 days" is the claim the mixed window
+              actually earns. The number is `recalls.length` unfiltered,
+              because the 30-day rule is already applied per source at fetch
+              time.
+
+              The {' '} is not decoration: compressHTML collapses whitespace
+              between adjacent inline elements, so source whitespace after
+              the strong tag would render as "64existing". */}
+          <p class="counts">
+            <strong>{recalls.length}</strong>{' '}existing recalls and alerts, past 30 days
+          </p>
 
           {/* Hidden until the script reveals it. A no-JS reader never sees a
               dead button, and the served list order is already the default
@@ -183,7 +196,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
 
         {/* Reference detail, not a headline — but it belongs beside the count it
             qualifies rather than stranded at the bottom of the page. A source
-            that went unreachable changes what "64 active" means, and a reader
+            that went unreachable changes what "64 existing" means, and a reader
             should learn that before scrolling, not after. The "last checked"
             stamp travels with it for the same reason. Set small and inline so
             three sources cost one or two lines, not five. */}
@@ -509,18 +522,13 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     justify-content: space-between;
     gap: 1rem 1.5rem;
   }
-  .counts { margin: 0; padding: 0; }
-  .counts > div { margin: 0; }
-  .counts dt {
-    font: 600 0.7rem/1.2 var(--mono);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--dim);
-    margin-bottom: 0.15rem;
-  }
-  .counts dd {
+  /* A single line now, not a term over a definition — the dt/dd rules went
+     with the <dl>. Everything the old .counts dd carried lives here. */
+  .counts {
     margin: 0;
+    padding: 0;
     font-size: 0.95rem;
+    line-height: 1.35;
     color: var(--ink);
   }
   .counts strong {
@@ -765,6 +773,5 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
      composition having to be taken apart. */
   @media (max-width: 30rem) {
     main { padding: 1.75rem 1rem 3rem; }
-    .src { grid-template-columns: 4.5rem 1rem 1fr; }
   }
 </style>
