@@ -390,10 +390,14 @@ const dataConfidence = recall.confidence;
 
   h2 {
     margin: 0 0 0.3rem;
-    font-size: clamp(1.7rem, 5vw, 2.5rem);
-    line-height: 1.05;
-    font-weight: 800;
-    letter-spacing: -0.025em;
+    font-family: var(--display, 'Bebas Neue', 'Arial Narrow', sans-serif);
+    font-size: clamp(1.9rem, 5.5vw, 2.9rem);
+    line-height: 1;
+    /* No font-weight — Bebas has one. Positive tracking because the face is
+       condensed. The food name renders in caps: Bebas has no lowercase glyphs,
+       and `displayName` stays lowercase in the markup on purpose, for screen
+       readers and for the fallback face. */
+    letter-spacing: 0.015em;
     text-wrap: balance;
     color: var(--ink, #111);
   }
@@ -404,6 +408,7 @@ const dataConfidence = recall.confidence;
      the dates aligned down the column while scrolling. */
   .date {
     display: block;
+    font-family: var(--mono, 'JetBrains Mono', ui-monospace, Menlo, monospace);
     margin-bottom: 0.5rem;
     font-size: 0.7rem;
     font-weight: 600;
@@ -421,7 +426,7 @@ const dataConfidence = recall.confidence;
   .snark {
     display: block;
     margin-bottom: 0.5rem;
-    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    font-family: var(--serif, Lora, Georgia, serif);
     font-style: italic;
     font-size: 1.05rem;
     line-height: 1.4;
@@ -476,7 +481,6 @@ const dataConfidence = recall.confidence;
   .avoid.verbatim-lead {
     padding-left: 0.85rem;
     border-left: 2px solid var(--rule, #e5e5e5);
-    font-weight: 600;
   }
 
   /* --- the fact list ----------------------------------------------------- */
@@ -493,8 +497,9 @@ const dataConfidence = recall.confidence;
     align-items: baseline;
   }
   .fact dt {
+    font-family: var(--mono, 'JetBrains Mono', ui-monospace, Menlo, monospace);
     font-size: 0.72rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--dim, #5b5b5b);
@@ -535,7 +540,7 @@ const dataConfidence = recall.confidence;
   }
   .multi.mono li,
   .mono-value {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--mono, 'JetBrains Mono', ui-monospace, Menlo, monospace);
     font-size: 0.85em;
   }
 
@@ -558,6 +563,9 @@ const dataConfidence = recall.confidence;
   /* --- Shared atoms ----------------------------------------------------- */
 
   .tag {
+    /* Utility label, so the mono — same face as the dateline and the sort
+       controls. */
+    font-family: var(--mono, 'JetBrains Mono', ui-monospace, Menlo, monospace);
     padding: 0.15rem 0.5rem;
     border: 1px solid var(--rule, #e5e5e5);
     border-radius: 2px;
@@ -578,9 +586,9 @@ const dataConfidence = recall.confidence;
   }
 
   /* The severity tag borrows the band colour, so the two signals agree. */
-  .recall[data-tone="severe"]   .tag.severity { border-color: var(--band-severe);   color: var(--band-severe);   font-weight: 700; }
+  .recall[data-tone="severe"]   .tag.severity { border-color: var(--band-severe);   color: var(--band-severe);   font-weight: 600; }
   .recall[data-tone="moderate"] .tag.severity { border-color: var(--band-moderate); color: var(--band-moderate); }
-  .recall[data-tone="alert"]    .tag.severity { border-color: var(--band-alert-a);  color: var(--band-alert-a);  font-weight: 700; }
+  .recall[data-tone="alert"]    .tag.severity { border-color: var(--band-alert-a);  color: var(--band-alert-a);  font-weight: 600; }
   .recall[data-tone="unknown"]  .tag.severity { border-style: dashed; }
 
   .recall[data-confidence="extracted"] .tag.tier { border-style: dashed; }

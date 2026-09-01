@@ -120,6 +120,17 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     <title>what the fuck can i eat</title>
     <meta name="description" content="US food recalls active right now, in plain English." />
     <meta name="robots" content="noindex" />
+
+    <!-- Bebas Neue (display) / Lora (body + snark) / JetBrains Mono (utility).
+         Only the faces and weights the CSS actually asks for: Bebas has a single
+         weight; Lora needs regular and italic at 400; JetBrains Mono needs 400
+         and 600. Nothing here requests a weight the page does not set, so the
+         browser never synthesizes one and never downloads a file nothing uses.
+         `display=swap` so a slow font never blanks the text. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&family=Lora:ital@0;1&display=swap"
+    />
   </head>
   <body>
     <a class="skip" href="#list">Skip to recalls</a>
@@ -382,9 +393,20 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     --rule: #d9d3c4;
     --field: #ede9dd;
     --alarm: #a4241c;
-    --serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
-    --sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --mono: ui-monospace, SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
+    /* Three faces, three jobs. Every stack names a real fallback: this is a
+       static build with no runtime, so a blocked or failed webfont has to land
+       on something deliberate rather than on Times.
+
+       --display is CAPS-ONLY by design. Bebas Neue has no lowercase glyphs, so
+       lowercase source text renders as capitals. That is the chosen look, and
+       the source text stays lowercase on purpose — the aria-label, the screen
+       reader, and the fallback face all depend on it. Never add
+       text-transform: uppercase to "help", and never uppercase the markup.
+       It also has ONE weight: hierarchy in the display face comes from size,
+       colour and tracking, never font-weight, which would fake a bold. */
+    --display: 'Bebas Neue', 'Arial Narrow', sans-serif;
+    --serif: Lora, Georgia, serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -404,7 +426,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 16px/1.55 var(--sans);
+    font: 16px/1.55 var(--serif);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
@@ -441,8 +463,19 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
        previous 8.5vw / 4.25rem scale was tuned for two short stacked columns
        and is too small for a full phrase; the 4.5rem cap is reached at 626px
        and holds the line to ~518px inside the 44rem column. */
-    font: 800 clamp(2rem, 11.5vw, 4.5rem)/0.95 var(--mono);
-    letter-spacing: -0.045em;
+    /* Measured against Bebas, not estimated. "what the fuck" sets at 4.97em in
+       this face — a condensed caps face is far narrower than the monospace
+       banner this replaced, so 9k's 11.5vw / 4.5rem was much too small. At
+       17.25vw a 320px phone renders 55px type and a 274px line inside 288px of
+       usable width; 18vw measured 286px, which is a two-pixel margin and would
+       overflow on any metric change. The 7rem cap engages at 649px and holds
+       the line to 556px inside the 664px column. */
+    font: clamp(3rem, 17.25vw, 7rem)/0.88 var(--display);
+    /* No font-weight: Bebas has exactly one, and asking for 800 would either do
+       nothing or synthesize a fake bold. Tracking is POSITIVE here — the face is
+       condensed with tight defaults, the opposite of the -0.045em the previous
+       monospace banner wanted. */
+    letter-spacing: 0.02em;
     margin: 0;
     color: var(--ink);
   }
@@ -491,7 +524,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     color: var(--ink);
   }
   .counts strong {
-    font: 700 1.4rem/1 var(--mono);
+    font: 600 1.4rem/1 var(--mono);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
     color: var(--ink);
@@ -527,7 +560,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     border: 1px dashed var(--rule);
     border-radius: 2px;
     color: var(--dim);
-    font: 500 0.8rem/1.2 var(--mono);
+    font: 400 0.8rem/1.2 var(--mono);
     letter-spacing: 0.02em;
     cursor: pointer;
   }
@@ -537,7 +570,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     border-style: solid;
     border-color: var(--alarm);
     color: var(--alarm);
-    font-weight: 700;
+    font-weight: 600;
   }
   /* The direction arrow only means anything on the sort that is actually in
      force, so the idle button does not show one. */
@@ -641,7 +674,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
   }
   .stamp {
     margin: 0.4rem 0 1.5rem;
-    font: 500 0.95rem/1.4 var(--mono);
+    font: 400 0.95rem/1.4 var(--mono);
     color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
@@ -660,13 +693,13 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     grid-template-columns: 5.5rem 1rem 1fr;
     gap: 0.5rem;
     align-items: baseline;
-    font: 500 0.85rem/1.5 var(--mono);
+    font: 400 0.85rem/1.5 var(--mono);
   }
   .src-name { color: var(--ink); letter-spacing: 0.01em; }
   .src-status { text-align: center; font-size: 0.9em; }
   .src.on .src-status { color: #2f7a3a; }
   .src.off .src-status { color: var(--alarm); }
-  .src-note { color: var(--dim); font-family: var(--sans); font-size: 0.85rem; font-weight: 400; }
+  .src-note { color: var(--dim); font-family: var(--serif); font-size: 0.85rem; font-weight: 400; }
   .src.off .src-note { color: var(--alarm); }
 
   .sources-none {
