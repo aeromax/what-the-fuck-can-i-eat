@@ -80,24 +80,99 @@ import { severityOf } from '../severity.ts';
 interface Props {
   recall: Recall;
   variant?: 'primary' | 'reviewPair';
+  /**
+   * Set by the page when this row's `displayName` is NOT unique across the
+   * rendered list. Five different Clover Hill cheeses are all named "cheese",
+   * so without this the collapsed rows are indistinguishable — the §2.1 hazard
+   * arriving in practice rather than in theory. When set, the row shows a
+   * clamped extract of the verbatim `product` while collapsed, which is the
+   * minimum needed to tell namesakes apart.
+   */
+  ambiguousName?: boolean;
 }
-const { recall, variant = 'primary' } = Astro.props;
+const { recall, variant = 'primary', ambiguousName = false } = Astro.props;
 
-// docs/design.md §2.1 rule 1: displayName must never be the sole identifier.
-// When the model has named a food, the large type takes that name and the
-// government's verbatim product line prints directly beneath it — inside the
-// summary, so collapsing the row can never strip the identifying detail.
 const heading = recall.displayName ?? recall.product;
-const showsSpecLine = recall.displayName !== null;
+
+// The disambiguator. Only rendered when the page says this name is shared, and
+// only while the row is closed — once open, the full verbatim product is right
+// there in the fact list, and printing it twice is the redundancy step 9j set
+// out to remove.
+const showsBrief = ambiguousName && recall.displayName !== null;
 
 // Snark lives here and nowhere else. Absent until scripts/voice.ts has run.
 const snark = recall.headline;
 
-const where = recall.nationwide
-  ? 'Nationwide'
+// --- the fact list -----------------------------------------------------------
+//
+// The expanded body is a record, not a paragraph stack. Every value below is
+// government text, verbatim, or a join of government values — nothing here is
+// model-written. A field with nothing in it is OMITTED rather than printed
+// empty or as "None": a blank row reads as "we checked and there is none",
+// which for lot codes would be a lie.
+
+interface Fact {
+  label: string;
+  value?: string;
+  /**
+   * Set ONLY when the record genuinely holds more than one value, in which case
+   * the field renders as a numbered list of exactly these elements.
+   *
+   * Nothing here is ever split to manufacture entries. openFDA's `code_info` is
+   * a structured field with free-text content — sometimes a bare code, sometimes
+   * a whole paragraph — and splitting that prose invents lot codes that no
+   * government page states (CLAUDE.md). One array element, one <li>. A single
+   * long blob therefore stays a single blob, rendered as plain text.
+   */
+  list?: string[];
+  /** Monospace the entries — right for codes, wrong for place names. */
+  mono?: boolean;
+  /** Verbatim government text shown under a parsed value, when the parse is
+   *  best-effort and the reader deserves to see the original. */
+  note?: string;
+}
+
+/** One value renders as text; several render as a list. Never splits. */
+function oneOrMany(values: string[]): Pick<Fact, 'value' | 'list'> {
+  if (values.length === 0) return {};
+  if (values.length === 1) return { value: values[0] };
+  return { list: values };
+}
+
+// `states` is a best-effort parse of free text that arrives in 21 shapes, so
+// `distributionRaw` rides along when it adds something. `nationwide` wins
+// outright: an empty state list on a nationwide recall is the most dangerous
+// misreading available here, because it reads as "not near me".
+const distributed: Pick<Fact, 'value' | 'list'> = recall.nationwide
+  ? { value: 'Nationwide' }
   : recall.states.length > 0
-    ? recall.states.join(', ')
-    : null;
+    ? oneOrMany(recall.states)
+    : recall.distributionRaw
+      ? { value: recall.distributionRaw }
+      : {};
+const distributionNote =
+  recall.distributionRaw && recall.distributionRaw !== distributed.value
+    ? recall.distributionRaw
+    : undefined;
+
+// With no avoid-line, the verbatim reason takes the lead slot instead — so it
+// must not also appear in the list below. Voice being absent is a normal,
+// deliberate state: `npm run refresh` publishes this way without a Gemini key.
+const hasAvoidLine = recall.avoidLine !== null && recall.avoidLine !== '';
+const lead = hasAvoidLine ? recall.avoidLine : recall.reason;
+
+const facts: Fact[] = [
+  { label: 'Product', value: recall.product },
+  { label: 'Brand', value: recall.brand },
+  { label: 'Company', value: recall.company },
+  hasAvoidLine ? { label: 'Reason', value: recall.reason } : { label: '' },
+  { label: 'Distributed', ...distributed, note: distributionNote },
+  { label: 'Retailers', ...oneOrMany(recall.retailers) },
+  { label: 'Country of origin', value: recall.countryOfOrigin ?? undefined },
+  { label: 'Lot codes', ...oneOrMany(recall.lotCodes), mono: true },
+].filter(
+  (f) => f.label !== '' && ((f.value !== undefined && f.value !== '') || (f.list?.length ?? 0) > 0),
+);
 
 // Plain English instead of "Class I" — see src/severity.ts. The agency's own
 // definition rides along in the title attribute so the shortening is checkable.
@@ -148,6 +223,10 @@ const dataConfidence = recall.confidence;
             compile error in Astro 7. Display is set to block in the CSS. */}
         {snark && <span class="snark">{snark}</span>}
 
+        {/* Shown only when this name is shared with another row, and only while
+            closed. See the `ambiguousName` prop. */}
+        {showsBrief && <span class="brief">{recall.product}</span>}
+
         {/* Severity renders on EVERY row, unconditionally, including the 18
             ungraded ones that read "Severity not yet assigned by FDA". See the
             note at the top of this file. */}
@@ -160,21 +239,32 @@ const dataConfidence = recall.confidence;
     </summary>
 
     <div class="body">
-      {/* The government's verbatim product line. Behind the toggle as of
-          2026-08-31 at the user's explicit direction — see docs/design.md
-          §2.1, "Relaxation". It is always in the DOM, always verbatim, and
-          always one tap away; it is no longer always on screen. */}
-      {showsSpecLine && <p class="spec">{recall.product}</p>}
+      {/* The load-bearing sentence leads, because it is the one someone reads
+          while holding the product. With no voice it is the verbatim reason
+          instead, which is then omitted from the list below — each fact once.
+          The list carries the identifying detail the sentence summarises, so
+          nothing is stated twice at equal weight. */}
+      <p class:list={['avoid', hasAvoidLine ? null : 'verbatim-lead']}>{lead}</p>
 
-      {recall.avoidLine
-        ? <p class="avoid">{recall.avoidLine}</p>
-        : <p class="avoid">
-            <span class="reason">{recall.reason}</span>
-            {recall.company && <span class="bit">Recalled by {recall.company}.</span>}
-            {where && <span class="bit">Distributed: {where}.</span>}
-            {recall.lotCodes.length > 0 && <span class="bit">Codes: {recall.lotCodes.join(' / ')}</span>}
-          </p>
-      }
+      {/* The record itself. A <dl> because these genuinely are label/value
+          pairs — and because the FDA press releases this data is parsed out of
+          use one too. <div> wrappers inside <dl> are valid HTML5 and keep each
+          pair together for the grid. */}
+      <dl class="facts">
+        {facts.map((fact) => (
+          <div class="fact">
+            <dt>{fact.label}</dt>
+            <dd>
+              {fact.list
+                ? <ol class:list={['multi', fact.mono ? 'mono' : null]}>
+                    {fact.list.map((entry) => <li>{entry}</li>)}
+                  </ol>
+                : <span class:list={[fact.mono ? 'mono-value' : null]}>{fact.value}</span>}
+              {fact.note && <span class="verbatim">{fact.note}</span>}
+            </dd>
+          </div>
+        ))}
+      </dl>
 
       <p class="meta">
         <span class="tag tier">{recall.confidence === 'verified' ? 'Verified data' : 'Extracted from prose'}</span>
@@ -354,17 +444,22 @@ const dataConfidence = recall.confidence;
 
   /* --- Body content ----------------------------------------------------- */
 
-  /* The specific thing recalled, verbatim. It opens the body, directly above
-     the avoid-line, so the first thing an expanded row states is which product
-     this actually is. No line clamp any more: the clamp existed to stop a
-     ten-line openFDA spec string from burying a collapsed row, and nothing is
-     collapsed down here. */
-  .spec {
-    margin: 0 0 0.9rem;
-    font-size: 0.9rem;
-    line-height: 1.45;
+  /* The collapsed disambiguator. Two lines of the verbatim product, enough to
+     tell "cheese" from "cheese" without putting a ten-line openFDA spec string
+     under every heading. It disappears when the row opens, because the full
+     untruncated text is then in the fact list below. */
+  .brief {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
     color: var(--dim, #5b5b5b);
   }
+  .row[open] .brief { display: none; }
 
   /* The load-bearing sentence. The line someone reads while holding the
      product, so it is the largest thing in the body. */
@@ -375,11 +470,80 @@ const dataConfidence = recall.confidence;
     color: var(--ink, #111);
     max-width: 60ch;
   }
-  .reason { font-weight: 600; }
-  /* No ::before spacer: compressHTML: true preserves the real whitespace
-     between these spans. If someone flips that to Astro 7's 'jsx' default,
-     the words glue together here first. */
-  .bit { display: inline; }
+  /* No avoid-line: the lead is verbatim government text instead of a written
+     sentence, and is marked as quoted so the difference is visible rather than
+     silently passed off as the same kind of line. */
+  .avoid.verbatim-lead {
+    padding-left: 0.85rem;
+    border-left: 2px solid var(--rule, #e5e5e5);
+    font-weight: 600;
+  }
+
+  /* --- the fact list ----------------------------------------------------- */
+
+  .facts {
+    margin: 0 0 1rem;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .fact {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+  }
+  .fact dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--dim, #5b5b5b);
+  }
+  .fact dd {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ink, #111);
+    /* Government product text runs long and unbroken; never let it push the
+       page sideways. */
+    overflow-wrap: anywhere;
+  }
+  /* The government's own words under a best-effort parse of them. */
+  .verbatim {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8rem;
+    color: var(--dim, #5b5b5b);
+  }
+  /* A multi-value field is a numbered reference list: quiet, countable, and
+     honest about how many values the record actually holds. The count comes
+     from the array, never from splitting a string. */
+  .multi {
+    margin: 0;
+    padding-left: 1.6rem;
+  }
+  .multi li {
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .multi li + li { margin-top: 0.15rem; }
+  /* Numbers quiet and aligned, matching the dateline's tabular figures. */
+  .multi li::marker {
+    color: var(--dim, #5b5b5b);
+    font-size: 0.8em;
+    font-variant-numeric: tabular-nums;
+  }
+  .multi.mono li,
+  .mono-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85em;
+  }
+
+  /* Stack the label above the value where 8.5rem of gutter would squeeze the
+     text into a column two words wide. */
+  @media (max-width: 30rem) {
+    .fact { grid-template-columns: 1fr; gap: 0.1rem; }
+  }
 
   .meta {
     margin: 0;
