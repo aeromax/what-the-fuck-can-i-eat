@@ -51,22 +51,69 @@ export interface SourceResult {
 }
 
 /**
+ * openFDA answers a zero-match query with **HTTP 404** and an error body, not a
+ * 200 with `results: []`. Verified live 2026-08-31:
+ *
+ *   {"error":{"code":"NOT_FOUND","message":"No matches found!"}}
+ *
+ * That is a reachable source reporting an empty window, and an empty window is
+ * normal here — report_date lags recall initiation by a median of 69 days, so
+ * the 30-day window is often genuinely empty. Treating it as unreachable both
+ * lies in the footer and routes around refresh's loud "reachable but zero"
+ * warning, which is the silent-source alarm.
+ *
+ * The body shape is checked, not just the status: a wrong-but-plausible URL also
+ * 404s, and FDA serves a plausible error page for one. Only a parsed body whose
+ * `error.code` is exactly `NOT_FOUND` counts as "no matches".
+ */
+export function isNoMatches(status: number, body: string): boolean {
+  if (status !== 404) return false;
+  try {
+    const parsed: unknown = JSON.parse(body);
+    if (typeof parsed !== 'object' || parsed === null) return false;
+    const err = (parsed as { error?: unknown }).error;
+    if (typeof err !== 'object' || err === null) return false;
+    return (err as { code?: unknown }).code === 'NOT_FOUND';
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Fetches the window, writes the raw response to data/snapshots/, and returns
  * normalized records. Never throws: a failing source must degrade, not blank
  * the page (docs/design.md §6), so the caller sees reachable: false instead.
  */
 export async function fetchOpenFda(now = new Date()): Promise<SourceResult> {
   let raw: string;
+  let noMatches = false;
   try {
     const res = await fetch(buildQuery(now));
-    if (!res.ok) return { recalls: [], reachable: false, note: `HTTP ${res.status}` };
     raw = await res.text();
+    if (!res.ok) {
+      if (!isNoMatches(res.status, raw)) {
+        return { recalls: [], reachable: false, note: `HTTP ${res.status}` };
+      }
+      noMatches = true;
+    }
   } catch (e) {
     return { recalls: [], reachable: false, note: (e as Error).message };
   }
 
   // Snapshots overwrite in place — git history is the audit trail. §6.
+  //
+  // The zero-match 404 body is snapshotted verbatim like any other response.
+  // Leaving the previous run's records on disk would imply the last successful
+  // fetch is current, which is exactly the question a snapshot exists to answer.
   writeFileSync(new URL('../../data/snapshots/openfda.json', import.meta.url), raw);
+
+  if (noMatches) {
+    return {
+      recalls: [],
+      reachable: true,
+      note: `WARNING: openFDA reached but reported no records in the ${WINDOW_DAYS}-day window (HTTP 404 NOT_FOUND)`,
+    };
+  }
 
   const parsed = OpenFdaResponse.safeParse(JSON.parse(raw));
   if (!parsed.success) {

@@ -134,3 +134,16 @@ describe('normalizing to the extracted tier', () => {
     expect(recall.displayName).toBeNull();
   });
 });
+
+describe('RSS empty feed is empty, not unreachable', () => {
+  it('parses a feed with no items to an empty array', () => {
+    // fast-xml-parser omits `item` entirely when the channel has none. Without
+    // the schema default that rejected, and `fetchFdaRss` reported the source
+    // as unreachable — hiding a genuine zero behind a network-failure shape and
+    // skipping refresh's loud "reachable but zero" warning.
+    const xml =
+      '<?xml version="1.0"?><rss version="2.0"><channel><title>Food Safety Recalls</title></channel></rss>';
+    const parsed = FdaRssFeed.parse(parser.parse(xml));
+    expect(parsed.rss.channel.item).toEqual([]);
+  });
+});

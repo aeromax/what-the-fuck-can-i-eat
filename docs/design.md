@@ -203,6 +203,18 @@ Recorded in `CLAUDE.md` as checked against live endpoints on 2026-08-28. Several
 contradict pre-2026 training data. Trust these over recollection.
 
 **openFDA**
+- **A zero-match query answers HTTP 404 with an error body**, not 200 with an
+  empty `results` array. Verified live 2026-08-31:
+  `{"error":{"code":"NOT_FOUND","message":"No matches found!"}}`. Reporting that
+  as `reachable: false` would be two lies at once — the footer would say openFDA
+  was down when it answered, and refresh's loud "reachable but returned zero"
+  warning (§4) would be skipped, since the zero arrived by the network-failure
+  route instead. `fetchOpenFda` therefore treats a 404 **whose body parses with
+  `error.code === "NOT_FOUND"`** as reachable-and-empty, and every other non-OK
+  status as unreachable. The body check is not defensive politeness: a
+  wrong-but-plausible URL 404s as well, and FDA serves a plausible page for one.
+  An empty window is an ordinary state here, not an alarm — `report_date` lags
+  recall initiation by a median of 69 days.
 - Count queries need the `.exact` suffix (`count=status.exact`) or they error.
 - Date-range brackets must be URL-encoded.
 - Dates are `YYYYMMDD` **strings**, not numbers and not ISO.

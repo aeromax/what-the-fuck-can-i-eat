@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { RecallSchema, type Recall } from '../src/recall.ts';
 import {
+  CommittedRecallsSchema,
   refresh,
   stableSerialize,
   type FileName,
   type MetaFile,
   type RefreshDeps,
+  type CommittedRecalls,
   type SourceOutcome,
 } from '../scripts/refresh.ts';
 
@@ -47,6 +49,7 @@ interface StubIO {
   errors: string[];
   logs: string[];
   voiceReceived: Recall[] | null;
+  loadCalls: number;
 }
 
 function makeDeps(
@@ -58,6 +61,8 @@ function makeDeps(
   } = {},
   options: {
     committedRecalls?: Recall[];
+    /** Overrides `committedRecalls` entirely — drives the unreadable-state path. */
+    committedRecallsResult?: CommittedRecalls;
     committedRecallsText?: string;
     committedReviewText?: string;
     committedMetaText?: string;
@@ -75,6 +80,7 @@ function makeDeps(
     errors: [],
     logs: [],
     voiceReceived: null,
+    loadCalls: 0,
   };
 
   const deps: RefreshDeps = {
@@ -84,7 +90,10 @@ function makeDeps(
     },
     fetchFdaRss: async () => sources.rss ?? downSource('no fixture'),
     fetchFsis: async () => sources.fsis ?? downSource('no fixture'),
-    loadCommittedRecalls: () => options.committedRecalls ?? [],
+    loadCommittedRecalls: () => {
+      io.loadCalls += 1;
+      return options.committedRecallsResult ?? { ok: true, recalls: options.committedRecalls ?? [] };
+    },
     loadCommittedText: (name) => io.committed[name] ?? null,
     writeText: (name, text) => {
       io.writes[name] = text;
@@ -286,5 +295,61 @@ describe('refresh: carryVoiceForward is invoked with committed state', () => {
     expect(io.voiceReceived).toHaveLength(1);
     expect(io.voiceReceived![0]!.id).toBe('fdaRss:new');
     expect(io.voiceReceived![0]!.headline).toBeNull();
+  });
+});
+
+
+describe('refresh: committed state must be readable', () => {
+  it('aborts without fetching, writing, or voicing when recalls.json is corrupt', async () => {
+    const r = makeRecall();
+    const { deps, io } = makeDeps(
+      { openfda: okSource([r]), rss: okSource([r]), fsis: okSource([r]) },
+      { committedRecallsResult: { ok: false, reason: 'not valid JSON: Unexpected token <' } },
+    );
+
+    const result = await refresh(deps);
+
+    expect(result.status).toBe('aborted-unreadable-state');
+    // Nothing written: last-good recalls.json stays exactly as it is on disk.
+    expect(io.writes.recalls).toBeUndefined();
+    expect(io.writes.review).toBeUndefined();
+    expect(io.writes.meta).toBeUndefined();
+    // And crucially, voice never ran — an empty prior state would have made
+    // carryVoiceForward treat every record as new and regenerate the page.
+    expect(io.voiceReceived).toBeNull();
+    expect(io.errors.some((e) => e.includes('recalls.json'))).toBe(true);
+    expect(io.errors.some((e) => e.includes('regenerate'))).toBe(true);
+  });
+
+  it('treats a missing file as a quiet first run', async () => {
+    const fresh = makeRecall();
+    const { deps, io } = makeDeps(
+      { openfda: downSource(), rss: okSource([fresh]), fsis: downSource() },
+      { committedRecallsResult: { ok: true, recalls: [] } },
+    );
+
+    const result = await refresh(deps);
+
+    expect(result.status).toBe('wrote');
+    expect(io.errors).toEqual([]);
+    expect(io.voiceReceived).toHaveLength(1);
+  });
+
+  it('reads the committed state exactly once, before the sources', async () => {
+    const { deps, io } = makeDeps({ openfda: okSource([makeRecall()]) });
+    await refresh(deps);
+    expect(io.loadCalls).toBe(1);
+  });
+});
+
+describe('CommittedRecallsSchema', () => {
+  it('accepts an empty array and a well-formed record list', () => {
+    expect(CommittedRecallsSchema.safeParse([]).success).toBe(true);
+    expect(CommittedRecallsSchema.safeParse([makeRecall()]).success).toBe(true);
+  });
+
+  it('rejects a shape-drifted file at the read boundary rather than downstream', () => {
+    expect(CommittedRecallsSchema.safeParse([{ id: 'fdaRss:x' }]).success).toBe(false);
+    expect(CommittedRecallsSchema.safeParse({ recalls: [] }).success).toBe(false);
   });
 });

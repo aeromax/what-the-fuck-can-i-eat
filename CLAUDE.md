@@ -200,6 +200,14 @@ These were each found the hard way. None are hypothetical.
   reach client code, or Astro will inline it into the shipped bundle.
 
 **openFDA**
+- **A zero-match query returns HTTP 404, not 200 with an empty `results`.** The
+  body is `{"error":{"code":"NOT_FOUND","message":"No matches found!"}}`
+  (verified live 2026-08-31). That is a *reachable source reporting an empty
+  window*, and an empty window is normal — see the `report_date` lag below — so
+  `fetchOpenFda` treats it as `reachable: true, recalls: []`. Check the body
+  shape, never the status alone: a wrong-but-plausible URL 404s too. The 404
+  body is snapshotted verbatim, so `data/snapshots/openfda.json` never implies
+  the last successful fetch is current.
 - Count queries need the `.exact` suffix (`count=status.exact`) or they error.
 - Date-range brackets must be URL-encoded.
 - Dates are `YYYYMMDD` **strings**.
@@ -279,6 +287,11 @@ These were each found the hard way. None are hypothetical.
   generating** — a fresh source fetch always looks entirely unvoiced, so without
   it every run rewrites the whole page. Broken once already; see build plan
   step 7.
+  For the same reason, refresh **reads the committed `recalls.json` first and
+  aborts** when it exists but cannot be read or fails `RecallSchema`. Only
+  `ENOENT` — the genuine first run — is allowed to yield `[]`, because `[]` is
+  exactly the input that regenerates every headline. Aborting costs a run;
+  guessing costs the whole page's voice and the API bill for it.
 - **A run that changes nothing must not commit.** Most of the four daily runs will
   find no news; exit early when output is byte-identical to what is committed.
 - **Snapshots overwrite in place.** Accumulating timestamped files would add

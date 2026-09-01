@@ -63,7 +63,12 @@ export const FdaRssFeed = z.object({
       // fast-xml-parser must be configured with
       // `isArray: (n) => n === 'item'`, or a single-item feed silently
       // deserialises to an object and this schema is what catches it.
-      item: z.array(FdaRssItem),
+      // Absent when the feed carries no items at all. That is an empty feed,
+      // not an unreachable source: without the default the schema would reject
+      // and `fetchFdaRss` would report `reachable: false`, hiding a genuine
+      // zero behind what looks like a network failure and skipping refresh's
+      // loud "reachable but zero" warning.
+      item: z.array(FdaRssItem).default([]),
     }),
   }),
 });

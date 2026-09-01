@@ -36,7 +36,8 @@
 
 import { pathToFileURL } from 'node:url';
 import { readFileSync, writeFileSync } from 'node:fs';
-import type { Recall } from '../src/recall.ts';
+import { z } from 'zod';
+import { RecallSchema, type Recall } from '../src/recall.ts';
 import type { MetaFile, SourceReport } from '../src/meta.ts';
 import { createGeminiClient } from './gemini.ts';
 import { mergeRecalls, type ReviewEntry } from './merge.ts';
@@ -68,12 +69,27 @@ export type Voicer = (recalls: Recall[]) => Promise<Recall[]>;
 
 export type FileName = 'recalls' | 'review' | 'meta';
 
+/**
+ * The committed `recalls.json`, or a reason it could not be read.
+ *
+ * A union rather than a bare `Recall[]` because the two failure modes must not
+ * look alike. "No file" is a legitimate first run and yields `[]`. Anything else
+ * — a truncated write, a merge-conflict marker, a hand-edit that drifted the
+ * shape — must NOT yield `[]`, because `[]` is precisely the input that makes
+ * `carryVoiceForward` treat every record as new and regenerate the whole page's
+ * voice. That regression already happened once (build step 7) and it costs money
+ * as well as churn.
+ */
+export type CommittedRecalls =
+  | { ok: true; recalls: Recall[] }
+  | { ok: false; reason: string };
+
 export interface RefreshDeps {
   fetchOpenFda: () => Promise<SourceOutcome>;
   fetchFdaRss: () => Promise<SourceOutcome>;
   fetchFsis: () => Promise<SourceOutcome>;
   /** The committed recalls.json, deserialized. Used ONLY for carryVoiceForward. */
-  loadCommittedRecalls: () => Recall[];
+  loadCommittedRecalls: () => CommittedRecalls;
   /** The committed file text, byte-for-byte. Returns null if missing. */
   loadCommittedText: (name: FileName) => string | null;
   writeText: (name: FileName, text: string) => void;
@@ -85,14 +101,19 @@ export interface RefreshDeps {
 
 export interface RefreshResult {
   /** 'wrote' — files updated. 'unchanged' — byte-identical, no writes.
-   * 'refused-empty' — degrade-never-blank path, recalls.json left alone. */
-  status: 'wrote' | 'unchanged' | 'refused-empty';
+   * 'refused-empty' — degrade-never-blank path, recalls.json left alone.
+   * 'aborted-unreadable-state' — committed recalls.json exists but could not be
+   * read or validated; nothing fetched, nothing written, nothing regenerated. */
+  status: 'wrote' | 'unchanged' | 'refused-empty' | 'aborted-unreadable-state';
   meta: MetaFile;
   voiced: Recall[];
   review: ReviewEntry[];
 }
 
 // --- helpers ------------------------------------------------------------------
+
+/** The on-disk shape of data/recalls.json, validated at the read boundary. */
+export const CommittedRecallsSchema = z.array(RecallSchema);
 
 /** Stable serialization. Recall + Review + Meta all have deterministic key
  * order via Zod schemas or the plain-object constructor, so this is a
@@ -125,6 +146,28 @@ export async function refresh(deps: RefreshDeps): Promise<RefreshResult> {
   const warn = deps.warn ?? ((m: string) => console.warn(m));
   const error = deps.error ?? ((m: string) => console.error(m));
 
+  // Read the committed state FIRST. If it is present but unreadable, abort
+  // before touching the network: proceeding would hand `carryVoiceForward` an
+  // empty prior state and regenerate every headline, which is worse than not
+  // running at all. Aborting here also leaves data/ entirely untouched — no
+  // snapshots rewritten, no recalls.json overwritten — so degrade-never-blank
+  // holds trivially.
+  const committed = deps.loadCommittedRecalls();
+  if (!committed.ok) {
+    error(
+      `refusing to run: could not read the committed data/recalls.json — ${committed.reason}. ` +
+        'Proceeding would treat every record as new and regenerate all voice. ' +
+        'Fix or restore the file (git checkout data/recalls.json) and re-run. Nothing was written.',
+    );
+    return {
+      status: 'aborted-unreadable-state',
+      meta: { sources: [] },
+      voiced: [],
+      review: [],
+    };
+  }
+  const previous = committed.recalls;
+
   const [openfda, rss, fsis] = await Promise.all([
     safeFetch('openFDA', deps.fetchOpenFda, warn),
     safeFetch('FDA RSS', deps.fetchFdaRss, warn),
@@ -151,9 +194,9 @@ export async function refresh(deps: RefreshDeps): Promise<RefreshResult> {
   const merged = mergeRecalls(fetched);
   log(`merge: ${fetched.length} fetched, ${merged.mergedCount} merged, ${merged.review.length} ambiguous pair(s)`);
 
-  // MUST run before voice, or "never regenerate existing voice" cannot hold —
-  // fresh source fetches always look entirely unvoiced. Build-step-7 bug.
-  const previous = deps.loadCommittedRecalls();
+  // MUST be applied before voice, or "never regenerate existing voice" cannot
+  // hold — fresh source fetches always look entirely unvoiced. Build-step-7 bug.
+  // `previous` was loaded at the top of the run; see the abort path there.
   const withPriorVoice = carryVoiceForward(previous, merged.recalls);
   const carried = withPriorVoice.filter((r) => r.headline !== null).length;
   log(`carried voice forward for ${carried} of ${withPriorVoice.length} records`);
@@ -211,11 +254,30 @@ function realDeps(): RefreshDeps {
     fetchFdaRss: fetchFdaRssRecalls,
     fetchFsis,
     loadCommittedRecalls: () => {
+      let text: string;
       try {
-        return JSON.parse(readFileSync(recallsUrl, 'utf8')) as Recall[];
-      } catch {
-        return [];
+        text = readFileSync(recallsUrl, 'utf8');
+      } catch (e) {
+        // Only a genuinely absent file is the quiet first-run case. Every other
+        // read error (permissions, a directory, an I/O fault) is reported.
+        if ((e as NodeJS.ErrnoException).code === 'ENOENT') return { ok: true, recalls: [] };
+        return { ok: false, reason: `unreadable: ${(e as Error).message}` };
       }
+
+      let json: unknown;
+      try {
+        json = JSON.parse(text);
+      } catch (e) {
+        return { ok: false, reason: `not valid JSON: ${(e as Error).message}` };
+      }
+
+      // Validated, not cast. A parseable-but-shape-drifted file fails here with
+      // a clear message instead of throwing somewhere downstream.
+      const parsed = CommittedRecallsSchema.safeParse(json);
+      if (!parsed.success) {
+        return { ok: false, reason: `does not match RecallSchema: ${parsed.error.message}` };
+      }
+      return { ok: true, recalls: parsed.data };
     },
     loadCommittedText: (name) => {
       try {
@@ -258,7 +320,7 @@ const isEntryPoint =
 
 if (isEntryPoint) {
   const result = await refresh(realDeps());
-  if (result.status === 'refused-empty') {
+  if (result.status === 'refused-empty' || result.status === 'aborted-unreadable-state') {
     process.exit(1);
   }
 }

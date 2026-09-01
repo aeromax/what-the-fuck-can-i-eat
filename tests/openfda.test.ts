@@ -1,10 +1,17 @@
-import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RecallSchema } from '../src/recall.ts';
-import { buildQuery, compactDate, selectRows } from '../scripts/sources/openfda.ts';
+import { buildQuery, compactDate, fetchOpenFda, isNoMatches, selectRows } from '../scripts/sources/openfda.ts';
 import { isoFromCompact, lotCodesFrom, normalizeOpenFda, openFdaSourceUrl } from '../scripts/normalize.ts';
 import { OpenFdaResponse } from '../scripts/sourceSchemas.ts';
 import { parseDistribution } from '../scripts/states.ts';
+
+// The snapshot write is stubbed so these tests never touch data/. readFileSync
+// is kept real — the fixture above is loaded through it.
+vi.mock('node:fs', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('node:fs')>()),
+  writeFileSync: vi.fn(),
+}));
 
 const rows = OpenFdaResponse.parse(
   JSON.parse(readFileSync(new URL('./fixtures/openfda-enforcement.json', import.meta.url), 'utf8')),
@@ -201,5 +208,93 @@ describe('distribution parsing', () => {
         expect(r.nationwide || (r.distributionRaw ?? '').length > 0).toBe(true);
       }
     }
+  });
+});
+
+
+describe('openFDA zero-match handling', () => {
+  const NOT_FOUND_BODY = '{"error":{"code":"NOT_FOUND","message":"No matches found!"}}';
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.mocked(writeFileSync).mockClear();
+  });
+
+  function stubFetch(status: number, body: string, ok = status >= 200 && status < 300) {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({ ok, status, text: async () => body })),
+    );
+  }
+
+  it('recognises the live NOT_FOUND body and nothing else', () => {
+    // Verified live 2026-08-31: a zero-match query 404s with this body.
+    expect(isNoMatches(404, NOT_FOUND_BODY)).toBe(true);
+    // A wrong-but-plausible URL also 404s. Status alone is not enough.
+    expect(isNoMatches(404, '<html><body>Page not found</body></html>')).toBe(false);
+    expect(isNoMatches(404, '{"error":{"code":"BAD_REQUEST"}}')).toBe(false);
+    expect(isNoMatches(404, '{"error":"NOT_FOUND"}')).toBe(false);
+    expect(isNoMatches(404, 'null')).toBe(false);
+    // Other statuses are never "no matches", whatever the body says.
+    expect(isNoMatches(500, NOT_FOUND_BODY)).toBe(false);
+  });
+
+  it('reports an empty 30-day window as reachable with zero records', async () => {
+    stubFetch(404, NOT_FOUND_BODY);
+
+    const result = await fetchOpenFda(new Date('2026-08-31T00:00:00Z'));
+
+    // Reachable, so refresh's loud "reached but returned zero" warning fires
+    // instead of the footer claiming openFDA was down. An empty window is
+    // normal: report_date lags initiation by a median of 69 days.
+    expect(result.reachable).toBe(true);
+    expect(result.recalls).toEqual([]);
+    expect(result.note).toContain('WARNING');
+    expect(result.note).toContain('NOT_FOUND');
+  });
+
+  it('snapshots the zero-match response rather than leaving the last good one', async () => {
+    stubFetch(404, NOT_FOUND_BODY);
+
+    await fetchOpenFda(new Date('2026-08-31T00:00:00Z'));
+
+    const write = vi.mocked(writeFileSync).mock.calls[0];
+    expect(write).toBeDefined();
+    expect(String(write![0])).toContain('data/snapshots/openfda.json');
+    expect(write![1]).toBe(NOT_FOUND_BODY);
+  });
+
+  it('still reports a 404 with an unexpected body as unreachable', async () => {
+    stubFetch(404, '<html><body>Page not found</body></html>');
+
+    const result = await fetchOpenFda(new Date('2026-08-31T00:00:00Z'));
+
+    expect(result.reachable).toBe(false);
+    expect(result.note).toBe('HTTP 404');
+    // And nothing is snapshotted — a wrong URL must not clobber the audit trail.
+    expect(vi.mocked(writeFileSync)).not.toHaveBeenCalled();
+  });
+
+  it('still reports other non-OK statuses as unreachable', async () => {
+    stubFetch(503, 'Service Unavailable');
+
+    const result = await fetchOpenFda(new Date('2026-08-31T00:00:00Z'));
+
+    expect(result.reachable).toBe(false);
+    expect(result.note).toBe('HTTP 503');
+  });
+
+  it('reports a network failure as unreachable', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        throw new Error('getaddrinfo ENOTFOUND api.fda.gov');
+      }),
+    );
+
+    const result = await fetchOpenFda(new Date('2026-08-31T00:00:00Z'));
+
+    expect(result.reachable).toBe(false);
+    expect(result.note).toContain('ENOTFOUND');
   });
 });
