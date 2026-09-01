@@ -13,39 +13,50 @@ Spawn subagents to accomplish smaller tasks. Subagents can be used for:
 
 and anything else necessary. 
 
-## Project status: written end to end; the automation has never run
+## Project status: built, and running on GitHub since 2026-09-01
 
-As of 2026-09-01, build steps 1–10 are done. All three sources fetch and
-normalize live data — openFDA 39, FDA RSS 17, FSIS 7 — merge.ts dedupes across
-them, voice.ts runs Gemini for extraction and snark, refresh.ts is the
-production orchestrator with degrade-never-blank, byte-identical short-circuit,
-and a `data/meta.json` sidecar listing reachable sources for the footer, and
-`src/pages/index.astro` renders the page from the committed data. 206 tests pass
-offline against captured fixtures.
+Build steps 1–10 are done and merged to `main` (PR #2 at 15:41 UTC, PR #3 at
+18:10 UTC on 2026-09-01). All three sources fetch and normalize live data,
+merge.ts dedupes across them, voice.ts runs Gemini for extraction and snark,
+refresh.ts is the production orchestrator with degrade-never-blank,
+byte-identical short-circuit, and a `data/meta.json` sidecar listing reachable
+sources for the footer, and `src/pages/index.astro` renders the page from the
+committed data. 206 tests pass offline against captured fixtures. The site is
+live at <https://whatthefuckcanieat.com> — a custom domain, not the github.io
+URL — and ships Cloudflare Web Analytics.
+
+**Step 10's acceptance criteria are both met, on a runner, with evidence.**
+A `workflow_dispatch` of "Refresh recall data" (run 33539857201,
+2026-09-01T17:47:45Z, success, 22s) produced a real data commit — `bd9f427`
+"data: refresh recalls (47 records)", authored by `github-actions[bot]`,
+touching `data/meta.json`, `data/recalls.json` and `data/snapshots/fsis.json`.
+"Deploy static content to Pages" (run 33539886920) started 18 seconds later as a
+`workflow_dispatch` and succeeded: that is `gh workflow run static.yml --ref main`
+at the end of `refresh.yml` doing exactly the job the `GITHUB_TOKEN`
+non-recursion rule requires of it, demonstrated in production rather than
+reasoned about. And `static.yml`'s grep of `dist/` for
+`AIza[0-9A-Za-z_-]{10,}|GEMINI_API_KEY` has now run on a runner with the secret
+present, and passed — the key does not reach the bundle.
+
+**FSIS is reachable from a GitHub Actions runner.** `impit` got through in that
+run's `fetchFsis()` and the meta sidecar recorded `7 of 2023 records included`.
+That is the production path rather than a diagnostic, which makes it stronger
+evidence than the probe would have given, and it closes build plan step 5's
+long-open half in the affirmative. `.github/workflows/fsis-probe.yml` has still
+never been dispatched; it is now largely redundant, but it remains the cleaner
+isolated diagnostic if a future run starts failing.
+
+FDA RSS failed the same way on that first run — `reachable: false`, `HTTP 404`,
+count 0 — and has since been diagnosed and fixed. `www.fda.gov` answers plain
+`fetch()` from Actions egress with a 10-byte `Not found\n` body, HTTP 404 and no
+content-type, while `impit` gets 200 from the same runner in the same second
+(probe run 33543434214). Both www.fda.gov call sites now use `impit`; the
+refresh run that followed reported all three sources reachable and published 64
+records. See the FDA RSS traps below.
 
 Merge finds nothing to merge in live data, correctly: openFDA's report_date lags
 recall initiation by a median of 69 days, so its 30-day window and the RSS window
 are disjoint. The merge path is covered by fixtures built on real records.
-
-⚠️ **Step 10's two new workflows have never run on GitHub.**
-`.github/workflows/refresh.yml` (the daily data refresh, commit, and deploy
-dispatch) and `.github/workflows/fsis-probe.yml` (a manual FSIS reachability
-diagnostic) exist, and their YAML parses. Nothing more than that is known about
-them. Step 10's acceptance criteria — a manual dispatch producing either a real
-commit or a clean no-op, and no API key anywhere in `dist/` — are both
-unexercised. `static.yml` is older and step 10 did not change it.
-
-⚠️ FSIS is proven from this machine only. Whether `impit` gets through from a
-GitHub Actions runner is still unverified — a local run on 2026-09-01 again saw
-no block, which says nothing about a runner. `.github/workflows/fsis-probe.yml`
-is the built-but-unrun answer: dispatch it from the Actions tab and it settles
-build plan step 5's open half either way. Until someone does, treat meat,
-poultry and egg coverage under CI as an open risk, not a solved one.
-
-**What is left is running those two workflows on GitHub and reading what they
-say.** Do not improvise off this file alone — `docs/build-plan.md` carries the
-per-step acceptance criteria and records which halves of step 10's are still
-outstanding.
 
 ## What this is
 
@@ -150,7 +161,8 @@ are dispatchable by hand from the Actions tab, or from a shell:
 ```
 gh workflow run refresh.yml        # fetch, merge, voice, commit, deploy
 gh workflow run static.yml         # rebuild and deploy without refetching
-gh workflow run fsis-probe.yml     # is FSIS reachable from a runner?
+gh workflow run fsis-probe.yml     # FSIS reachability diagnostic (never dispatched)
+gh workflow run fda-probe.yml      # how does www.fda.gov answer a runner?
 ```
 
 `refresh` runs TypeScript directly through Node's native type stripping — there
@@ -267,6 +279,28 @@ These were each found the hard way. None are hypothetical.
   parsing of US timezone abbreviations is not guaranteed — parse deliberately.
 - The correct URL is
   `https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/food-safety-recalls/rss.xml`.
+- ⚠️ **`www.fda.gov` blocks plain `fetch()` from a GitHub Actions runner — use
+  `impit`.** Measured on 2026-09-01 (probe run 33543434214), both transports in
+  the same run:
+
+  | | plain `fetch()` | `impit` |
+  |---|---|---|
+  | feed | 404, no content-type, 10 bytes `Not found\n` | 200, `application/rss+xml`, 18,496 B |
+  | press release | 404, no content-type, 10 bytes `Not found\n` | 200, `text/html`, 49,882 B |
+
+  A 10-byte body with no content-type is **not** FDA's not-found page — it is an
+  edge rule keyed on the client. So a 404 here is not proof the URL is wrong;
+  check *where you are calling from* before you "fix" the URL, and note it 200s
+  from a laptop, which is how this stayed invisible until the first CI run.
+- **Both** FDA call sites go through `impit` — `scripts/sources/fdaRss.ts` and
+  `scripts/pressRelease.ts`. Swapping only the feed fixes nothing visible: the
+  items are fetched and then every one is skipped as unreachable, so the
+  `extracted` tier stays empty and the page still looks merely quiet. openFDA is
+  a different host, answers CI normally, and stays on plain `fetch()`.
+- **The feed's `<link>` is `http://`**, and `fetchPressRelease` rewrites it to
+  `https://` before fetching. Probing the raw link tests a scheme production
+  never requests — it 404s for everyone and proves nothing. This wasted the
+  first probe run; test the URL production actually sends.
 
 **FDA press-release pages**
 - `<dd>` values repeat their own label as a `<div class="field--label">` child —
@@ -284,7 +318,11 @@ These were each found the hard way. None are hypothetical.
   plain `fetch()` returned the same 12.9 MB of valid JSON that `impit` did. Keep
   using `impit` regardless — an intermittent block is worse than a permanent one,
   and the dependency is already paid for. Do not simplify to `fetch()`, and do
-  not try to fix a future block with headers.
+  not try to fix a future block with headers. **A GitHub Actions runner is not
+  blocked either:** `impit` fetched FSIS successfully from inside the
+  2026-09-01 production refresh run (`7 of 2023 records included`). That was the
+  long-standing open question and it is settled; the source that failed from CI
+  that day was FDA RSS.
 - `field_states` can contain the literal `"Nationwide"`, which a state-name
   filter drops — leaving a nationwide alert looking local. Handle it explicitly.
 - `field_establishment` is populated on well under half of records; FSIS also
@@ -364,9 +402,10 @@ a trailing 30-day window. Class III is excluded as the boring tier. Human food
 only; the feed also carries pet food, which is filtered out.
 
 **The count is not part of the rule.** It is whatever the government published in
-that window, and it moves on every refresh — 64 records as of 2026-09-01, against
-the 46 this file used to assert. Never write a number down as a property of the
-rule: not here, not on the page, not in a test.
+that window, and it moves on every refresh — this file has at various times
+asserted 46, then 64, and a single unreachable source moved it to 47 within a
+day. Never write a number down as a property of the rule: not here, not on the
+page, not in a test.
 
 The window is also not a live-status check, and it is not one clock. Nothing
 re-verifies that a recall is still open — a record leaves the page by ageing out,

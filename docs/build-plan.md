@@ -169,7 +169,7 @@ array of one.
 
 </details>
 
-## Step 5 — FSIS via impit ✅ done 2026-08-29 (with one caveat)
+## Step 5 — FSIS via impit ✅ done 2026-08-29, runner half closed 2026-09-01
 
 Delivered: `scripts/sources/fsis.ts`, FSIS normalization, 13 new tests (105
 total). A live run returns 8 of 2,023 records — 7 Class I and 1 Public Health
@@ -179,18 +179,30 @@ Alert — in about half a second.
 403 on `www.fsis.usda.gov` HTML pages while the API endpoint returned 200, so the
 block is path-dependent rather than gone. `impit` got through both. Keep it.
 
-⚠️ **The runner half of this step's acceptance criteria is NOT met.** It works
-from this machine; whether it works from a GitHub Actions runner is still
-unproven, and CI is currently switched off. If FSIS is ever silently blocked in
-CI, meat, poultry and egg recalls vanish while the page still looks complete —
-which is why `fetchFsis` reports a loud warning on zero records and the footer
-names which sources were reachable. Re-test this before step 10 ships.
+**The runner half of this step's acceptance criteria is now MET (2026-09-01),
+and it was met by the production path rather than by the probe.** Workflow run
+33539857201 ("Refresh recall data", `workflow_dispatch`, success, 22s, started
+2026-09-01T17:47:45Z) ran `fetchFsis()` from `scripts/sources/fsis.ts` on a
+GitHub-hosted runner. The `data/meta.json` it committed records FSIS
+`reachable: true`, note `"7 of 2023 records included"`, count 7 — the same 2,023
+live records and the same 7 survivors the local run sees. `impit` gets through
+from a runner. Meat, poultry and egg coverage under CI is no longer an open
+risk.
 
-**Update 2026-09-01 (step 10).** CI is no longer switched off, and the re-test
-now has a tool: `.github/workflows/fsis-probe.yml`, a manual-dispatch probe that
-runs the real `fetchFsis()` on a runner and fails the job on a block *or* on
-reachable-but-zero-records. It has not been dispatched, so this caveat stands
-unchanged. See step 10.
+That evidence is *stronger* than what `.github/workflows/fsis-probe.yml` would
+have given, because the probe exists precisely to exercise the production path
+and this is the production path, in a real refresh, writing a real commit.
+**`fsis-probe.yml` has still never been dispatched.** It is now largely
+redundant for closing this step, and is kept for the next question rather than
+this one: if FSIS starts failing on a runner, the probe separates a raw `impit`
+request, `fetchFsis()`, and a plain `fetch()` control in one job, which is a
+cleaner diagnostic than reading a refresh run's logs.
+
+The failure mode the caveat guarded against has not gone away — a silent FSIS
+block still makes meat, poultry and egg recalls vanish while the page looks
+complete — which is why `fetchFsis` warns loudly on zero records and the footer
+names which sources were reachable. That machinery earned its keep on the same
+run, on a different source: see the FDA RSS finding under step 10.
 
 Four data findings folded into design §4: `field_states` contains the literal
 "Nationwide", `field_establishment` is populated on under half of records,
@@ -453,10 +465,12 @@ Two corrections in one phrase, and neither is cosmetic:
 The count itself stays computed from the rendered records. No fixed item count is
 correct for longer than one refresh: ~46 at design time, 64 on 2026-09-01.
 
-## Step 10 — GitHub Action ✅ written 2026-09-01 (never run on GitHub)
+## Step 10 — GitHub Action ✅ done 2026-09-01, run on GitHub and verified
 
 Delivered: `.github/workflows/refresh.yml` (the scheduled refresh) and
 `.github/workflows/fsis-probe.yml` (a manual FSIS reachability diagnostic).
+`.github/workflows/fda-probe.yml` was added the same day, after the FDA RSS
+block below; it is the same kind of diagnostic pointed at `www.fda.gov`.
 `static.yml` already existed and needed no change — see the deploy finding
 below. `GEMINI_API_KEY` is a repository secret.
 
@@ -496,8 +510,9 @@ alongside `contents: write`. Recorded as a trap in `CLAUDE.md`: the step reads a
 redundant beside `static.yml`'s push trigger, and removing it freezes the site
 without turning anything red.
 
-**`fsis-probe.yml` resolves nothing yet, but it is how step 5 gets closed.**
-`workflow_dispatch` only. Three sections: a raw `impit` request (to expose the
+**`fsis-probe.yml` was built to close step 5 and was overtaken by the first real
+refresh run, which closed it instead.** It has never been dispatched. Kept as the
+isolated diagnostic for a *future* block — see step 5. `workflow_dispatch` only. Three sections: a raw `impit` request (to expose the
 status, content-type and byte size `fetchFsis` does not return), the real
 `fetchFsis()` from `scripts/sources/fsis.ts` — the production path, because a
 probe of a reimplementation proves nothing — and a plain `fetch()` control. Only
@@ -506,23 +521,88 @@ failure, since that is the silent mode the whole FSIS caveat is about. A failing
 plain-`fetch()` leg is reported prominently and stays green: it is the expected
 historical behaviour and evidence for keeping `impit`, not a defect.
 
-**Status of the acceptance criteria: neither half is met.**
+**Status of the acceptance criteria: both halves are met (2026-09-01).** The
+workflows reached `main` in PR #2 (merged 15:41 UTC) and PR #3 (merged 18:10
+UTC), and were dispatched by hand from the Actions tab.
 
 - *"A manual dispatch produces either a commit with real changes or a clean
-  no-op"* — **not exercised.** No dispatch has happened; `refresh.yml` has never
-  run on GitHub. The commit and no-op paths are read-only reasoning about the
-  YAML.
-- *"The key does not appear anywhere in `dist/`"* — **not exercised.**
-  `static.yml` greps `dist/` for credential-shaped strings, but that grep has not
-  run against a build made on a runner with the secret present in the repository.
+  no-op"* — **met, via the commit path.** Run **33539857201** ("Refresh recall
+  data", `workflow_dispatch`, success, 22s, started 2026-09-01T17:47:45Z)
+  produced commit **`bd9f427`**, `data: refresh recalls (47 records)`, authored
+  by `github-actions[bot]`, touching `data/meta.json`, `data/recalls.json` and
+  `data/snapshots/fsis.json`. Change detection, the `<n> records` message from
+  `jq 'length'`, and the bot identity all behaved as written. The no-op path is
+  still unobserved — it needs a dispatch against unchanged upstream data, which
+  is the ordinary case and will appear on its own.
+- *"The key does not appear anywhere in `dist/`"* — **met.**
+  `.github/workflows/static.yml` (~line 74) greps `dist/` for
+  `AIza[0-9A-Za-z_-]{10,}|GEMINI_API_KEY` and fails the run on a hit. That grep
+  has now run on a runner with `GEMINI_API_KEY` present as a repository secret,
+  in run **33539886920** ("Deploy static content to Pages",
+  `workflow_dispatch`, success, started 2026-09-01T17:48:03Z), and passed.
 
-⚠️ **And step 5's runner question is still open.** A local run on 2026-09-01
-gave impit HTTP 200, `application/json`, 12,948,541 bytes, 2,023 records parsed,
-7 after the inclusion rule — and plain `fetch()` identical, so the TLS block once
-again did not reproduce locally. **That proves nothing about a GitHub runner**,
-which has different egress and different IP reputation. It is exactly the
-question `fsis-probe.yml` exists to answer, and it stays open until the workflow
-is dispatched on GitHub.
+**The deploy dispatch is demonstrated, not merely reasoned about.** Run
+33539886920 started **18 seconds** after the refresh run began — it was created
+by `gh workflow run static.yml --ref main` at the end of `refresh.yml`, and it
+is `workflow_dispatch`, not `push`, exactly as the `GITHUB_TOKEN` non-recursion
+rule predicts. The data commit `bd9f427` on its own started nothing. This is
+worth reading twice before touching that step: the evidence that it is load-
+bearing is now a production run, not an argument about YAML, and deleting it
+still fails silently — every refresh green, the published page frozen.
+
+⚠️ **New open risk: FDA RSS returned HTTP 404 from the GitHub runner.** In the
+same run 33539857201, `data/meta.json` records FDA RSS `reachable: false`, note
+`"HTTP 404"`, count 0 — while openFDA reported reachable, `"40 of 43 rows
+included"`, count 40, and FSIS reachable, `"7 of 2023 records included"`,
+count 7. Minutes later, the identical URL
+(`https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/food-safety-recalls/rss.xml`)
+returned HTTP 200, `application/rss+xml`, 18,541 bytes from the developer's
+machine.
+
+This is the same shape as the FSIS problem step 5 was built around — works
+locally, blocked from CI — arriving on a different source on the day the FSIS
+version of it closed.
+
+What it cost, and what held:
+
+- **Degrade-never-blank worked.** openFDA and FSIS carried the page, nothing was
+  published empty, and the footer named RSS as unreachable rather than implying
+  a quiet day.
+- **The whole `extracted` tier vanished.** Everything sourced from FDA
+  press-release prose reaches the page through the RSS feed; with the feed at
+  404 there are no press releases to fetch, so the page went 100% `verified`.
+  Record count fell from 64 to 47.
+- The failure is loud in `meta.json` and in the footer, and silent in the sense
+  that matters: a reader sees a shorter, entirely-verified page, not a warning.
+
+**Diagnosed and fixed the same day.** `.github/workflows/fda-probe.yml` was
+written to measure rather than guess — a 404 is not a 403, and the FSIS
+precedent was not evidence about a different host. Probe run 33543434214, both
+transports in one run:
+
+| | plain `fetch()` | `impit` |
+|---|---|---|
+| feed | 404, no content-type, 10 bytes `Not found\n` | 200, `application/rss+xml`, 18,496 B |
+| press release (https) | 404, no content-type, 10 bytes `Not found\n` | 200, `text/html`, 49,882 B |
+
+A 10-byte body with no content-type is not FDA's not-found page; it is an edge
+rule keyed on the client. `scripts/sources/fdaRss.ts` and
+`scripts/pressRelease.ts` both moved to `impit` (commit `b24d9d9`); openFDA is a
+different host, answers CI normally, and stayed on plain `fetch()`. Refresh run
+33543764413 then recorded all three sources reachable — FDA RSS `"17 records;
+skipped 3 pet, 0 unparseable, 0 unreachable"` — and published 64 records as
+commit `f25496d`.
+
+Two things worth keeping from how this was found:
+
+- **The first probe run was wrong and nearly closed the question falsely.** It
+  fetched the press release over the raw `http://` URL the feed advertises,
+  which 404s for everyone; production rewrites to `https://` first. It reported
+  "both transports blocked" — the one result that would have argued against the
+  fix that worked.
+- **Swapping only the feed would have looked like a fix and changed nothing.**
+  Items would be fetched and then every one skipped as unreachable, leaving the
+  `extracted` tier empty and the page merely shorter.
 
 ---
 

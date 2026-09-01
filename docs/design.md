@@ -32,8 +32,9 @@ The voice is snarky. The avoid-line is not.
 
 There is no server, no database, and no model call at request time. The page is
 static HTML; the data behind it is a JSON file committed to git, refreshed once
-a day by a scheduled GitHub Action (`.github/workflows/refresh.yml`, written
-at step 10 and **never yet run on GitHub**).
+a day by a scheduled GitHub Action (`.github/workflows/refresh.yml`, written at
+step 10 and first run on GitHub on 2026-09-01 — run 33539857201, which committed
+`bd9f427` and dispatched the deploy 18 seconds later).
 
 ### Who it is for
 
@@ -262,6 +263,30 @@ contradict pre-2026 training data. Trust these over recollection.
 **FDA RSS**
 - The correct URL is
   `https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/food-safety-recalls/rss.xml`
+- ⚠️ **The feed returned HTTP 404 from a GitHub Actions runner while returning
+  200 locally (2026-09-01).** The first real `refresh.yml` run (33539857201)
+  wrote FDA RSS `reachable: false`, note `"HTTP 404"`, count 0 into
+  `data/meta.json`, with openFDA (40 rows) and FSIS (7 records) both reachable in
+  the same run. Minutes later the identical URL returned HTTP 200,
+  `application/rss+xml`, 18,541 bytes from the developer's machine. This is the
+  same shape as the FSIS block above — works locally, blocked from CI — on a
+  source that had never shown it. **The consequence is specific and severe: the
+  RSS feed is the only entrance to the `extracted` tier**, because press releases
+  are reached through it, so a 404 here silently removes every prose-sourced
+  record from the page. Record count fell from 64 to 47 and the page went 100%
+  `verified`. Degrade-never-blank held and the footer named the source
+  unreachable, which is the only reason this was visible at all.
+- **Resolved the same day: use `impit` for `www.fda.gov`.** Probe run 33543434214
+  measured both transports from a runner. Plain `fetch()` got 404, no
+  content-type, a 10-byte `Not found\n` body — on the feed and on a press-release
+  page alike — while `impit` got 200 with 18,496 bytes of `application/rss+xml`
+  and a 49,882-byte HTML page respectively. That body is not FDA's not-found
+  page; it is an edge rule keyed on the client. Both call sites
+  (`scripts/sources/fdaRss.ts`, `scripts/pressRelease.ts`) now use `impit`;
+  openFDA is a different host and stays on `fetch()`. Refresh run 33543764413
+  published 64 records with all three sources reachable. Note the feed's
+  `<link>` is `http://` and `fetchPressRelease` rewrites it to `https://` — probe
+  the URL production sends, or the result is meaningless.
 - Parse with `{ ignoreAttributes: false, isArray: (n) => n === 'item' }`.
   Without `isArray`, a single-item feed silently deserialises to an object
   instead of a one-element array.
@@ -319,7 +344,14 @@ contradict pre-2026 training data. Trust these over recollection.
   than one that is always on, and the cost of the dependency is already paid.
   Do not "simplify" this to plain `fetch()` on the strength of one good day, and
   do not attempt to fix a future block by changing headers — that path was
-  already walked. Step 5 still has to prove this from a GitHub runner.
+  already walked.
+- **`impit` reaches FSIS from a GitHub Actions runner (2026-09-01).** The first
+  real `refresh.yml` run (33539857201) called the production `fetchFsis()` on a
+  GitHub-hosted runner and wrote FSIS `reachable: true`, `"7 of 2023 records
+  included"` into `data/meta.json` — the same record counts the local run sees.
+  This was the last open half of build plan step 5. `.github/workflows/fsis-probe.yml`
+  was built to answer it and has still never been dispatched; it is kept as the
+  isolated diagnostic if FSIS is ever blocked in future.
 - **`field_active_notice` is not the recency filter.** Across all 2,023 live
   records exactly **one** is `"True"` (1,833 `"False"`, 189 empty). Filtering on
   it publishes a one-item page. Recency must come from `field_recall_date`,
@@ -757,8 +789,13 @@ Not settled by `CLAUDE.md`; resolve before or during the step they block.
    no new secret — the reason it was preferred to a PAT or to `workflow_call`.
    See build plan step 10 and the `CLAUDE.md` trap.
 
-   ⚠️ Resolved as a design question, not as a proven deployment: `refresh.yml`
-   has never run on GitHub, so the dispatch has never actually rebuilt the site.
+   **Proven in production 2026-09-01.** Refresh run 33539857201 committed
+   `bd9f427` and dispatched `static.yml`; deploy run 33539886920 started 18
+   seconds later as a `workflow_dispatch`, not as a `push`. The commit alone
+   started nothing, exactly as the non-recursion rule predicts. The same deploy
+   run executed `static.yml`'s `dist/` credential grep on a runner with
+   `GEMINI_API_KEY` present and passed, which is the other half of step 10's
+   acceptance criteria.
 5. ~~**FSIS `Public Health Alert`.**~~ **Resolved 2026-08-29: include them**, as
    the safer reading. Step 5 no longer blocked. The remaining presentational work
    landed with step 9 (2026-08-31): a PHA is not labelled a recall — its severity

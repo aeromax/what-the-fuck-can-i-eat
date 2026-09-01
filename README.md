@@ -12,18 +12,26 @@ they are generated under two different sets of rules.
 
 ## Status
 
-Written end to end, not yet proven in production. The pipeline fetches, merges
-and renders live data from all three sources, and 206 tests pass offline against
-captured fixtures. What has **never run** is the automation: the daily
-refresh workflow and the FSIS reachability probe exist and their YAML parses,
-and that is all that is known about them.
+Live at <https://whatthefuckcanieat.com>, and running on its own since
+2026-09-01. The pipeline fetches, merges and renders live data from all three
+sources, 206 tests pass offline against captured fixtures, and the automation has
+now run on GitHub: a dispatched refresh produced a real data commit from
+`github-actions[bot]`, chained into the deploy workflow 18 seconds later, and the
+build's check that no API key reaches `dist/` passed on a runner with the secret
+present.
 
-⚠️ FSIS reachability is proven from the author's laptop only. `www.fsis.usda.gov`
-blocks by TLS fingerprint — that is why [`impit`](https://www.npmjs.com/package/impit)
-is a dependency — and a GitHub Actions runner has different egress and different
-IP reputation. Until `.github/workflows/fsis-probe.yml` is dispatched, treat meat,
-poultry and egg coverage under CI as an open risk. A silent FSIS failure is the
-dangerous one: those recalls vanish while the page still looks complete.
+FSIS reachability under CI — for a long time the open question, since
+`www.fsis.usda.gov` has been recorded as blocking by TLS fingerprint, which is
+why [`impit`](https://www.npmjs.com/package/impit) is a dependency — is answered:
+that run fetched FSIS from the runner without trouble.
+
+That same run also caught a second, costlier block: **FDA RSS returned HTTP 404
+to the runner** while serving a valid 200 to the author's laptop. The page
+degraded honestly rather than blanking — openFDA and FSIS carried it, and the
+footer named RSS as unreachable — but everything sourced from FDA press releases
+was missing from that publish. A probe measured both transports from a runner and
+found `www.fda.gov` refuses plain `fetch()` and answers `impit`, so both FDA call
+sites now use `impit`. The next run reported all three sources reachable.
 
 ## Where the facts come from, and where they don't
 
@@ -74,8 +82,8 @@ classification yet are included, because FDA press releases carry no class at al
 until openFDA assigns one weeks later.
 
 How many that comes to is not a property of the rule — it is whatever the
-government published in the window, and it changes on every refresh. It was 64
-records on 2026-09-01.
+government published in the window, and it changes on every refresh — and a
+single unreachable source can move it a long way in a day.
 
 The page says "existing recalls and alerts, past 30 days" rather than "active",
 and the difference is deliberate. Nothing re-verifies that a recall is still
