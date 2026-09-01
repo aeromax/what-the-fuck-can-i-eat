@@ -23,3 +23,10 @@ npm-debug.log*
 # responses. All three are committed on purpose: git history is the audit trail
 # that lets you tell whether a wrong page came from the government or from the
 # model. See docs/design.md §5.
+
+# Claude Code local state. `.claude/worktrees/` holds throwaway checkouts of
+# this same repo — committing them would nest a stale copy of the tree inside
+# itself. `settings.local.json` is per-machine. Shared `.claude/` config, if it
+# ever exists, is deliberately not covered by these two rules.
+.claude/worktrees/
+.claude/settings.local.json
