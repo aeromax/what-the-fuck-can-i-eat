@@ -127,16 +127,8 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     <main>
       <header class="masthead">
         <h1 aria-label="what the fuck can i eat">
-          <span class="half ask">
-            <span class="word">what</span>
-            <span class="word">the</span>
-            <span class="word accent">fuck</span>
-          </span>
-          <span class="half answer">
-            <span class="word">can</span>
-            <span class="word">i</span>
-            <span class="word">eat</span>
-          </span>
+          <span class="line">what the <span class="accent">fuck</span></span>
+          <span class="line">can i eat</span>
         </h1>
 
         <p class="subhead">Whatever you want! Except for the following:</p>
@@ -438,40 +430,26 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     margin-bottom: 1.25rem;
   }
   h1 {
-    /* The signature: the title as a monospaced banner, split in two across a
-       hairline spine — the swearing on one side, the question on the other.
-       The layout carries the tone; nothing else on the page has to. */
-    font: 800 clamp(2rem, 8.5vw, 4.25rem)/0.92 var(--mono);
+    /* The signature: the title as a monospaced banner, one phrase per line.
+       The type is the whole gesture — no rule, no split, nothing else to
+       carry. It is the one loud element on the page.
+
+       The scale is set by the LONGEST line, "what the fuck": 13 monospace
+       characters at roughly 0.6em advance, less 13 × 0.045em of tracking, is
+       about 7.2em of width. At the 11.5vw midpoint a 320px phone renders it at
+       36.8px, so the line measures ~265px inside 288px of usable width. The
+       previous 8.5vw / 4.25rem scale was tuned for two short stacked columns
+       and is too small for a full phrase; the 4.5rem cap is reached at 626px
+       and holds the line to ~518px inside the 44rem column. */
+    font: 800 clamp(2rem, 11.5vw, 4.5rem)/0.95 var(--mono);
     letter-spacing: -0.045em;
     margin: 0;
     color: var(--ink);
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-    /* Content-width, so the rule is exactly as long as the words it divides —
-       and, once the axis rotates on a phone, no longer than them either. */
-    width: fit-content;
   }
-  .half {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-  /* Both halves press against the spine, so the rule reads as the axis of the
-     composition rather than as a divider that happens to sit between them. */
-  .ask {
-    text-align: right;
-    padding-right: clamp(0.6rem, 2.5vw, 1.25rem);
-  }
-  .answer {
-    text-align: left;
-    padding-left: clamp(0.6rem, 2.5vw, 1.25rem);
-    /* Same weight and style as the band down the left of each recall row, so the
-       page reads as one system. Neutral colour: unlike a row's band, the title
-       has no severity to encode. */
-    border-left: 4px solid var(--rule);
-  }
-  .word { display: block; }
+  .line { display: block; }
+  /* Explicitly classed, never positional. A :nth-child() selector here broke
+     silently in 9c when the structure changed — it reddened the wrong word and
+     still compiled. Keep the accent bound to the word, not to a position. */
   .accent { color: var(--alarm); }
 
   /* The setup line. The list below is the punchline, so this is sized as a
@@ -715,30 +693,11 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
   }
   .colophon em { font-style: italic; color: var(--ink); }
 
-  /* Narrow: the spine turns horizontal and the halves stack. Side-by-side, a
-     phone would have to shrink the type to about a third of its size to fit
-     two mono columns — which is the one thing this page cannot afford, since
-     it is meant to read at arm's length. The rule survives the rotation, so
-     the two-part composition still reads; only its axis changes. */
+  /* Narrow. The h1 needs no override any more: one clamp covers 320px to the
+     44rem cap, because both lines now scale together instead of a two-column
+     composition having to be taken apart. */
   @media (max-width: 30rem) {
     main { padding: 1.75rem 1rem 3rem; }
-    h1 {
-      flex-direction: column;
-      align-items: flex-start;
-      font-size: clamp(2.75rem, 13.5vw, 4rem);
-    }
-    .ask {
-      text-align: left;
-      padding-right: 0;
-      padding-bottom: 0.5rem;
-    }
-    .answer {
-      padding-left: 0;
-      padding-top: 0.5rem;
-      border-left: none;
-      border-top: 4px solid var(--rule);
-      align-self: stretch;
-    }
     .src { grid-template-columns: 4.5rem 1rem 1fr; }
   }
 </style>

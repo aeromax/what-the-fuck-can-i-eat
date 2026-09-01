@@ -564,8 +564,19 @@ const dataConfidence = recall.confidence;
     font-variant: all-small-caps;
     letter-spacing: 0.04em;
     line-height: 1.4;
+    /* nowrap suits the short tier tag ("Verified data"). The severity label is
+       a whole sentence and overrides it below. */
     white-space: nowrap;
   }
+  /* The severity label is a sentence, not a chip: "Can cause temporary or
+     reversible illness" is 301px of unbreakable text, which on a 320px phone
+     pushed the whole PAGE sideways — every row, not just the tag. Found
+     2026-08-31 while checking the retitled masthead for overflow. Let it wrap. */
+  .tag.severity {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
   /* The severity tag borrows the band colour, so the two signals agree. */
   .recall[data-tone="severe"]   .tag.severity { border-color: var(--band-severe);   color: var(--band-severe);   font-weight: 700; }
   .recall[data-tone="moderate"] .tag.severity { border-color: var(--band-moderate); color: var(--band-moderate); }
