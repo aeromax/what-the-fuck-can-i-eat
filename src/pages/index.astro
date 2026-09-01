@@ -180,10 +180,74 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
 
               The {' '} is not decoration: compressHTML collapses whitespace
               between adjacent inline elements, so source whitespace after
-              the strong tag would render as "64existing". */}
+              the strong tag would render as "64existing". The number used to
+              be set at a much larger size via `.counts strong` — de-emphasized
+              to match the surrounding sentence, since it isn't the headline
+              claim on the page. */}
           <p class="counts">
             <strong>{recalls.length}</strong>{' '}existing recalls and alerts, past 30 days
           </p>
+
+          {/* Reference detail, not a headline — but it belongs beside the count
+              it qualifies rather than stranded in its own section further down.
+              A source that went unreachable changes what "64 existing" means,
+              and a reader should learn that before scrolling, not after. The
+              "last checked" stamp travels with it for the same reason. Set
+              small and inline so three sources cost one or two lines, not
+              five. Shares `.strip`'s single hairline instead of adding a
+              second one — it used to own its own `border-top: dashed`. */}
+          <div class="checked">
+            <span class="checked-label">Sources checked</span>
+
+            {stamp ? (
+              <span class="stamp">{stamp.day} &middot; {stamp.time} {stamp.zone}</span>
+            ) : (
+              <span class="stamp stamp-none">No refresh recorded yet.</span>
+            )}
+
+            {meta ? (
+              <ul class="sources">
+                {meta.sources.map((s) => (
+                  <li class:list={['src', s.reachable ? 'on' : 'off']}>
+                    <span class="src-status" aria-hidden="true">{s.reachable ? '●' : '○'}</span>
+                    <span class="src-name">{s.name}</span>
+                    <span class="src-note">
+                      {s.reachable ? `${s.count} record${s.count === 1 ? '' : 's'}` : s.note}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span class="sources-none">
+                Source reachability appears here after the first pipeline run.
+              </span>
+            )}
+          </div>
+        </div>
+      </header>
+
+      <section id="list" class="list" aria-label="Active recalls">
+        {/* Search and sort live together at the top of the list they act on —
+            one is a filter, the other an order, and grouping them reads as
+            "tools for the list below" rather than scattering sort up in the
+            masthead strip. The sort controls are hidden until the script
+            below reveals them; the search box is a real input and is never
+            hidden — a plain text field with no listener attached yet is
+            simply idle, not a dead button. No new data plumbing backs
+            either: both scripts key off ids (`#search-box`, `#sort`) and
+            read `list.children`/`article.textContent` off nodes Astro
+            already rendered. */}
+        <div class="toolbar">
+          <div class="search">
+            <label for="search-box" class="search-label">Search</label>
+            <input
+              type="search"
+              id="search-box"
+              class="search-box"
+              placeholder="brand, state, lot code&hellip;"
+              autocomplete="off"
+            />
+          </div>
 
           {/* Hidden until the script reveals it. A no-JS reader never sees a
               dead button, and the served list order is already the default
@@ -206,50 +270,15 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
         {/* Shown only while the severity sort is active. "Unclassified" is the
             bottom of that order because the class is genuinely unknown, not
             because the hazard is mild, and a bare list would imply otherwise
-            (docs/design.md §7). */}
+            (docs/design.md §7). Kept right after the toolbar it qualifies. */}
         <p class="sort-note" id="sort-note" hidden>
           Unclassified rows sort last because FDA has not graded them yet &mdash;
           not because they are mild.
         </p>
 
         <p class="sr-only" role="status" aria-live="polite" id="sort-status"></p>
+        <p class="sr-only" role="status" aria-live="polite" id="search-status"></p>
 
-        {/* Reference detail, not a headline — but it belongs beside the count it
-            qualifies rather than stranded at the bottom of the page. A source
-            that went unreachable changes what "64 existing" means, and a reader
-            should learn that before scrolling, not after. The "last checked"
-            stamp travels with it for the same reason. Set small and inline so
-            three sources cost one or two lines, not five. */}
-        <div class="checked">
-          <span class="checked-label">Sources checked</span>
-
-          {stamp ? (
-            <span class="stamp">{stamp.day} &middot; {stamp.time} {stamp.zone}</span>
-          ) : (
-            <span class="stamp stamp-none">No refresh recorded yet.</span>
-          )}
-
-          {meta ? (
-            <ul class="sources">
-              {meta.sources.map((s) => (
-                <li class:list={['src', s.reachable ? 'on' : 'off']}>
-                  <span class="src-status" aria-hidden="true">{s.reachable ? '●' : '○'}</span>
-                  <span class="src-name">{s.name}</span>
-                  <span class="src-note">
-                    {s.reachable ? `${s.count} record${s.count === 1 ? '' : 's'}` : s.note}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <span class="sources-none">
-              Source reachability appears here after the first pipeline run.
-            </span>
-          )}
-        </div>
-      </header>
-
-      <section id="list" class="list" aria-label="Active recalls">
         {recalls.length === 0 ? (
           <p class="empty">
             No records to show. If you just cloned this and are running the
@@ -258,6 +287,14 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
         ) : (
           recalls.map((recall) => <RecallRow recall={recall} ambiguousName={isAmbiguous(recall)} />)
         )}
+        {/* Distinct from `.empty` above: that one means "no data at all" and
+            is a build-time state. This one means "your search matched
+            nothing" and is a runtime state the script toggles — it starts
+            hidden and stays hidden without JavaScript, since there is then
+            no way to have typed a query that could match zero rows. */}
+        <p class="empty search-empty" id="search-empty" hidden>
+          No recalls match that search.
+        </p>
       </section>
 
       {review.length > 0 && (
@@ -413,6 +450,80 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
         apply();
       })();
     </script>
+
+    <!--
+      Search. A second small, dependency-free IIFE rather than folding into the
+      sort script above — the two do unrelated jobs (reordering vs hiding) and
+      keeping them apart means a change to one cannot silently break the other.
+
+      No new data plumbing: the query is matched against `article.textContent`,
+      which already contains every fact field Recall.astro renders inside the
+      <details> body (product, brand, company, reason/avoidLine, distributed,
+      retailers, country, lot codes) — collapsed <details> content stays in the
+      DOM, `.textContent` reads it regardless of the `open` attribute. No
+      data-* search index is added.
+
+      Coexistence with the sort script above matters here:
+        - This script only ever sets/clears the `hidden` attribute on existing
+          nodes. It never reorders or removes them, so sorting (which reads
+          `list.children` and re-appends) sees the same nodes either way and a
+          hidden row simply travels with the sort, still hidden.
+        - Conversely, the sort script's `apply()` never touches `hidden`, so a
+          sort click cannot undo a search filter.
+    -->
+    <script is:inline>
+      (function () {
+        var box = document.getElementById('search-box');
+        var list = document.getElementById('list');
+        var status = document.getElementById('search-status');
+        var empty = document.getElementById('search-empty');
+        if (!box || !list) return;
+
+        var rows = [];
+        var kids = list.children;
+        for (var i = 0; i < kids.length; i++) {
+          if (kids[i].classList.contains('recall')) rows.push(kids[i]);
+        }
+
+        var pairs = document.querySelectorAll('.review .pair');
+
+        function matches(row, query) {
+          return row.textContent.toLowerCase().indexOf(query) !== -1;
+        }
+
+        function apply() {
+          var query = box.value.trim().toLowerCase();
+          var shown = 0;
+
+          for (var i = 0; i < rows.length; i++) {
+            var hit = query === '' || matches(rows[i], query);
+            rows[i].hidden = !hit;
+            if (hit) shown++;
+          }
+
+          if (empty) empty.hidden = rows.length === 0 || shown > 0;
+
+          for (var p = 0; p < pairs.length; p++) {
+            var pairRows = pairs[p].querySelectorAll('.recall');
+            var anyHit = query === '';
+            for (var r = 0; r < pairRows.length; r++) {
+              var hit2 = query === '' || matches(pairRows[r], query);
+              pairRows[r].hidden = !hit2;
+              if (hit2) anyHit = true;
+            }
+            pairs[p].hidden = !anyHit;
+          }
+
+          if (status) {
+            status.textContent = query === ''
+              ? ''
+              : shown + ' of ' + rows.length + ' shown';
+          }
+        }
+
+        box.addEventListener('input', apply);
+      })();
+    </script>
   </body>
 </html>
 
@@ -530,17 +641,17 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     text-wrap: balance;
   }
 
-  /* The count and the sort controls share one hairline-topped strip: the count
-     says how big the list is, the controls say how it is ordered. */
+  /* The count and "Sources checked" share one hairline-topped strip: one
+     sentence says how big the list is, the other says how fresh and complete
+     it is. Stacked, not side-by-side — the sources list can wrap onto its own
+     line or two and stacking keeps that from crowding the count sentence. */
   .strip {
     margin: 1.15rem 0 0;
     padding-top: 1rem;
     border-top: 1px dashed var(--rule);
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem 1.5rem;
+    flex-direction: column;
+    gap: 0.6rem;
   }
   /* A single line now, not a term over a definition — the dt/dd rules went
      with the <dl>. Everything the old .counts dd carried lives here. */
@@ -551,13 +662,85 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     line-height: 1.35;
     color: var(--ink);
   }
+  /* De-emphasized on purpose: this used to render at 1.4rem/600, a stat-sized
+     jump that made the number read as the headline rather than as part of the
+     sentence. Same size as the rest of `.counts` now — `1em` inherits it —
+     with only mono + tabular-nums left as a light distinguishing touch. */
   .counts strong {
-    font: 600 1.4rem/1 var(--mono);
+    font: 600 1em/1 var(--mono);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     color: var(--ink);
     margin-right: 0.3rem;
   }
+
+  /* --- toolbar (search + sort) --------------------------------------------- */
+  /* Search and sort grouped in one row above the list they act on, sharing a
+     single hairline. Wraps on narrow viewports rather than compressing either
+     control. */
+  .toolbar {
+    margin: 0 0 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+  }
+
+  /* --- search -------------------------------------------------------------- */
+  /* Same mono utility face and dashed hairline family as `.controls` and
+     `.checked`, so this reads as one more tool in that family rather than a
+     different widget. Sits in `.toolbar`, beside the sort controls, above the
+     rows it filters — the hairline and spacing now live on `.toolbar` itself
+     so the two controls share exactly one. Unlike the sort controls this is
+     never `hidden` — it works (if inertly) with no JavaScript, since it is a
+     real input rather than a button with an event listener yet to be
+     attached. */
+  .search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 20rem;
+  }
+  .search-label {
+    font: 600 0.7rem/1.2 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .search-box {
+    min-height: 2.25rem;
+    padding: 0.35rem 0.7rem;
+    background: var(--paper);
+    border: 1px dashed var(--rule);
+    border-radius: 2px;
+    color: var(--ink);
+    font: 400 0.85rem/1.2 var(--serif);
+    width: 100%;
+  }
+  .search-box::placeholder { color: var(--dim); }
+  .search-box:hover { border-color: var(--dim); }
+  .search-box:focus-visible {
+    outline: 2px solid var(--alarm);
+    outline-offset: 2px;
+    border-style: solid;
+    border-color: var(--alarm);
+  }
+  /* Safari/WebKit paints its own decorations on type="search"; strip them so
+     the field matches `.sortbtn`'s plain rectangle instead of looking like a
+     different control family. */
+  .search-box::-webkit-search-cancel-button,
+  .search-box::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* The "no matches for this search" state. Deliberately reuses `.empty`'s
+     look (see that rule) rather than duplicating it — this is the same kind
+     of message, just triggered at runtime instead of at build time. */
+  .search-empty[hidden] { display: none; }
 
   /* --- sort controls ------------------------------------------------------ */
   /* Quiet by construction: the same mono utility face and dashed hairline as
@@ -695,11 +878,10 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
   /* --- sources checked (masthead) ---------------------------------------- */
   /* Inline and wrapping, so three sources cost one or two lines instead of the
      five the old stacked footer grid took. Small type: this is reference detail
-     the reader consults, not something that should compete with the count. */
+     the reader consults, not something that should compete with the count.
+     Lives inside `.strip` now, alongside `.counts`, sharing that one hairline
+     rather than adding a second dashed rule under the count sentence. */
   .checked {
-    margin-top: 0.85rem;
-    padding-top: 0.6rem;
-    border-top: 1px dashed var(--rule);
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
