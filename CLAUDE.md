@@ -13,32 +13,49 @@ Spawn subagents to accomplish smaller tasks. Subagents can be used for:
 
 and anything else necessary. 
 
-## Project status: pipeline complete, page and CI still to build
+## Project status: written end to end; the automation has never run
 
-As of 2026-08-31, build steps 1–8 are done. All three sources fetch and
+As of 2026-09-01, build steps 1–10 are done. All three sources fetch and
 normalize live data — openFDA 39, FDA RSS 17, FSIS 7 — merge.ts dedupes across
-them, voice.ts runs Gemini for extraction and snark, and refresh.ts is the
+them, voice.ts runs Gemini for extraction and snark, refresh.ts is the
 production orchestrator with degrade-never-blank, byte-identical short-circuit,
-and a `data/meta.json` sidecar listing reachable sources for the footer.
-194 tests pass offline against captured fixtures.
+and a `data/meta.json` sidecar listing reachable sources for the footer, and
+`src/pages/index.astro` renders the page from the committed data. 206 tests pass
+offline against captured fixtures.
 
 Merge finds nothing to merge in live data, correctly: openFDA's report_date lags
 recall initiation by a median of 69 days, so its 30-day window and the RSS window
 are disjoint. The merge path is covered by fixtures built on real records.
 
-⚠️ FSIS is proven from this machine only. Whether `impit` gets through from a
-GitHub Actions runner is still unverified; see build plan step 5.
+⚠️ **Step 10's two new workflows have never run on GitHub.**
+`.github/workflows/refresh.yml` (the six-hourly data refresh, commit, and deploy
+dispatch) and `.github/workflows/fsis-probe.yml` (a manual FSIS reachability
+diagnostic) exist, and their YAML parses. Nothing more than that is known about
+them. Step 10's acceptance criteria — a manual dispatch producing either a real
+commit or a clean no-op, and no API key anywhere in `dist/` — are both
+unexercised. `static.yml` is older and step 10 did not change it.
 
-**Continue at `docs/build-plan.md` step 9 (the page).** Do not improvise off this
-file alone — the build plan carries per-step acceptance criteria and the order
-matters (the riskiest unknown is deliberately step 5, not step 8).
+⚠️ FSIS is proven from this machine only. Whether `impit` gets through from a
+GitHub Actions runner is still unverified — a local run on 2026-09-01 again saw
+no block, which says nothing about a runner. `.github/workflows/fsis-probe.yml`
+is the built-but-unrun answer: dispatch it from the Actions tab and it settles
+build plan step 5's open half either way. Until someone does, treat meat,
+poultry and egg coverage under CI as an open risk, not a solved one.
+
+**What is left is running those two workflows on GitHub and reading what they
+say.** Do not improvise off this file alone — `docs/build-plan.md` carries the
+per-step acceptance criteria and records which halves of step 10's are still
+outstanding.
 
 ## What this is
 
-A single static page listing US food recalls that are currently active. Food names
-in large plain type; beside each, one factual line naming the brand, stores,
-states, country of origin, and lot codes to avoid. The voice is snarky. The
-avoid-line is not.
+A single static page listing existing US food recalls and alerts from the past
+30 days. Food names in large plain type; beside each, one factual line naming the
+brand, stores, states, country of origin, and lot codes to avoid. The voice is
+snarky. The avoid-line is not.
+
+Not "currently active": nothing re-verifies that a recall is still open, and the
+window is not uniformly a window on announcement. See the inclusion rule.
 
 Data refreshes every six hours via a scheduled GitHub Action. No server, no
 database, no AI at request time.
@@ -121,6 +138,17 @@ and exits without writing when output is byte-identical to what is committed.
 On empty output it exits 1 and leaves `data/recalls.json` untouched
 (degrade-never-blank). Requires `GEMINI_API_KEY`; without one, records publish
 with their government reason as the outage-fallback rendering.
+
+In production nobody runs it by hand: `.github/workflows/refresh.yml` runs the
+same `npm run refresh` on a `17 */6 * * *` cron, commits `data/` only when
+something changed, and then dispatches `static.yml` to rebuild the site. Both
+are dispatchable by hand from the Actions tab, or from a shell:
+
+```
+gh workflow run refresh.yml        # fetch, merge, voice, commit, deploy
+gh workflow run static.yml         # rebuild and deploy without refetching
+gh workflow run fsis-probe.yml     # is FSIS reachable from a runner?
+```
 
 `refresh` runs TypeScript directly through Node's native type stripping — there
 is no build step for the pipeline. That means `scripts/` must stay within
@@ -273,6 +301,31 @@ These were each found the hard way. None are hypothetical.
   looks complete. Any source contributing zero items must warn loudly, and the
   footer names which sources were reachable.
 
+**GitHub Actions**
+- **A push made with the default `GITHUB_TOKEN` does not start another workflow
+  run.** GitHub suppresses it so workflows cannot trigger themselves forever.
+  `static.yml` triggers on `push: branches: [main]`, so the data commit
+  `refresh.yml` pushes would land and the site would never rebuild — every
+  refresh run green, the published page frozen at whatever it was when a human
+  last pushed. The documented exceptions are `workflow_dispatch` and
+  `repository_dispatch`, which **do** create a run even from `GITHUB_TOKEN`, so
+  `refresh.yml` ends with `gh workflow run static.yml --ref main` (gated on data
+  having changed). That was chosen over a PAT — a second secret to store, rotate
+  and leak — and over `workflow_call`, which would mean editing `static.yml`.
+  **Do not "simplify" the dispatch step away.** It looks redundant beside
+  `static.yml`'s push trigger and is not; deleting it silently freezes the site.
+  It is also why `refresh.yml` needs `actions: write` on top of
+  `contents: write`.
+- **Change detection uses `git status --porcelain -- data/`, not
+  `git diff --quiet`.** `data/meta.json` is untracked until the first successful
+  run creates it, and `git diff` cannot see an untracked file — so a first run
+  that produced meta and nothing else would report "no changes" and never commit
+  it.
+- `npm run refresh` runs bare in CI: no `|| true`, no `continue-on-error`. Its
+  two non-zero exits (`refused-empty`, `aborted-unreadable-state`) are exactly
+  the cases a human must look at, and swallowing them turns a stale page — or a
+  page about to lose all its voice — into a green run.
+
 ## Behavioural rules for the pipeline
 
 - **Degrade, never blank.** A failing source keeps the last good `recalls.json` and
@@ -303,9 +356,23 @@ These were each found the hard way. None are hypothetical.
 
 ## Inclusion rule
 
-Status `Ongoing`, Class I and Class II, **plus FSIS Public Health Alerts**,
-announced within 30 days — roughly 46 items. Class III is excluded as the boring
-tier. Human food only; the feed also carries pet food, which is filtered out.
+Status `Ongoing`, Class I and Class II, **plus FSIS Public Health Alerts**, inside
+a trailing 30-day window. Class III is excluded as the boring tier. Human food
+only; the feed also carries pet food, which is filtered out.
+
+**The count is not part of the rule.** It is whatever the government published in
+that window, and it moves on every refresh — 64 records as of 2026-09-01, against
+the 46 this file used to assert. Never write a number down as a property of the
+rule: not here, not on the page, not in a test.
+
+The window is also not a live-status check, and it is not one clock. Nothing
+re-verifies that a recall is still open — a record leaves the page by ageing out,
+not by being closed. And openFDA's date is `report_date`, which lags recall
+initiation by a median of 69 days, so for that source the rule is really
+"reported within 30 days" while RSS and FSIS are "announced within 30 days".
+Hence the page describes its contents as **existing recalls and alerts, past 30
+days** — the strongest claim the data actually supports. See `docs/design.md`
+§10 q3, and do not restore "currently active" anywhere.
 
 Records with **no classification** are also included (2026-08-29): FDA press
 releases carry no class — it is assigned weeks later via openFDA — so excluding

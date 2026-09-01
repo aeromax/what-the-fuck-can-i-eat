@@ -11,7 +11,18 @@
 
 ## 1. The product
 
-A single static page listing US food recalls that are currently active.
+A single static page listing US food recalls and alerts from the past 30 days.
+
+"Past 30 days" is the claim, not "currently active", and the page says so in
+those words. Nothing in the pipeline re-verifies that a recall is still open, and
+for openFDA the window runs on the day FDA *reported* the recall rather than the
+day the public was told — see §10 q3, which is the reasoning behind the
+user-facing wording. Claiming live status would be a factual claim the data does
+not support.
+
+"Alerts" is in that sentence deliberately: FSIS Public Health Alerts are included
+by the inclusion rule and **a PHA is not a recall** (§7). A description that says
+only "recalls" mislabels part of the list.
 
 Each row is a food name in large plain type, and beneath it one factual line
 naming the brand, the stores, the states, the country of origin, and the lot
@@ -20,8 +31,9 @@ codes to avoid.
 The voice is snarky. The avoid-line is not.
 
 There is no server, no database, and no model call at request time. The page is
-static HTML; the data behind it is a JSON file committed to git and refreshed
-every six hours by a scheduled GitHub Action.
+static HTML; the data behind it is a JSON file committed to git, refreshed every
+six hours by a scheduled GitHub Action (`.github/workflows/refresh.yml`, written
+at step 10 and **never yet run on GitHub**).
 
 ### Who it is for
 
@@ -351,13 +363,21 @@ contradict pre-2026 training data. Trust these over recollection.
 ```
 src/pages/index.astro       the only page
 src/components/Recall.astro one row: big name + avoid line
+src/recall.ts               the Recall type and its Zod schema
+src/severity.ts             class -> plain-English hazard, per agency (§7)
+src/dates.ts                US Eastern formatting, EDT/EST per date (§7)
+src/meta.ts                 reads data/meta.json for the footer
 data/recalls.json           published state, committed to git
 data/review.json            ambiguous merges needing a human look
+data/meta.json              last-checked time + which sources were reachable
 data/snapshots/             raw API responses, OVERWRITTEN each run
 scripts/sources/*.ts        openfda | fdaRss | fsis (via impit)
+scripts/sourceSchemas.ts    Zod shapes for the three raw upstream responses
 scripts/pressRelease.ts     fetch + <dl> parse of one FDA announcement
 scripts/normalize.ts        source rows -> Recall
+scripts/states.ts           distribution text -> state codes
 scripts/merge.ts            dedupe + upgrade extracted -> verified
+scripts/gemini.ts           Gemini transport + JSON-Schema keyword allowlist
 scripts/voice.ts            Gemini: prose extraction + snark
 scripts/refresh.ts          orchestrator
 ```
@@ -473,11 +493,21 @@ than one.
 ## 7. Inclusion rule
 
 Status `Ongoing`, Class I and Class II, **plus FSIS Public Health Alerts**,
-announced within 30 days — roughly 46 items at the time of design, plus ~2 PHAs
-per 30-day window.
+announced within 30 days.
 
 Class III is excluded as the boring tier. Human food only; the feed also carries
 pet food, which is filtered out.
+
+**How many items that yields is not a property of the rule.** It is whatever the
+three agencies published into the trailing window, and it moves at every refresh.
+Observations, each true only on its date: ~46 at the time of design (2026-08-28);
+**64 on 2026-09-01** — 40 openFDA, 17 RSS, 7 FSIS, of which exactly 1 was a PHA.
+Any count written down anywhere must be labelled as an observation on a named
+date. The page never hard-codes one; it counts the records it is rendering.
+
+Nor is the window a live-status check: inclusion is decided once, at fetch time,
+from the announcement (or, for openFDA, report) date, and nothing afterwards
+re-asks whether the recall is still open. See §1 and §10 q3.
 
 This is an **editorial judgment, not a technical constraint**. Changing it is a
 product decision — ask, don't assume.
@@ -568,7 +598,9 @@ the producer cannot be identified or will not act.
 They are included. The rule as originally written (Class I and II) would have
 dropped them silently, and by this page's own standard — food you should not eat
 right now — a PHA is at least as urgent as a Class II, precisely because nothing
-has been withdrawn from shelves. Roughly 2 of every 9 recent FSIS items.
+has been withdrawn from shelves. Their share of the FSIS feed moves like every
+other count here: 2 of the 9 items in the window captured on 2026-08-29, 1 of 7
+on 2026-09-01. A frequency observed twice is not a planning constant.
 
 Two consequences that must not be lost:
 
@@ -585,8 +617,14 @@ Two consequences that must not be lost:
 Checked against the npm registry on 2026-08-28. Several contradict pre-2026
 training data.
 
-- **Node ≥22.12.0, even-numbered only.** Astro 7 hard-fails otherwise. Local
-  machine is v22.22.2.
+- **Node ≥22.12.0.** Astro 7.2.9 declares `node: ">=22.12.0"` and nothing
+  stricter. **Corrected:** the "even-numbered only" clause recorded here was
+  wrong, and `CLAUDE.md`'s verified-environment section is the standing record.
+  The local machine has since moved to **v25.9.0** (odd) and `install`, `build`,
+  `check` and `test` all pass on it. Treat odd releases as
+  working-but-unsupported: they are not an LTS line, so **pin CI to an even
+  release** (22 or 24) rather than matching the local version. `static.yml` and
+  `refresh.yml` both use Node 24.
 - **`typescript` must be 6.x, not 7.x.** `@astrojs/check@0.9.10` peer-requires
   `^5 || ^6`.
 - **Pin `@google/genai` below 3.0.0.** Its README warns v3 changes the Node floor.
@@ -694,18 +732,47 @@ Not settled by `CLAUDE.md`; resolve before or during the step they block.
    The page therefore mixes "recently announced" (RSS, FSIS) with "recently
    reported" (openFDA). That is an editorial wrinkle, not a bug, but it is real.
 
-4. **Deploy target.** The GitHub Action refreshes data; what publishes `dist/`
-   is unspecified.
+   **Extended 2026-09-01: this wrinkle is now the stated reason for the page's
+   own wording, not a loose end.** Because the window is per-source, applied once
+   at fetch time and never re-asked, the list is "what the agencies put into the
+   trailing 30 days", not "what is open right now" — nothing anywhere in the
+   pipeline re-verifies that a recall is still live. So the page describes its
+   contents as **"existing recalls and alerts, past 30 days"** (the header count
+   block and the `<meta name="description">`), and §1 says the same. The earlier
+   phrasing, "recalls that are currently active", asserted a live-status check
+   this project does not perform. Whether it should perform one is a separate
+   product question; until it does, the wording has to match the data.
+
+4. ~~**Deploy target.**~~ **Resolved 2026-09-01 (step 10): GitHub Pages, from
+   `.github/workflows/static.yml`.** It type-checks, tests, builds, greps `dist/`
+   for a credential-shaped string, and deploys — the verification runs before the
+   deploy because a page that is wrong about food recalls is worse than a page
+   that is a few minutes stale.
+
+   It triggers on push to `main` and on `workflow_dispatch`. The refresh path has
+   to use the second one: a push made with the default `GITHUB_TOKEN` does not
+   start another workflow run, so the data commit alone would land without ever
+   rebuilding the site. `.github/workflows/refresh.yml` therefore ends by
+   dispatching `static.yml` explicitly, which needs no change to `static.yml` and
+   no new secret — the reason it was preferred to a PAT or to `workflow_call`.
+   See build plan step 10 and the `CLAUDE.md` trap.
+
+   ⚠️ Resolved as a design question, not as a proven deployment: `refresh.yml`
+   has never run on GitHub, so the dispatch has never actually rebuilt the site.
 5. ~~**FSIS `Public Health Alert`.**~~ **Resolved 2026-08-29: include them**, as
-   the safer reading. Step 5 no longer blocked. The remaining work is
-   presentational and lands in step 9 — a PHA must not be labelled a recall.
-   See §7.
+   the safer reading. Step 5 no longer blocked. The remaining presentational work
+   landed with step 9 (2026-08-31): a PHA is not labelled a recall — its severity
+   label reads "Warning — not recalled, may still be on sale", in words, in the
+   collapsed row. The page's own description of its contents says "recalls **and
+   alerts**" for the same reason. See §7 and build plan step 9.
 6. ~~**`product` is not a food name on the openFDA path.**~~ **Resolved
    2026-08-29: a model-written `displayName`.** The large type gets a short
    common food name ("eggs", "ground beef", "lettuce"); `product` stays verbatim
-   on the record. Generation lands in step 7 with the rest of the voice work;
-   the field, the fallback and the never-alone rule are in place from step 3.
-   See §2.1 for the three rules that keep the generalization honest.
+   on the record. Generation landed in step 7 with the rest of the voice work;
+   the field and the fallback have been in place since step 3. See §2.1 for the
+   three rules that keep the generalization honest — and for the 2026-08-31
+   relaxation of the never-alone rule, which no longer holds for the collapsed
+   row.
 7. **Pet food on the openFDA path.** Now moot in practice — the captured window
    contained none, and RSS items carry a structured `Product Type` that
    identifies them. But openFDA offers no equivalent field, so if a pet-food row
