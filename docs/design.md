@@ -31,8 +31,8 @@ codes to avoid.
 The voice is snarky. The avoid-line is not.
 
 There is no server, no database, and no model call at request time. The page is
-static HTML; the data behind it is a JSON file committed to git, refreshed every
-six hours by a scheduled GitHub Action (`.github/workflows/refresh.yml`, written
+static HTML; the data behind it is a JSON file committed to git, refreshed once
+a day by a scheduled GitHub Action (`.github/workflows/refresh.yml`, written
 at step 10 and **never yet run on GitHub**).
 
 ### Who it is for
@@ -422,9 +422,9 @@ These are invariants, not preferences.
 - **Never regenerate existing voice.** Gemini runs only for ids lacking a
   `headline`. This keeps the voice stable run-to-run and holds cost near zero —
   most runs generate nothing.
-- **A run that changes nothing must not commit.** Most of the four daily runs
+- **A run that changes nothing must not commit.** Most daily runs
   find no news. Exit early when output is byte-identical to what is committed,
-  or the repo accrues four empty commits a day forever.
+  or the repo accrues an empty commit every day forever.
 - **Snapshots overwrite in place.**
 - **Ambiguous merges never merge.** A duplicate row is a cheap, visible failure —
   a reader sees the same recall twice and is mildly annoyed. A wrong merge

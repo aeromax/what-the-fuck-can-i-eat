@@ -9,12 +9,17 @@ name: Refresh recall data
 
 on:
   schedule:
-    # Every six hours, at :17 rather than :00. Scheduled workflows across all of
-    # GitHub pile up on the hour, and a contended cron is dispatched late or, at
-    # peak, dropped entirely. A dropped run means the page silently ages six
-    # more hours while still claiming to be current, so we deliberately sit in
-    # a quieter minute. 00:17, 06:17, 12:17, 18:17 UTC.
-    - cron: "17 */6 * * *"
+    # Once a day, targeting early morning US Eastern — the zone the page itself
+    # labels every date in. GitHub cron is UTC only and has no notion of DST, so
+    # a fixed expression cannot hold 6am Eastern year-round: 10:17 UTC is 6:17am
+    # EDT in summer and 5:17am EST in winter. Drifting an hour earlier for the
+    # winter months is the accepted cost of not maintaining two schedules.
+    #
+    # :17 rather than :00 because scheduled workflows across all of GitHub pile
+    # up on the hour, and a contended cron is dispatched late or, at peak,
+    # dropped entirely. A dropped run now costs a full day rather than six
+    # hours, so sitting in a quieter minute matters more than it used to.
+    - cron: "17 10 * * *"
 
   # Manual runs from the Actions tab. Step 10's acceptance criterion is a
   # dispatch producing either a real commit or a clean no-op, so this is not
@@ -103,7 +108,7 @@ jobs:
             echo "No data changes — nothing to commit."
           fi
 
-      # Most of the four daily runs find no news. That must be a green, silent
+      # Most daily runs find no news. That must be a green, silent
       # success: not a failure, and not an empty commit, which would spam the
       # audit trail git history is supposed to be.
       - name: Commit and push
@@ -139,8 +144,8 @@ jobs:
       # the deploy inside this run rather than as its own).
       #
       # Gated on `changed` for the same reason the commit is: an unchanged run
-      # has nothing new to publish, and rebuilding identical bytes every six
-      # hours would bury the real deploys.
+      # has nothing new to publish, and rebuilding identical bytes every day
+      # would bury the real deploys.
       #
       # --ref main resolves to the commit just pushed, so the build picks up the
       # new data rather than the state before it.

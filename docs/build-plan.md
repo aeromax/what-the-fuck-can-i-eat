@@ -460,10 +460,14 @@ Delivered: `.github/workflows/refresh.yml` (the scheduled refresh) and
 `static.yml` already existed and needed no change — see the deploy finding
 below. `GEMINI_API_KEY` is a repository secret.
 
-`refresh.yml` runs on `cron: "17 */6 * * *"` plus `workflow_dispatch`. The :17 is
+`refresh.yml` runs on `cron: "17 10 * * *"` plus `workflow_dispatch` — once a
+day at 10:17 UTC, which is 6:17am EDT and 5:17am EST. GitHub cron is UTC-only
+and DST-unaware, so no single expression holds 6am Eastern year-round; the
+winter hour of drift was accepted over maintaining two schedules. The :17 is
 deliberate: scheduled workflows across all of GitHub pile up on the hour, and a
-contended cron is dispatched late or, at peak, dropped — and a dropped run means
-the page silently ages another six hours while still claiming to be current.
+contended cron is dispatched late or, at peak, dropped — and a dropped run now
+means the page silently ages another full day while still claiming to be
+current.
 `concurrency: refresh-data` with `cancel-in-progress: false`, a 20-minute
 timeout, Node 24 and `npm ci` mirroring `static.yml`. `npm run refresh` runs
 bare — no `|| true`, no `continue-on-error` — so the two non-zero exits from
