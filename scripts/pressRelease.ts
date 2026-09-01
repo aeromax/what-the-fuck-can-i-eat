@@ -1,3 +1,4 @@
+import { Impit } from 'impit';
 import { z } from 'zod';
 import { PressReleaseFacts } from './sourceSchemas.ts';
 
@@ -150,10 +151,18 @@ export function isHumanFood(facts: PressReleaseFactsT): boolean {
  * Fetches one announcement page. Returns null on any failure, including a
  * non-HTML response — the caller skips the item rather than publishing a
  * record built from a 404 page.
+ *
+ * Via impit for the same proven reason as the feed (scripts/sources/fdaRss.ts):
+ * www.fda.gov serves plain fetch() from a GitHub runner a 10-byte `Not found\n`
+ * 404 with no content-type, on announcement pages as well as the feed, while
+ * impit gets 200 and a 49,882-byte page. Run 33543434214 measured both, on the
+ * https URL this function actually requests rather than the http:// one the
+ * feed advertises. Swapping the feed alone would have left every item skipped
+ * as unreachable.
  */
 export async function fetchPressRelease(url: string): Promise<string | null> {
   try {
-    const res = await fetch(url.replace(/^http:\/\//, 'https://'));
+    const res = await new Impit({ browser: 'chrome' }).fetch(url.replace(/^http:\/\//, 'https://'));
     if (!res.ok) return null;
     if (!/html/i.test(res.headers.get('content-type') ?? '')) return null;
     return await res.text();

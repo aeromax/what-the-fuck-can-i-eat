@@ -1,5 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { XMLParser } from 'fast-xml-parser';
+import { Impit } from 'impit';
 import type { z } from 'zod';
 import type { Recall } from '../../src/recall.ts';
 import { normalizeFdaRss } from '../normalize.ts';
@@ -56,12 +57,23 @@ export interface RssResult {
 /**
  * Fetches and parses the feed. Never throws — a failing source degrades rather
  * than blanking the page (docs/design.md §6).
+ *
+ * Fetches via impit, not fetch, for the same reason FSIS does — proven on a
+ * runner, not assumed. www.fda.gov answers plain fetch() from GitHub Actions
+ * egress with a 10-byte `Not found\n` body, HTTP 404 and NO content-type, while
+ * impit gets 200 and 18,496 bytes of `application/rss+xml` from the same
+ * runner, in the same second. See run 33543434214 (`fda-probe.yml`).
+ *
+ * That 404 is not FDA's real not-found page; it is an edge rule. Do not read it
+ * as a wrong URL, and do not "simplify" this back to fetch() because the feed
+ * answers a laptop fine — it does, which is exactly how this stayed invisible
+ * until the first CI run silently published 47 records instead of 64.
  */
 export async function fetchFdaRss(): Promise<RssResult> {
   let raw: string;
   let contentType: string;
   try {
-    const res = await fetch(FEED_URL);
+    const res = await new Impit({ browser: 'chrome' }).fetch(FEED_URL);
     if (!res.ok) return { items: [], reachable: false, note: `HTTP ${res.status}` };
     contentType = res.headers.get('content-type') ?? '';
     raw = await res.text();
