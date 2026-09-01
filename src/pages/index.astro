@@ -56,6 +56,15 @@ function lastCheckedInstant(): Date | null {
   }
 }
 
+// --- analytics --------------------------------------------------------------
+
+// Cloudflare Web Analytics. The beacon token is a public, client-side
+// identifier by design — unlike GEMINI_API_KEY it is *meant* to ship in the
+// bundle, so it is a plain constant here rather than anything env-shaped. Empty
+// string means "not configured": the script tag is then not emitted at all, so
+// dev, preview and CI stay script-free and no request leaves the page.
+const CF_BEACON_TOKEN = '38f6ddf7fb1849d1ba3967e063a321d7';
+
 const meta = loadMeta();
 const lastChecked = lastCheckedInstant();
 
@@ -130,6 +139,17 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&family=Lora:ital@0;1&display=swap"
     />
+
+    {
+      CF_BEACON_TOKEN && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: CF_BEACON_TOKEN })}
+        />
+      )
+    }
   </head>
   <body>
     <a class="skip" href="#list">Skip to recalls</a>

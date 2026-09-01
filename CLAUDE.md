@@ -400,9 +400,18 @@ instruction. These were explicitly approved for this project and no others:
 - FDA RSS and press-release pages (`www.fda.gov`) — recall announcements
 - USDA FSIS (`www.fsis.usda.gov`) — meat, poultry, egg recalls
 - Google Gemini (`@google/genai`) — headline and avoid-line generation
+- Cloudflare Web Analytics (`static.cloudflareinsights.com`) — traffic counts
 
 Only public government text is sent to Gemini. Do not add services beyond this
 list without asking.
+
+Cloudflare Web Analytics (approved 2026-09-01) is the one client-side script on
+the page and the only reason the site ships any JS at all. Its beacon token is a
+**public** identifier — it is meant to ship in the bundle, so it is a plain
+constant in `src/pages/index.astro`, deliberately not `PUBLIC_`-prefixed env
+plumbing, which would put it next to the machinery that must never touch
+`GEMINI_API_KEY`. Empty string disables it: the tag is then not emitted at all.
+It is cookieless, so the page still needs no consent banner — keep it that way.
 
 ## Git workflow
 
