@@ -132,9 +132,15 @@ jobs:
             console.log('    SKIPPED — no leg returned a parseable feed, so there is no');
             console.log('    announcement URL to try. That is itself the finding.');
           } else {
-            console.log(`    url: ${article}`);
-            await probe('a. plain fetch() — what production uses today', article, false);
-            await probe('b. impit', article, true);
+            // scripts/pressRelease.ts rewrites http:// to https:// before
+            // fetching, and the feed's <link> is http://. Probing the raw feed
+            // URL would test a scheme production never requests.
+            const https = article.replace(/^http:\/\//, 'https://');
+            console.log(`    feed link:  ${article}`);
+            console.log(`    production: ${https}  <- what pressRelease.ts actually fetches`);
+            await probe('a. plain fetch(), https — what production uses today', https, false);
+            await probe('b. impit, https', https, true);
+            await probe('c. plain fetch(), raw http:// from the feed — control', article, false);
           }
 
           console.log('\n=== how to read this');
