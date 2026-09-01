@@ -69,9 +69,9 @@
  * Expanding adds the verbatim `product` line, the avoid-line, the confidence
  * tag and the source link.
  *
- * Contract with the page: Props is `{ recall }`. `variant` is optional and
- * only adjusts the top rule when the page wants to mark this row as one half
- * of a `data/review.json` pair — visuals remain correct when unset.
+ * Contract with the page: Props is `{ recall, ambiguousName }`. The row does
+ * not style itself differently inside a `data/review.json` pair — the page's
+ * `.pair` container does that bracketing, with a tint and top/bottom rules.
  */
 import { formatEastern } from '../dates.ts';
 import type { Recall } from '../recall.ts';
@@ -79,7 +79,6 @@ import { severityOf } from '../severity.ts';
 
 interface Props {
   recall: Recall;
-  variant?: 'primary' | 'reviewPair';
   /**
    * Set by the page when this row's `displayName` is NOT unique across the
    * rendered list. Five different Clover Hill cheeses are all named "cheese",
@@ -90,7 +89,7 @@ interface Props {
    */
   ambiguousName?: boolean;
 }
-const { recall, variant = 'primary', ambiguousName = false } = Astro.props;
+const { recall, ambiguousName = false } = Astro.props;
 
 const heading = recall.displayName ?? recall.product;
 
@@ -205,7 +204,6 @@ const dataConfidence = recall.confidence;
   class="recall"
   data-tone={dataTone}
   data-confidence={dataConfidence}
-  data-variant={variant}
   data-announced={recall.announcedDate}
 >
   <details class="row">
@@ -337,10 +335,6 @@ const dataConfidence = recall.confidence;
     );
   }
 
-  /* Review-pair marker. The page groups the two rows; this only lightens the
-     top rule so the halves read as a pair rather than two separate items. */
-  .recall[data-variant="reviewPair"] { border-top: 1px dashed var(--rule, #e5e5e5); }
-
   /* --- Disclosure ------------------------------------------------------- */
 
   .head {
@@ -419,10 +413,10 @@ const dataConfidence = recall.confidence;
   }
 
   /* Snark rides in italic serif so it reads as an aside, and cannot be mistaken
-     for the deadpan avoid-line further down. It sits between the name and the
-     spec line: the joke is a comment on the headline, and putting it after the
-     spec would make it read as a comment on the pack sizes. The spec line still
-     follows immediately, so the name is never the reader's only identifier. */
+     for the deadpan avoid-line further down. It sits directly under the name
+     and its dateline: the joke is a comment on the headline, so it has to stay
+     next to the headline. On the rows that show one, the `.brief`
+     disambiguator follows it — see `ambiguousName`. */
   .snark {
     display: block;
     margin-bottom: 0.5rem;
