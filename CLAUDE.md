@@ -324,6 +324,13 @@ These were each found the hard way. None are hypothetical.
   2026-09-01 production refresh run (`7 of 2023 records included`). That was the
   long-standing open question and it is settled; the source that failed from CI
   that day was FDA RSS.
+- ⚠️ **The TLS block is real and still on — it just is not on for this laptop.**
+  `source-probe.yml` run 33552899369 ran both transports against the API from a
+  GitHub runner: `impit` got 200 and 12,948,541 bytes (2,023 records, 7 after the
+  inclusion rule), while plain `fetch()` got **HTTP 403, `text/html`, a 410-byte
+  Akamai `Access Denied` page**. So the three local non-reproductions were a fact
+  about this machine's IP reputation, not about the block being lifted. This is
+  the hard evidence for the rule above: do not simplify to `fetch()`.
 - `field_states` can contain the literal `"Nationwide"`, which a state-name
   filter drops — leaving a nationwide alert looking local. Handle it explicitly.
 - `field_establishment` is populated on well under half of records; FSIS also

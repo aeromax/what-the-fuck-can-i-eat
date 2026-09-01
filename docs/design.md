@@ -345,6 +345,14 @@ contradict pre-2026 training data. Trust these over recollection.
   Do not "simplify" this to plain `fetch()` on the strength of one good day, and
   do not attempt to fix a future block by changing headers — that path was
   already walked.
+- ⚠️ **The block reproduces from a GitHub runner, which settles the ambiguity
+  above (2026-09-01).** `source-probe.yml` run 33552899369 ran both transports
+  against the API in one job from a runner: `impit` returned HTTP 200 and
+  12,948,541 bytes (2,023 records, 7 after the inclusion rule); plain `fetch()`
+  returned **HTTP 403, `text/html`, a 410-byte Akamai `Access Denied` body**.
+  Of the three explanations offered above — lifted, IP-dependent, intermittent —
+  this rules out "lifted". The block is on; the author's machine is simply not
+  subject to it. Every local non-reproduction was a fact about that IP.
 - **`impit` reaches FSIS from a GitHub Actions runner (2026-09-01).** The first
   real `refresh.yml` run (33539857201) called the production `fetchFsis()` on a
   GitHub-hosted runner and wrote FSIS `reachable: true`, `"7 of 2023 records
