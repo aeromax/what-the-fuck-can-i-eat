@@ -349,9 +349,10 @@ contradict pre-2026 training data. Trust these over recollection.
   real `refresh.yml` run (33539857201) called the production `fetchFsis()` on a
   GitHub-hosted runner and wrote FSIS `reachable: true`, `"7 of 2023 records
   included"` into `data/meta.json` — the same record counts the local run sees.
-  This was the last open half of build plan step 5. `.github/workflows/fsis-probe.yml`
-  was built to answer it and has still never been dispatched; it is kept as the
-  isolated diagnostic if FSIS is ever blocked in future.
+  This was the last open half of build plan step 5. The probe built to answer it
+  was never dispatched; its legs now live in
+  `.github/workflows/source-probe.yml`, kept as the isolated diagnostic if FSIS
+  is ever blocked in future.
 - **`field_active_notice` is not the recency filter.** Across all 2,023 live
   records exactly **one** is `"True"` (1,833 `"False"`, 189 empty). Filtering on
   it publishes a one-item page. Recency must come from `field_recall_date`,

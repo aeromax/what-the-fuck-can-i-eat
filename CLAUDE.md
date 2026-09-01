@@ -42,9 +42,10 @@ present, and passed — the key does not reach the bundle.
 run's `fetchFsis()` and the meta sidecar recorded `7 of 2023 records included`.
 That is the production path rather than a diagnostic, which makes it stronger
 evidence than the probe would have given, and it closes build plan step 5's
-long-open half in the affirmative. `.github/workflows/fsis-probe.yml` has still
-never been dispatched; it is now largely redundant, but it remains the cleaner
-isolated diagnostic if a future run starts failing.
+long-open half in the affirmative. The probe built to answer it was never
+dispatched; it has since been folded into
+`.github/workflows/source-probe.yml`, which is kept as the isolated diagnostic
+if a future run starts failing.
 
 FDA RSS failed the same way on that first run — `reachable: false`, `HTTP 404`,
 count 0 — and has since been diagnosed and fixed. `www.fda.gov` answers plain
@@ -161,8 +162,8 @@ are dispatchable by hand from the Actions tab, or from a shell:
 ```
 gh workflow run refresh.yml        # fetch, merge, voice, commit, deploy
 gh workflow run static.yml         # rebuild and deploy without refetching
-gh workflow run fsis-probe.yml     # FSIS reachability diagnostic (never dispatched)
-gh workflow run fda-probe.yml      # how does www.fda.gov answer a runner?
+gh workflow run source-probe.yml   # can a runner reach FDA and FSIS?
+gh workflow run source-probe.yml -f source=fsis    # just one of them
 ```
 
 `refresh` runs TypeScript directly through Node's native type stripping — there

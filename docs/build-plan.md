@@ -189,13 +189,14 @@ live records and the same 7 survivors the local run sees. `impit` gets through
 from a runner. Meat, poultry and egg coverage under CI is no longer an open
 risk.
 
-That evidence is *stronger* than what `.github/workflows/fsis-probe.yml` would
-have given, because the probe exists precisely to exercise the production path
-and this is the production path, in a real refresh, writing a real commit.
-**`fsis-probe.yml` has still never been dispatched.** It is now largely
-redundant for closing this step, and is kept for the next question rather than
-this one: if FSIS starts failing on a runner, the probe separates a raw `impit`
-request, `fetchFsis()`, and a plain `fetch()` control in one job, which is a
+That evidence is *stronger* than what a probe would have given, because the
+probe exists precisely to exercise the production path and this is the
+production path, in a real refresh, writing a real commit.
+**`fsis-probe.yml` was never dispatched at all**, and has since been merged into
+`.github/workflows/source-probe.yml`. The diagnostic is kept for the next
+question rather than this one: if FSIS starts failing on a runner, it separates
+a raw `impit` request, `fetchFsis()`, and a plain `fetch()` control in one job,
+which is a
 cleaner diagnostic than reading a refresh run's logs.
 
 The failure mode the caveat guarded against has not gone away — a silent FSIS
@@ -469,8 +470,10 @@ correct for longer than one refresh: ~46 at design time, 64 on 2026-09-01.
 
 Delivered: `.github/workflows/refresh.yml` (the scheduled refresh) and
 `.github/workflows/fsis-probe.yml` (a manual FSIS reachability diagnostic).
-`.github/workflows/fda-probe.yml` was added the same day, after the FDA RSS
-block below; it is the same kind of diagnostic pointed at `www.fda.gov`.
+`fda-probe.yml` was added the same day, after the FDA RSS block below. Both were
+then merged into a single `.github/workflows/source-probe.yml`: they had
+converged on the same shape pointed at different hosts, and the surviving file
+takes a `source` input (`all`, `fda`, `fsis`).
 `static.yml` already existed and needed no change — see the deploy finding
 below. `GEMINI_API_KEY` is a repository secret.
 
@@ -511,8 +514,9 @@ redundant beside `static.yml`'s push trigger, and removing it freezes the site
 without turning anything red.
 
 **`fsis-probe.yml` was built to close step 5 and was overtaken by the first real
-refresh run, which closed it instead.** It has never been dispatched. Kept as the
-isolated diagnostic for a *future* block — see step 5. `workflow_dispatch` only. Three sections: a raw `impit` request (to expose the
+refresh run, which closed it instead.** It was never dispatched, and now survives
+as the FSIS half of `source-probe.yml` — kept as the isolated diagnostic for a
+*future* block, see step 5. `workflow_dispatch` only. Three sections: a raw `impit` request (to expose the
 status, content-type and byte size `fetchFsis` does not return), the real
 `fetchFsis()` from `scripts/sources/fsis.ts` — the production path, because a
 probe of a reimplementation proves nothing — and a plain `fetch()` control. Only
@@ -575,8 +579,8 @@ What it cost, and what held:
 - The failure is loud in `meta.json` and in the footer, and silent in the sense
   that matters: a reader sees a shorter, entirely-verified page, not a warning.
 
-**Diagnosed and fixed the same day.** `.github/workflows/fda-probe.yml` was
-written to measure rather than guess — a 404 is not a 403, and the FSIS
+**Diagnosed and fixed the same day.** A probe (now the FDA half of
+`.github/workflows/source-probe.yml`) was written to measure rather than guess — a 404 is not a 403, and the FSIS
 precedent was not evidence about a different host. Probe run 33543434214, both
 transports in one run:
 

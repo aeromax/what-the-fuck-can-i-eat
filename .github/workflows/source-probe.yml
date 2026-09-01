@@ -1,0 +1,249 @@
+# Can a GitHub Actions runner reach the government sources this page depends on?
+#
+# Why this workflow exists
+# ------------------------
+# Twice now a source has worked perfectly from the author's laptop and been
+# blocked from CI, and both times the page kept rendering and kept looking
+# complete. That is the failure mode this project cares most about: not an
+# error, but a quietly shorter page that a reader has no way to distinguish
+# from a quiet week.
+#
+#   FSIS   www.fsis.usda.gov was recorded blocking by TLS fingerprint. On
+#          2026-08-29 plain fetch() got HTTP 403 on FSIS HTML pages while the
+#          API answered 200 — so the block is real, path-dependent, and can
+#          evidently be switched on. `impit` got through both, which is why it
+#          is a dependency. Settled affirmatively for runners on 2026-09-01 by
+#          the production path inside refresh run 33539857201.
+#
+#   FDA    www.fda.gov answers plain fetch() from Actions egress with HTTP 404,
+#          no content-type, and a 10-byte `Not found\n` body — on the RSS feed
+#          and on press-release pages alike — while impit gets 200 from the same
+#          runner in the same second (probe run 33543434214). That 10-byte body
+#          is not FDA's not-found page; it is an edge rule keyed on the client.
+#          Both call sites moved to impit in commit b24d9d9.
+#
+# This file replaces fsis-probe.yml and fda-probe.yml, which had converged on
+# the same shape pointed at different hosts. The FSIS question that fsis-probe
+# was built to close is closed; the diagnostic is kept because the day the page
+# mysteriously loses every meat recall, or every press-release record, this is
+# the first thing to run.
+#
+# IMPORTANT — this probe informs, it does not license a simplification.
+# The pipeline keeps using impit regardless of what the plain-fetch legs report.
+# An intermittent block is worse than a permanent one, and the dependency is
+# already paid for. A green plain-fetch leg is a data point about today, not
+# permission to delete impit. See CLAUDE.md, "Traps".
+#
+# Diagnostic, not a gate. Only the FSIS production leg can fail the job, for the
+# reason given at that leg. Everything else is reported and read by a human.
+name: Source reachability probe
+
+on:
+  # Manual only, deliberately. It downloads ~13 MB from government endpoints and
+  # answers a question that only needs asking when something looks wrong. The
+  # scheduled data refresh lives in its own workflow.
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "Which source to probe"
+        required: false
+        default: all
+        type: choice
+        options: [all, fda, fsis]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Probe government sources from a runner
+    runs-on: ubuntu-latest
+    # The FSIS payload is ~12.9 MB and the endpoint can be slow; a blocked
+    # request may hang rather than refuse. Ten minutes is generous for a run
+    # that normally takes well under a minute, and bounds a hang.
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # package.json declares node >=22.12.0. Pin an even (LTS) release, matching
+      # static.yml: the local machine runs an odd release, which works but is not
+      # a supported line. See CLAUDE.md, "Verified environment constraints".
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      # impit is a production dependency, so a plain `npm ci` is all this needs.
+      # No GEMINI_API_KEY: the probe touches no model, and the whole point is to
+      # isolate the network question from everything else.
+      - name: Install dependencies
+        run: npm ci
+
+      # Written inline rather than committed under scripts/: scripts/ is
+      # production pipeline code, constrained by erasableSyntaxOnly and covered
+      # by the test suite. A diagnostic does not belong there, and this file is
+      # created in the runner's workspace and thrown away with it.
+      - name: Write probe
+        run: |
+          cat > source-probe.ts <<'PROBE'
+          import { Impit } from 'impit';
+          import { FEED_URL, fetchFdaRss, parser } from './scripts/sources/fdaRss.ts';
+          import { FSIS_API, fetchFsis, selectRecords } from './scripts/sources/fsis.ts';
+          import { FdaRssFeed, FsisResponse } from './scripts/sourceSchemas.ts';
+
+          const which = process.env.PROBE_SOURCE || 'all';
+          const impit = new Impit({ browser: 'chrome' });
+
+          function line(k: string, v: unknown) {
+            console.log(`    ${k.padEnd(18)} ${String(v)}`);
+          }
+
+          /**
+           * Reports one URL over one transport. Never throws, and never prints a
+           * body — the FSIS payload is 12.9 MB and would bury the finding.
+           */
+          async function probe(label: string, url: string, useImpit: boolean) {
+            console.log(`\n  ${label}`);
+            try {
+              const res = useImpit ? await impit.fetch(url) : await fetch(url);
+              const body = await res.text();
+              const ct = res.headers.get('content-type') ?? '';
+              line('http status', res.status);
+              line('content-type', ct || '(none)');
+              line('bytes', body.length.toLocaleString());
+              // A 404 error page deserialises into garbage rather than throwing,
+              // so status alone is never the answer — show the body's shape.
+              line(
+                'looks like',
+                /^\s*<\?xml|<rss/i.test(body) ? 'XML/RSS'
+                  : /^\s*[[{]/.test(body) ? 'JSON'
+                  : /<html/i.test(body) ? 'HTML'
+                  : 'neither',
+              );
+              if (!res.ok) line('first 200', JSON.stringify(body.slice(0, 200)));
+              return { ok: res.ok, body, ct };
+            } catch (e) {
+              line('request', `THREW: ${(e as Error).message}`);
+              return null;
+            }
+          }
+
+          let fsisOk = true;
+
+          // ---------------------------------------------------------------- FDA
+          if (which === 'all' || which === 'fda') {
+            console.log('\n================ www.fda.gov');
+            console.log(`feed: ${FEED_URL}`);
+
+            console.log('\n[FDA 1/3] THE FEED');
+            const f = await probe('a. plain fetch() — historically blocked from CI', FEED_URL, false);
+            const i = await probe('b. impit — the production transport', FEED_URL, true);
+
+            // Take a real announcement URL from whichever leg produced a feed,
+            // so the next leg tests a live page rather than a guessed one.
+            let article: string | null = null;
+            for (const r of [i, f]) {
+              if (!r?.ok || !/xml/i.test(r.ct)) continue;
+              const p = FdaRssFeed.safeParse(parser.parse(r.body));
+              if (p.success && p.data.rss.channel.item.length > 0) {
+                article = p.data.rss.channel.item[0]!.link;
+                break;
+              }
+            }
+
+            console.log('\n[FDA 2/3] A PRESS RELEASE (scripts/pressRelease.ts path)');
+            if (article === null) {
+              console.log('    SKIPPED — no leg returned a parseable feed, so there is no');
+              console.log('    announcement URL to try. That is itself the finding.');
+            } else {
+              // scripts/pressRelease.ts rewrites http:// to https:// before
+              // fetching, and the feed's <link> is http://. Probing the raw link
+              // tests a scheme production never requests — it 404s for everyone
+              // and proves nothing. This mistake wasted a probe run once.
+              const https = article.replace(/^http:\/\//, 'https://');
+              console.log(`    feed link:  ${article}`);
+              console.log(`    production: ${https}  <- what pressRelease.ts fetches`);
+              await probe('a. plain fetch(), https — historically blocked from CI', https, false);
+              await probe('b. impit, https — the production transport', https, true);
+            }
+
+            console.log('\n[FDA 3/3] via the real fetchFdaRss() — THE PRODUCTION PATH');
+            try {
+              const r = await fetchFdaRss();
+              line('reachable', r.reachable);
+              line('note', r.note);
+              line('feed items', r.items.length);
+            } catch (e) {
+              line('request', `THREW: ${(e as Error).message}`);
+            }
+          }
+
+          // --------------------------------------------------------------- FSIS
+          if (which === 'all' || which === 'fsis') {
+            console.log('\n================ www.fsis.usda.gov');
+            console.log(`api: ${FSIS_API}`);
+
+            console.log('\n[FSIS 1/3] impit, raw request (diagnostics only)');
+            const raw = await probe('impit', FSIS_API, true);
+            if (raw?.ok) {
+              const p = FsisResponse.safeParse(JSON.parse(raw.body));
+              if (!p.success) {
+                line('parsed records', `SCHEMA REJECTED: ${p.error.message.slice(0, 300)}`);
+              } else {
+                line('parsed records', p.data.length);
+                // "200 OK with zero usable records" is the more insidious
+                // failure: the request looks fine and the page still loses
+                // every meat recall.
+                line('after inclusion', selectRecords(p.data).length);
+              }
+            }
+
+            console.log('\n[FSIS 2/3] via the real fetchFsis() — THE PRODUCTION PATH');
+            try {
+              const r = await fetchFsis();
+              line('reachable', r.reachable);
+              line('note', r.note);
+              line('recalls published', r.recalls.length);
+              // Reachable-but-empty is not a pass: it is the silent failure mode.
+              fsisOk = r.reachable && r.recalls.length > 0;
+            } catch (e) {
+              line('request', `THREW: ${(e as Error).message}`);
+              fsisOk = false;
+            }
+
+            console.log('\n[FSIS 3/3] plain fetch() — the control, historically blocked');
+            await probe('plain fetch()', FSIS_API, false);
+          }
+
+          console.log('\n=== how to read this');
+          console.log('impit through, fetch blocked  -> expected; this is why impit is a dependency.');
+          console.log('both blocked                  -> transport is innocent. Do NOT swap it. Investigate.');
+          console.log('both fine                     -> a data point about today, not permission to');
+          console.log('                                 delete impit. An intermittent block is worse.');
+
+          // Only FSIS fails the job, and only on its production leg. FSIS covers
+          // meat, poultry and eggs — categories openFDA does not carry at all —
+          // so a silent FSIS failure removes a whole food group with no fallback.
+          // The FDA legs are reported rather than enforced: openFDA still carries
+          // verified records if RSS is down, and a red run here would imply this
+          // workflow knows the correct answer for every host, which it does not.
+          if (!fsisOk && (which === 'all' || which === 'fsis')) {
+            console.log('::error::FSIS production leg FAILED — FSIS is not usable from this runner.');
+            console.log('Meat, poultry and egg recalls would silently vanish from the page.');
+            console.log('Per docs/build-plan.md step 5: stop and raise it. The fallbacks are a');
+            console.log('product decision, not an implementation detail.');
+            process.exit(1);
+          }
+          PROBE
+
+      # node runs TypeScript directly via native type stripping — same as
+      # `npm run refresh`. There is no build step for the pipeline.
+      - name: Run probe
+        env:
+          # Passed via env, never interpolated into the run: line — a workflow
+          # input is untrusted text.
+          PROBE_SOURCE: ${{ inputs.source }}
+        run: node source-probe.ts
