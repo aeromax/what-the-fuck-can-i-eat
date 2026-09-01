@@ -14,7 +14,7 @@ they are generated under two different sets of rules.
 
 Written end to end, not yet proven in production. The pipeline fetches, merges
 and renders live data from all three sources, and 206 tests pass offline against
-captured fixtures. What has **never run** is the automation: the six-hourly
+captured fixtures. What has **never run** is the automation: the daily
 refresh workflow and the FSIS reachability probe exist and their YAML parses,
 and that is all that is known about them.
 
@@ -93,7 +93,7 @@ in plain English, in each agency's own words.
 ## How it runs
 
 Static HTML. No server, no database, no model call at request time. A scheduled
-GitHub Action runs the pipeline every six hours, commits `data/recalls.json` when
+GitHub Action runs the pipeline once a day, commits `data/recalls.json` when
 the government has actually said something new, and dispatches the deploy
 workflow, which type-checks, tests, builds and publishes to GitHub Pages. A run
 that finds no news commits nothing.

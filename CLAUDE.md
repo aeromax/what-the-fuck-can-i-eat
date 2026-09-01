@@ -28,7 +28,7 @@ recall initiation by a median of 69 days, so its 30-day window and the RSS windo
 are disjoint. The merge path is covered by fixtures built on real records.
 
 ⚠️ **Step 10's two new workflows have never run on GitHub.**
-`.github/workflows/refresh.yml` (the six-hourly data refresh, commit, and deploy
+`.github/workflows/refresh.yml` (the daily data refresh, commit, and deploy
 dispatch) and `.github/workflows/fsis-probe.yml` (a manual FSIS reachability
 diagnostic) exist, and their YAML parses. Nothing more than that is known about
 them. Step 10's acceptance criteria — a manual dispatch producing either a real
@@ -57,7 +57,8 @@ snarky. The avoid-line is not.
 Not "currently active": nothing re-verifies that a recall is still open, and the
 window is not uniformly a window on announcement. See the inclusion rule.
 
-Data refreshes every six hours via a scheduled GitHub Action. No server, no
+Data refreshes once a day, early morning US Eastern, via a scheduled GitHub
+Action. No server, no
 database, no AI at request time.
 
 ## The one rule that matters most
@@ -140,7 +141,9 @@ On empty output it exits 1 and leaves `data/recalls.json` untouched
 with their government reason as the outage-fallback rendering.
 
 In production nobody runs it by hand: `.github/workflows/refresh.yml` runs the
-same `npm run refresh` on a `17 */6 * * *` cron, commits `data/` only when
+same `npm run refresh` on a `17 10 * * *` cron — 10:17 UTC, so 6:17am EDT and
+5:17am EST; GitHub cron has no DST, and drifting an hour in winter was accepted
+over maintaining two schedules — commits `data/` only when
 something changed, and then dispatches `static.yml` to rebuild the site. Both
 are dispatchable by hand from the Actions tab, or from a shell:
 
@@ -345,7 +348,7 @@ These were each found the hard way. None are hypothetical.
   `ENOENT` — the genuine first run — is allowed to yield `[]`, because `[]` is
   exactly the input that regenerates every headline. Aborting costs a run;
   guessing costs the whole page's voice and the API bill for it.
-- **A run that changes nothing must not commit.** Most of the four daily runs will
+- **A run that changes nothing must not commit.** Most daily runs will
   find no news; exit early when output is byte-identical to what is committed.
 - **Snapshots overwrite in place.** Accumulating timestamped files would add
   hundreds of megabytes a year. Git history is the audit trail.
