@@ -156,8 +156,13 @@ In production nobody runs it by hand: `.github/workflows/refresh.yml` runs the
 same `npm run refresh` on a `17 10 * * *` cron — 10:17 UTC, so 6:17am EDT and
 5:17am EST; GitHub cron has no DST, and drifting an hour in winter was accepted
 over maintaining two schedules — commits `data/` only when
-something changed, and then dispatches `static.yml` to rebuild the site. Both
-are dispatchable by hand from the Actions tab, or from a shell:
+something changed, and then **unconditionally** dispatches `static.yml` to
+rebuild the site, whether or not that commit happened. The page's "Sources
+checked" stamp is build time (`src/pages/index.astro`), not a data field or a
+file mtime — see the comment on `lastCheckedInstant()` there — so a daily
+rebuild is what makes that stamp move forward even on the (common) days the
+government published nothing new. Both workflows are dispatchable by hand from
+the Actions tab, or from a shell:
 
 ```
 gh workflow run refresh.yml        # fetch, merge, voice, commit, deploy

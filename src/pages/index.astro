@@ -1,5 +1,5 @@
 ---
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { z } from 'zod';
 import RecallRow from '../components/Recall.astro';
@@ -32,7 +32,6 @@ const review: ReviewEntry[] = z.array(ReviewEntrySchema).parse(rawReview);
 // falls into the catch — the footer then claims "no refresh recorded yet" on a
 // site that refreshed ten minutes ago. Astro always runs from the project root.
 const dataDir = join(process.cwd(), 'data');
-const recallsPath = join(dataDir, 'recalls.json');
 const metaPath = join(dataDir, 'meta.json');
 
 /** meta.json only exists after refresh.ts has run once. In the preview state it
@@ -45,15 +44,22 @@ function loadMeta(): MetaFile | null {
   }
 }
 
-/** The file's own mtime is the "last checked" timestamp — refresh.ts deliberately
- * does not write one into meta.json (would tick every run and defeat the
- * byte-identical rule). See scripts/refresh.ts. */
-function lastCheckedInstant(): Date | null {
-  try {
-    return statSync(recallsPath).mtime;
-  } catch {
-    return null;
-  }
+/** "Last checked" is stamped with BUILD time, not with recalls.json's git
+ * mtime. The two used to be the same thing, but refresh.ts deliberately does
+ * not commit on a day the government published nothing new (see "a run that
+ * changes nothing must not commit" in CLAUDE.md) — an mtime-based stamp then
+ * reads "yesterday" even on a morning the pipeline genuinely re-checked every
+ * source and found nothing. `.github/workflows/refresh.yml` now dispatches
+ * `static.yml` unconditionally, once a day, right after that check — so this
+ * `new Date()`, evaluated at build time, IS "when it was last checked" to
+ * within the few minutes the two workflows take to run back to back. There is
+ * deliberately no "checkedAt" field in meta.json for this: writing one would
+ * put a daily-ticking value inside the file refresh.ts's byte-identical
+ * comparison reads, defeating that check the same way an mtime-only fix would
+ * have. Build time, not a data field, is what stays outside that comparison
+ * for free. */
+function lastCheckedInstant(): Date {
+  return new Date();
 }
 
 // --- analytics --------------------------------------------------------------
@@ -98,7 +104,7 @@ function formatEasternInstant(at: Date): { day: string; time: string; zone: stri
 // be on a shelf. The confidence distinction is carried per row by Recall.astro's
 // left band, and by the tier tag inside the row, where it sits next to the
 // claim it qualifies.
-const stamp = lastChecked ? formatEasternInstant(lastChecked) : null;
+const stamp = formatEasternInstant(lastChecked);
 const awaitingVoice = recalls.filter((r) => r.headline === null).length;
 
 // Which `displayName`s are shared by more than one row.
@@ -199,11 +205,7 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
           <div class="checked">
             <span class="checked-label">Sources checked</span>
 
-            {stamp ? (
-              <span class="stamp">{stamp.day} &middot; {stamp.time} {stamp.zone}</span>
-            ) : (
-              <span class="stamp stamp-none">No refresh recorded yet.</span>
-            )}
+            <span class="stamp">{stamp.day} &middot; {stamp.time} {stamp.zone}</span>
 
             {meta ? (
               <ul class="sources">
@@ -899,7 +901,6 @@ const isAmbiguous = (r: Recall) => r.displayName !== null && sharedNames.has(r.d
     color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
-  .stamp-none { color: var(--dim); font-style: italic; }
 
   .sources {
     list-style: none;

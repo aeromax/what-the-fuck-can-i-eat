@@ -15,9 +15,12 @@
 //
 //   • No `lastChecked` timestamp is written into `meta.json`. If we did, every
 //     run would tick it and every run would commit — which is the exact rule
-//     this step exists to enforce against. The page's "last checked" line reads
-//     the file mtime / git commit timestamp instead, both of which move only
-//     when the data actually moves.
+//     this step exists to enforce against. The page's "last checked" line is
+//     stamped with build time instead (`src/pages/index.astro`), and
+//     `refresh.yml` now dispatches a rebuild once a day regardless of whether
+//     this step found anything to commit — see that workflow's "Trigger
+//     deploy" step for why an unconditional rebuild is what makes a build-time
+//     stamp track reality.
 //
 //   • Byte-identical comparison is `JSON.stringify(x, null, 2) + '\n'` against
 //     the file on disk. Schemas have fixed key order, so this is stable.

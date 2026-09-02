@@ -132,7 +132,7 @@ jobs:
       #
       # static.yml triggers on `push: branches: [main]`, but a push made with
       # the default GITHUB_TOKEN does NOT start another workflow — GitHub
-      # suppresses that to stop workflows triggering themselves forever. So the
+      # suppresses that to stop workflows triggering themselves forever. So a
       # commit above would land and the site would never rebuild.
       #
       # The documented exceptions are `workflow_dispatch` and
@@ -143,14 +143,20 @@ jobs:
       # `workflow_call` (which would require editing static.yml, and would run
       # the deploy inside this run rather than as its own).
       #
-      # Gated on `changed` for the same reason the commit is: an unchanged run
-      # has nothing new to publish, and rebuilding identical bytes every day
-      # would bury the real deploys.
+      # Deliberately NOT gated on `changed`. index.astro stamps "Sources
+      # checked" with build time, not with recalls.json's git mtime — see the
+      # comment on `lastCheckedInstant()` there — precisely so a day with no
+      # new government data still moves that stamp forward instead of reading
+      # "yesterday" on a page that was, in fact, checked again this morning.
+      # That only holds if the site actually rebuilds every day regardless of
+      # whether anything changed, so this step runs unconditionally. The cost
+      # is one extra static rebuild a day, which is cheap; the alternative is a
+      # page that silently looks stale on every quiet news day.
       #
-      # --ref main resolves to the commit just pushed, so the build picks up the
-      # new data rather than the state before it.
+      # --ref main resolves to whatever is on main right now: the commit just
+      # pushed if `changed` was true, or the same content as yesterday if not
+      # — either way the build picks up current state.
       - name: Trigger deploy
-        if: steps.changed.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run static.yml --ref main
