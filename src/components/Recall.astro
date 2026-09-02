@@ -41,10 +41,10 @@
  *
  * The collapsed summary carries four things, in this order:
  *
+ *   - the announcement date, as a small dateline above the name
  *   - the item name in large type
- *   - the announcement date, as a small dateline under it
- *   - the snark headline, as an editorial aside
  *   - the plain-English severity label
+ *   - the snark headline, as an editorial aside
  *
  * `product` moved BEHIND the toggle on 2026-08-31, at the user's explicit
  * direction. This is a deliberate relaxation of docs/design.md §2.1 rule 1,
@@ -209,21 +209,12 @@ const dataConfidence = recall.confidence;
   <details class="row">
     <summary class="head">
       <span class="head-text">
-        <h2>{heading}</h2>
-
-        {/* A dateline, sitting between the name and the joke the way a kicker
-            sits under a headline. Same formatting and the same EDT/EST label
-            src/dates.ts computes per date — never a fixed offset. */}
+        {/* A dateline, now leading the heading. Same formatting and the same
+            EDT/EST label src/dates.ts computes per date — never a fixed
+            offset. */}
         <span class="date">{announced.text} {announced.zone}</span>
 
-        {/* The editorial aside. A <span> and not a <p>: this sits inside the
-            <summary>, where a block element would be invalid nesting — a hard
-            compile error in Astro 7. Display is set to block in the CSS. */}
-        {snark && <span class="snark">{snark}</span>}
-
-        {/* Shown only when this name is shared with another row, and only while
-            closed. See the `ambiguousName` prop. */}
-        {showsBrief && <span class="brief">{recall.product}</span>}
+        <h2>{heading}</h2>
 
         {/* Severity renders on EVERY row, unconditionally, including the 18
             ungraded ones that read "Severity not yet assigned by FDA". See the
@@ -231,6 +222,15 @@ const dataConfidence = recall.confidence;
         <span class="glance">
           <span class="tag severity" title={definitionTitle}>{severity.label}</span>
         </span>
+
+        {/* The editorial aside. A <span> and not a <p>: this sits inside the
+            <summary>, where a block element would be invalid nesting — a hard
+            compile error in Astro 7. Display is set to block in the CSS. */}
+        {snark && <span class="snark">{snark}</span>}
+
+        {/* Shown only when this name is shared with another row, and only while
+            closed. See the `ambiguousName` prop. Trails snark, same as before. */}
+        {showsBrief && <span class="brief">{recall.product}</span>}
       </span>
 
       <span class="chev" aria-hidden="true"></span>
@@ -413,13 +413,15 @@ const dataConfidence = recall.confidence;
   }
 
   /* Snark rides in italic serif so it reads as an aside, and cannot be mistaken
-     for the deadpan avoid-line further down. It sits directly under the name
-     and its dateline: the joke is a comment on the headline, so it has to stay
-     next to the headline. On the rows that show one, the `.brief`
-     disambiguator follows it — see `ambiguousName`. */
+     for the deadpan avoid-line further down. It now sits under the severity
+     tag rather than directly under the name: the joke is still a comment on
+     the headline above it, just with the severity label between them. On the
+     rows that show one, the `.brief` disambiguator follows it — see
+     `ambiguousName`. */
   .snark {
     display: block;
     margin-bottom: 0.5rem;
+    padding: 10px 0;
     font-family: var(--serif, Lora, Georgia, serif);
     font-style: italic;
     font-size: 1.05rem;
@@ -429,8 +431,8 @@ const dataConfidence = recall.confidence;
   }
 
   /* Severity. Rendered on every row, in this slot, unconditionally — including
-     "Severity not yet assigned by FDA". The date used to share this row and now
-     sits under the heading, but the container stays: it is the slot, and a
+     "Severity not yet assigned by FDA". The date now leads the heading instead
+     of sharing this row, but the container stays: it is the slot, and a
      second collapsed tag would belong here rather than anywhere new. */
   .glance {
     display: flex;
