@@ -1,5 +1,30 @@
 [
   {
+    "id": "fsis:021-2026",
+    "product": "• 45-g. foil bags of “De Todito NATURAL” mixed chips with “CHICHARRÓN AMERICANO JACKS,” “Margarita,” and “NATU CHIPS.” • 45-g. foil bags of “De Todito BBQ” mixed chips with “CHICHARRÓN AMERICANO JACKS,” “Margarita,” and “NatuChips.”",
+    "displayName": null,
+    "brand": "",
+    "company": "",
+    "reason": "Import Violation",
+    "announcedDate": "2026-09-09",
+    "classification": "Class I",
+    "retailers": [],
+    "states": [
+      "New Jersey",
+      "Utah"
+    ],
+    "distributionRaw": "New Jersey, Utah",
+    "nationwide": false,
+    "countryOfOrigin": null,
+    "lotCodes": [],
+    "source": "fsis",
+    "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/el-eden-import-distributor-corp-recalls-ineligible-pork-cracklings-products-imported",
+    "confidence": "verified",
+    "mergedFrom": [],
+    "headline": null,
+    "avoidLine": null
+  },
+  {
     "id": "fdaRss:freshpoint-issues-recall-due-improperly-declared-allergen-egg-chicken-salad-wedge-sandwiches",
     "product": "Cranberry Chicken Salad Wedge Sandwich",
     "displayName": null,
