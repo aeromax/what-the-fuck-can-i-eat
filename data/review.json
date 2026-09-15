@@ -285,6 +285,67 @@
     "why": "same company but the products do not clearly match",
     "scores": {
       "company": 1,
+      "product": 0,
+      "sharedProductTokens": 0,
+      "reason": 0.2,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-1307-2026",
+        "product": "Prince PAN DE MANTECA; SPANISH STYLE; NET WEIGHT 8 OZ. (227g); INGREDIENTS: ENRICHED BLEACHED FLOUR (WHEAT FLOUR, MALT BARLEY FLOUR, NIACIN, FERROUS SULFATE, THIAMIN MONONITRATE, RIBOFLAVIN, FOLIC ACID, POTASSIUM BROMATE), WATER, YEAST, SALT, VEGETABLE SHORTENING (PARTIALLY HYDROGENATED SOYBEAN, COTTONSEED AND/OR CANOLA OILS) DOUGH CONDITIONER [WHEY, MILK], CORN FLOUR, MONOCALCIUM PHOSPHATE, L-CYSTEINE, HYDROCHLORIDE, POTASSIUM BROMATE), DEXTROSE, MONO-DIGYLCERIDES, SUGAR, GUAR GUM, MALT BARLEY FLOUR, ETHOOXYLATED MONODIGLYCERIDES, DIACETYL TARTARIC ACID ESTERS OF MONO-DIGLYCERIDES [DATEM], CORN SYRUP SOLIDS, POTASSIUM BROMATE, ENZYME, POLYSORBATE 60, SOY OILL, L-CYSTEINE, PROPIONIC ACID, SODIUM PROPIONATE (A PRESERVATIVE), PHOSPHORIC ACID.; CONTAINS: WHEAT AND SOY; UPC 8 93601 00102 2; packaged in blue, yellow, and green bag.",
+        "displayName": null,
+        "brand": "",
+        "company": "Prince Bakery Inc",
+        "reason": "Milk is not declared in the Contains statement.",
+        "announcedDate": "2026-09-09",
+        "classification": "Class II",
+        "retailers": [],
+        "states": [
+          "New York"
+        ],
+        "distributionRaw": "New York.",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "No codes"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1307-2026%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:prince-bakery-inc-issues-allergy-alert-undeclared-milk-and-sesame-prince-bakery-breads",
+        "product": "Variety of Breads",
+        "displayName": null,
+        "brand": "Prince",
+        "company": "Prince Bakery Inc.",
+        "reason": "Undeclared milk and sesame",
+        "announcedDate": "2026-08-19",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/prince-bakery-inc-issues-allergy-alert-undeclared-milk-and-sesame-prince-bakery-breads",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
       "product": 0.18181818181818182,
       "sharedProductTokens": 2,
       "reason": 0.14285714285714285,
