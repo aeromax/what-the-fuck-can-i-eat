@@ -98,10 +98,14 @@
     "classification": "Class I",
     "retailers": [],
     "states": [
+      "Connecticut",
+      "Illinois",
+      "Massachusetts",
       "New Jersey",
+      "New York",
       "Utah"
     ],
-    "distributionRaw": "New Jersey, Utah",
+    "distributionRaw": "New Jersey, Utah, Massachusetts, New York, Connecticut, Illinois",
     "nationwide": false,
     "countryOfOrigin": null,
     "lotCodes": [],
