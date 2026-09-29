@@ -114,7 +114,9 @@
   "field_labels": [
    "Recall-022-2026-Labels.pdf"
   ],
-  "field_distro_list": [],
+  "field_distro_list": [
+   "RC-022-2026-Retail-List.pdf "
+  ],
   "field_processing": [
    "Raw - Intact"
   ],

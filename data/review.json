@@ -1,1 +1,63 @@
-[]
+[
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.4444444444444444,
+      "sharedProductTokens": 4,
+      "reason": 0.4,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-1380-2026",
+        "product": "Organic Triple Berry Blend Strawberries, Blackberries & Blueberries, NET WT 10 OZ (283g), packed in plastic bag, 5 bags per case of 10 OZ each. KEEP FROZEN",
+        "displayName": null,
+        "brand": "",
+        "company": "Frutas y Hortalizas del Sur S.A.",
+        "reason": "Potential E. coli O145:H28 Contamination",
+        "announcedDate": "2026-09-23",
+        "classification": "Class I",
+        "retailers": [],
+        "states": [
+          "Arkansas"
+        ],
+        "distributionRaw": "AR",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Lot 6 040 01-6 Best by Date Feb 09 2028"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1380-2026%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:frutas-y-hortalizas-del-sur-sa-expands-recall-include-one-lot-great-value-frozen-organic-triple",
+        "product": "Organic Triple Berry Blend",
+        "displayName": null,
+        "brand": "Great Value",
+        "company": "Frutas y Hortalizas del Sur S.A.",
+        "reason": "Possible E. Coli Contamination",
+        "announcedDate": "2026-09-02",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/frutas-y-hortalizas-del-sur-sa-expands-recall-include-one-lot-great-value-frozen-organic-triple",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  }
+]
