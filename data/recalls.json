@@ -3608,27 +3608,5 @@
     "mergedFrom": [],
     "headline": null,
     "avoidLine": null
-  },
-  {
-    "id": "fdaRss:crystal-temptations-issues-allergy-alert-undeclared-milk-chocolatey-eyeballs",
-    "product": "Chocolatey Eyeballs, 7 oz., 10 oz., 10.5 oz., 11 oz., and 16 oz.",
-    "displayName": null,
-    "brand": "Little Temptations",
-    "company": "Crystal Temptations",
-    "reason": "Undeclared milk",
-    "announcedDate": "2026-08-31",
-    "classification": null,
-    "retailers": [],
-    "states": [],
-    "distributionRaw": null,
-    "nationwide": false,
-    "countryOfOrigin": null,
-    "lotCodes": [],
-    "source": "fdaRss",
-    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/crystal-temptations-issues-allergy-alert-undeclared-milk-chocolatey-eyeballs",
-    "confidence": "extracted",
-    "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
   }
 ]
