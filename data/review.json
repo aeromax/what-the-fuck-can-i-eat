@@ -1,1 +1,63 @@
-[]
+[
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.16666666666666666,
+      "sharedProductTokens": 1,
+      "reason": 0.3333333333333333,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-1390-2026",
+        "product": "Evergreen Fresh Sprouts LLC, Broccoli Sprouts, packaged in clear plastic zip lock bag, net wt. 4oz, UPC 8 38796 00105 1.  Firm distributed cases (6/4oz. bags per case) to distributor.",
+        "displayName": null,
+        "brand": "",
+        "company": "Evergreen Fresh Sprouts LLC",
+        "reason": "Salmonella",
+        "announcedDate": "2026-09-30",
+        "classification": "Class I",
+        "retailers": [],
+        "states": [
+          "Washington"
+        ],
+        "distributionRaw": "Distributed in WA",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Use By Date (9/16/2026) Use By Date (9/14/2026) Use By Date (9/11/2026) Use By Date (9/09/2026) Use By Date (9/07/2026)"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1390-2026%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:evergreen-fresh-sprouts-llc-recalls-broccoli-sprouts-because-possible-health-risk",
+        "product": "Broccoli Sprouts",
+        "displayName": null,
+        "brand": "No Brand Name",
+        "company": "Evergreen Fresh Sprouts, LLC.",
+        "reason": "Potential to be contaminated with Salmonella",
+        "announcedDate": "2026-09-10",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/evergreen-fresh-sprouts-llc-recalls-broccoli-sprouts-because-possible-health-risk",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  }
+]
