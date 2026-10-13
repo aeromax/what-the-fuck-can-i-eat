@@ -1,1 +1,68 @@
-[]
+[
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.3333333333333333,
+      "sharedProductTokens": 2,
+      "reason": 0.6,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-1402-2026",
+        "product": "Lior brand Cinnamon Ground Seasoning; 90g transparent plastic container; UPC 794711005484.",
+        "displayName": null,
+        "brand": "",
+        "company": "Galil Importing Corp",
+        "reason": "Product contains elevated levels of lead.",
+        "announcedDate": "2026-10-07",
+        "classification": "Class II",
+        "retailers": [],
+        "states": [
+          "Florida",
+          "Illinois",
+          "New Jersey",
+          "New York",
+          "Pennsylvania",
+          "Texas"
+        ],
+        "distributionRaw": "NY, NJ, PA, TX, FL, IL",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "GAP11304 printed on the side of the container under the ingredient line."
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-1402-2026%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:galil-importing-corp-recalls-lior-cinnamon-ground-seasoning-due-elevated-lead-levels",
+        "product": "Ground cinnamon",
+        "displayName": null,
+        "brand": "Lior",
+        "company": "Galil Importing Corp",
+        "reason": "Potential to be contaminated with elevated levels of lead",
+        "announcedDate": "2026-09-24",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/galil-importing-corp-recalls-lior-cinnamon-ground-seasoning-due-elevated-lead-levels",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  }
+]
