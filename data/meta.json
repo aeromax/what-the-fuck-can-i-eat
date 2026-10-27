@@ -3,14 +3,14 @@
     {
       "name": "openFDA",
       "reachable": true,
-      "note": "41 of 44 rows included",
-      "count": 41
+      "note": "47 of 51 rows included",
+      "count": 47
     },
     {
       "name": "FDA RSS",
       "reachable": true,
-      "note": "20 records; skipped 0 pet, 0 unparseable, 0 unreachable",
-      "count": 20
+      "note": "19 records; skipped 0 pet, 0 unparseable, 0 unreachable",
+      "count": 19
     },
     {
       "name": "FSIS",
