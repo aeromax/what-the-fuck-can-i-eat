@@ -1,1 +1,61 @@
-[]
+[
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.23076923076923078,
+      "sharedProductTokens": 3,
+      "reason": 0.5,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0173-2027",
+        "product": "Gardners Basics brand Waltham 29 Broccoli Sprouting Seeds packaged in a white and green resealable pouch, net weight 1 pound (454 g), with UPC: 848137042889. The bag is marked with Packed for 2027.",
+        "displayName": null,
+        "brand": "",
+        "company": "Gardeners Basics",
+        "reason": "Salmonella",
+        "announcedDate": "2026-10-28",
+        "classification": "Class I",
+        "retailers": [],
+        "states": [],
+        "distributionRaw": "Distributed nationwide via online sales.",
+        "nationwide": true,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Packed for 2027"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0173-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:gardeners-basics-recalls-waltham-29-broccoli-sprouting-seeds-due-possible-salmonella-contamination",
+        "product": "Broccoli Sprouting Seeds",
+        "displayName": null,
+        "brand": "Gardeners Basics",
+        "company": "Gardeners Basics",
+        "reason": "Product may be contaminated with Salmonella",
+        "announcedDate": "2026-10-08",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/gardeners-basics-recalls-waltham-29-broccoli-sprouting-seeds-due-possible-salmonella-contamination",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  }
+]
