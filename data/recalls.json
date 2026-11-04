@@ -1,5 +1,27 @@
 [
   {
+    "id": "fdaRss:snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+    "product": "Crunchy Kale and Veggie Chips Kale",
+    "displayName": null,
+    "brand": "Brad’s",
+    "company": "Snack Right Super Foods dba Brad’s Raw Chips",
+    "reason": "Product may contain thallium.",
+    "announcedDate": "2026-11-02",
+    "classification": null,
+    "retailers": [],
+    "states": [],
+    "distributionRaw": null,
+    "nationwide": false,
+    "countryOfOrigin": null,
+    "lotCodes": [],
+    "source": "fdaRss",
+    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+    "confidence": "extracted",
+    "mergedFrom": [],
+    "headline": null,
+    "avoidLine": null
+  },
+  {
     "id": "fdaRss:once-upon-farm-recalls-all-lots-and-varieties-tractor-wheels-organic-toddler-soft-baked-bars-due",
     "product": "Tractor Wheels Organic Toddler Soft-Baked Bars (all lots and varieties)",
     "displayName": null,
