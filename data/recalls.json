@@ -2606,33 +2606,5 @@
     "mergedFrom": [],
     "headline": null,
     "avoidLine": null
-  },
-  {
-    "id": "fsis:pha-10062026-01",
-    "product": "• 140-g. cans of “GRACE READY TO EAT CHICKEN VIENNA SAUSAGES.” • 140-g. cans of “GRACE READY TO EAT CHICKEN VIENNA SAUSAGES HOT & SPICY.”",
-    "displayName": null,
-    "brand": "",
-    "company": "",
-    "reason": "Import Violation",
-    "announcedDate": "2026-10-06",
-    "classification": "Public Health Alert",
-    "retailers": [],
-    "states": [
-      "Alabama",
-      "Florida",
-      "Georgia",
-      "Maryland",
-      "Texas"
-    ],
-    "distributionRaw": "Alabama, Florida, Georgia, Maryland, Texas",
-    "nationwide": false,
-    "countryOfOrigin": null,
-    "lotCodes": [],
-    "source": "fsis",
-    "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/fsis-issues-public-health-alert-ineligible-chicken-vienna-style-sausage-products",
-    "confidence": "verified",
-    "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
   }
 ]

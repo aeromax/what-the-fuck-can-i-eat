@@ -66,39 +66,5 @@
   ],
   "field_recall_type": "Active Recall",
   "field_year": "2026"
- },
- {
-  "field_title": "FSIS Issues Public Health Alert for Ineligible Chicken Vienna-Style Sausage Products Illegally Imported From Jamaica",
-  "field_recall_number": "PHA-10062026-01",
-  "field_recall_url": "http://www.fsis.usda.gov/recalls-alerts/fsis-issues-public-health-alert-ineligible-chicken-vienna-style-sausage-products",
-  "field_recall_classification": "Public Health Alert",
-  "field_recall_date": "2026-10-06",
-  "langcode": "English",
-  "field_active_notice": "False",
-  "field_summary": "<p><strong>WASHINGTON, October 6, 2026</strong> – The U.S. Department of Agriculture’s Food Safety and Inspection Service (FSIS) is issuing a public health alert for canned chicken Vienna-style sausages that were illegally imported from Jamaica, a country that is not eligible to export meat or poultry products to the United States. FSIS is continuing to investigate how these products entered the country.</p>\n<p>The following products are subject to the public health alert, regardless of the product date [<a href=\"https://www.fsis.usda.gov/sites/default/files/food_label_pdf/2026-10/PHA-10062026-01-Labels.pdf\">view labels</a>]:&nbsp;</p>\n<ul type=\"disc\">\n<li>140-g. cans of “GRACE READY TO EAT CHICKEN VIENNA SAUSAGES.”&nbsp;</li>\n<li>140-g. cans of “GRACE READY TO EAT CHICKEN VIENNA SAUSAGES HOT &amp; SPICY.”&nbsp;</li>\n</ul>\n<p>The products bear establishment number “EST. NO G-01” inside the Jamaica mark of inspection. The importer subsequently distributed the product to retail locations in Alabama, Florida, Georgia, Maryland, and Texas.</p>\n<p>The problem was discovered during routine FSIS surveillance activities of imported products in commerce.&nbsp;</p>\n<p>There have been no confirmed reports of illness or injury due to consumption of these products. Anyone concerned about an illness or injury should contact a health care provider.&nbsp;</p>\n<p>FSIS is concerned that some product may be in consumers’ pantries.&nbsp;Consumers who have purchased these products are urged not to consume them.&nbsp;These products should be thrown away or returned to the place of purchase.</p>\n<p>Media and consumers with questions regarding the public health alert can contact Sandra Campbell, owner, at 305-887-9523 or&nbsp;<a href=\"mailto:purecaribbeandist@gmail.com\">purecaribbeandist@gmail.com</a>&nbsp;.&nbsp;</p>\n<p>Consumers with food safety questions can call the toll-free USDA Meat and Poultry Hotline at 888-MPHotline (888-674-6854) or send a question via email to&nbsp;<a href=\"mailto:MPHotline@usda.gov\">MPHotline@usda.gov</a>.&nbsp;For consumers that need to report a problem with a meat, poultry, or egg product, the online Electronic Consumer Complaint Monitoring System can be accessed 24 hours a day at&nbsp;<a href=\"https://gcc02.safelinks.protection.outlook.com/?url=https%3A%2F%2Ffoodcomplaint.fsis.usda.gov%2FeCCF%2F&amp;data=05%7C01%7CMelissa.Cordell%40usda.gov%7C2ffd2d584176447889ea08dbb48bd749%7Ced5b36e701ee4ebc867ee03cfa0d4697%7C1%7C0%7C638302284933732023%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=Jx%2BVgXbvTA0YVfEYBwKrSu9MQne%2BUQZ3bT04yRxlrAI%3D&amp;reserved=0\">https://foodcomplaint.fsis.usda.gov/eCCF/</a>.</p>\n",
-  "field_recall_reason": [
-   "Import Violation"
-  ],
-  "field_states": [
-   "Alabama",
-   "Florida",
-   "Georgia",
-   "Maryland",
-   "Texas"
-  ],
-  "field_product_items": [
-   "•\t140-g. cans of “GRACE READY TO EAT CHICKEN VIENNA SAUSAGES.” ",
-   "•\t140-g. cans of “GRACE READY TO EAT CHICKEN VIENNA SAUSAGES HOT &amp; SPICY.” "
-  ],
-  "field_establishment": [],
-  "field_labels": [
-   "PHA-10062026-01-Labels"
-  ],
-  "field_distro_list": [],
-  "field_processing": [
-   "Unknown"
-  ],
-  "field_recall_type": "Public Health Alert",
-  "field_year": "2026"
  }
 ]
