@@ -29,7 +29,9 @@
   "field_labels": [
    "Recall-027-2026-Labels.pdf"
   ],
-  "field_distro_list": [],
+  "field_distro_list": [
+   "RC-027-2026-Retail-List.pdf"
+  ],
   "field_processing": [
    "Heat Treated - Shelf Stable"
   ],
