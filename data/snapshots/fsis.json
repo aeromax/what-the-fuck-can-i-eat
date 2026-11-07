@@ -1,5 +1,40 @@
 [
  {
+  "field_title": "FSIS Issues Public Health Alert for Meat and Poultry Products Due to Misbranding and Undeclared Allergens",
+  "field_recall_number": "PHA-11062026-01",
+  "field_recall_url": "http://www.fsis.usda.gov/recalls-alerts/fsis-issues-public-health-alert-meat-and-poultry-products-due-misbranding-and",
+  "field_recall_classification": "Public Health Alert",
+  "field_recall_date": "2026-11-06",
+  "langcode": "English",
+  "field_active_notice": "True",
+  "field_summary": "<p><strong>WASHINGTON, Nov. 6, 2026&nbsp;</strong>– The U.S. Department of Agriculture’s Food Safety and Inspection Service (FSIS) is issuing a public health alert for frozen, not ready-to-eat (NRTE), meat and poultry products due to misbranding and undeclared allergens. The products contain sesame, a known allergen, which is not declared on the product labels. In addition, the beef product contains Worcestershire sauce that contains anchovy (fish), a known allergen, which is not declared on the product labels. A recall was not requested because the products are no longer available for purchase.</p>\n<p>The frozen NRTE meat and poultry products were produced on Oct. 15, Oct. 16, and Oct. 27, 2026. The following products are subject to the public health alert [<a href=\"https://gcc02.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.fsis.usda.gov%2Fsites%2Fdefault%2Ffiles%2Ffood_label_pdf%2F2026-11%2FPHA_11062026_01_Label.pdf&amp;data=05%7C02%7CJohn.Jung%40usda.gov%7C7f72848dd5124b0107e208df3c603f93%7Ced5b36e701ee4ebc867ee03cfa0d4697%7C1%7C0%7C639296056225113721%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&amp;sdata=jjLU%2FEi6AqvBc%2BznZwWM%2F6x8JvzpziLJz2aT7j0kElw%3D&amp;reserved=0\">view labels</a>]:</p>\n<ul type=\"disc\">\n<li>Clear vacuum-packed packages of 6-piece “Bami Rolls” with “BEST BY” October 2027 and lot codes BR-2026-01 and BR-2026-02.</li>\n<li>Clear vacuum-packed packages of 10-piece “Saté Kroketten” with “BEST BY” October 2027 and lot code SK-1026-01.</li>\n<li>Clear vacuum-packed packages of 12-piece “Bitterballen” with “BEST BY” October 2027 and lot code BB-1026-01.</li>\n</ul>\n<p>The products bear establishment number “EST. M3177” or “EST. P3177” inside the USDA mark of inspection. These items were sold by Lowlands House for internet sales nationwide. These items may have also been sold at a festival and farmers market in Greer, South Carolina.</p>\n<p>The problem was discovered during a routine FSIS label review.</p>\n<p>There have been no confirmed reports of adverse reactions due to consumption of these products. Anyone concerned about a reaction should contact a health care provider.&nbsp;</p>\n<p>FSIS is concerned that some product may be in consumers’ refrigerators or freezers.&nbsp;Consumers who have purchased these products are urged not to consume them. These products should be thrown away or returned to the place of purchase.</p>\n<p>Media and consumers with questions regarding the public health alert can contact Brian Kops, Owner of Betterballen Foods LLC, at 312-340-4823 or&nbsp;<a href=\"mailto:brian.kops@betterballenfoods.com\">brian.kops@betterballenfoods.com</a>.&nbsp;</p>\n<p>Consumers with food safety questions can call the toll-free USDA Meat and Poultry Hotline at 888-MPHotline (888-674-6854) or send a question via email to&nbsp;<a href=\"mailto:MPHotline@usda.gov\">MPHotline@usda.gov</a>.&nbsp;For consumers that need to report a problem with a meat, poultry, or egg product, the online Electronic Consumer Complaint Monitoring System can be accessed 24 hours a day at&nbsp;<a href=\"https://gcc02.safelinks.protection.outlook.com/?url=https%3A%2F%2Ffoodcomplaint.fsis.usda.gov%2FeCCF%2F&amp;data=05%7C02%7CJohn.Jung%40usda.gov%7C7f72848dd5124b0107e208df3c603f93%7Ced5b36e701ee4ebc867ee03cfa0d4697%7C1%7C0%7C639296056225145838%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&amp;sdata=hR6s9Q3%2FsYuWJh3abnJUj8UHWgrvLNtCxc4N1hZmkVY%3D&amp;reserved=0\">https://foodcomplaint.fsis.usda.gov/eCCF/</a>.</p>\n",
+  "field_recall_reason": [
+   "Unreported Allergens"
+  ],
+  "field_states": [
+   "Georgia",
+   "South Carolina",
+   "Nationwide"
+  ],
+  "field_product_items": [
+   "•\tClear vacuum-packed packages of 6-piece “Bami Rolls” with “BEST BY” October 2027 and lot codes BR-2026-01 and BR-2026-02.",
+   "•\tClear vacuum-packed packages of 10-piece “Saté Kroketten” with “BEST BY” October 2027 and lot code SK-1026-01.",
+   "•\tClear vacuum-packed packages of 12-piece “Bitterballen” with “BEST BY” October 2027 and lot code BB-1026-01."
+  ],
+  "field_establishment": [
+   "BETTERBALLEN FOODS LLC"
+  ],
+  "field_labels": [
+   "PHA-11062026-01-Label"
+  ],
+  "field_distro_list": [],
+  "field_processing": [
+   "Heat Treated - Not Fully Cooked - Not Shelf Stable"
+  ],
+  "field_recall_type": "Public Health Alert",
+  "field_year": "2026"
+ },
+ {
   "field_title": "Imperio Distribution LLC Recalls Beef Jerky Products Produced Without the Benefit of Inspection",
   "field_recall_number": "027-2026",
   "field_recall_url": "http://www.fsis.usda.gov/recalls-alerts/imperio-distribution-llc-recalls-beef-jerky-products-produced-without-benefit",
