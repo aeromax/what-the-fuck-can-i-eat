@@ -9,8 +9,8 @@
     {
       "name": "FDA RSS",
       "reachable": true,
-      "note": "16 records; skipped 0 pet, 0 unparseable, 0 unreachable",
-      "count": 16
+      "note": "14 records; skipped 0 pet, 0 unparseable, 0 unreachable",
+      "count": 14
     },
     {
       "name": "FSIS",
