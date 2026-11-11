@@ -2018,6 +2018,28 @@
     "avoidLine": null
   },
   {
+    "id": "fdaRss:family-farmstead-dairy-announces-recall-all-cheddar-cheese-products-because-possible-health-risk",
+    "product": "Raw Mild Cheddar; Raw Sharp Cheddar",
+    "displayName": null,
+    "brand": "Family Farmstead",
+    "company": "Family Farmstead Dairy",
+    "reason": "Potential to be contaminated with Listeria monocytogenes.",
+    "announcedDate": "2026-10-15",
+    "classification": null,
+    "retailers": [],
+    "states": [],
+    "distributionRaw": null,
+    "nationwide": false,
+    "countryOfOrigin": null,
+    "lotCodes": [],
+    "source": "fdaRss",
+    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/family-farmstead-dairy-announces-recall-all-cheddar-cheese-products-because-possible-health-risk",
+    "confidence": "extracted",
+    "mergedFrom": [],
+    "headline": null,
+    "avoidLine": null
+  },
+  {
     "id": "fdaRss:family-farmstead-dairy-announces-recall-raw-mild-cheddar-cheese-due-potential-e-coli-o26h11-and",
     "product": "Raw Mild Cheddar Cheese",
     "displayName": null,
