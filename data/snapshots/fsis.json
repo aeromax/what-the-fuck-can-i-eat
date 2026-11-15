@@ -1,5 +1,41 @@
 [
  {
+  "field_title": "FSIS Issues Public Health Alert for Ready-to-Eat Meat Products Containing Biscuits Recalled Due to Possible Listeria Contamination",
+  "field_recall_number": "PHA-11142026",
+  "field_recall_url": "http://www.fsis.usda.gov/recalls-alerts/fsis-issues-public-health-alert-ready-eat-meat-products-containing-biscuits-recalled",
+  "field_recall_classification": "Public Health Alert",
+  "field_recall_date": "2026-11-14",
+  "langcode": "English",
+  "field_active_notice": "True",
+  "field_summary": "<p><strong>WASHINGTON, Nov. 14, 2026</strong> – The U.S. Department of Agriculture’s Food Safety and Inspection Service (FSIS) is issuing a public health alert for ready-to-eat meat products containing FDA-regulated biscuits that may be contaminated with <em>Listeria monocytogenes (Lm)</em>. Additional downstream products may be identified as this ingredient recall progresses. As more information becomes available, FSIS will update this public health alert. Consumers should check back frequently.</p>\n<p><a href=\"/sites/default/files/media_file/documents/PHA-11142026-Product-List_0.pdf\" data-entity-type=\"file\" data-entity-uuid=\"3252a327-5125-4e99-8ec7-8fc38c80de29\" data-entity-substitution=\"file\">View the list of products subject to the public health alert</a>, including information such as the establishment numbers and states where the products were distributed.</p>\n<p><a href=\"/sites/default/files/food_label_pdf/2026-11/PHA-11142026-Product-Labels.pdf\" data-entity-type=\"file\" data-entity-uuid=\"81658b33-3ace-47df-b7b2-0008b03f2e58\" data-entity-substitution=\"file\">View product labels.</a></p>\n<p>The problem was discovered when a firm notified FSIS that they had received FDA-regulated biscuits that had been recalled by C.H. Guenther &amp; Son.</p>\n<p>There have been no confirmed reports of illness due to consumption of these products. Anyone concerned about an illness should contact a health care provider.</p>\n<p>Consumption of food contaminated with Lm can cause listeriosis, a serious infection that primarily affects older adults, persons with weakened immune systems, and pregnant women and their newborns. Less commonly, persons outside these risk groups are affected.<br><br>Listeriosis can cause fever, muscle aches, headache, stiff neck, confusion, loss of balance and convulsions sometimes preceded by diarrhea or other gastrointestinal symptoms. An invasive infection spreads beyond the gastrointestinal tract. In pregnant women, the infection can cause miscarriages, stillbirths, premature delivery or life-threatening infection of the newborn. In addition, serious and sometimes fatal infections can occur in older adults and persons with weakened immune systems. Listeriosis is treated with antibiotics. Persons in the higher-risk categories who experience flu-like symptoms within two months after eating contaminated food should seek medical care and tell the health care provider about eating the contaminated food.<br><br>FSIS is concerned that some product may be in consumers’ or retailers’ refrigerators or freezers. Consumers who have purchased these products are urged not to consume them. Retailers who have purchased these products are urged not to serve or sell them. These products should be thrown away or returned to the place of purchase.<br>&nbsp;<br>Consumers with food safety questions can call the toll-free USDA Meat and Poultry Hotline at 888-MPHotline (888-674-6854) or send a question via email to MPHotline@usda.gov. For consumers that need to report a problem with a meat, poultry, or egg product, the online Electronic Consumer Complaint Monitoring System can be accessed 24 hours a day at <a href=\"https://foodcomplaint.fsis.usda.gov/eCCF/\">https://foodcomplaint.fsis.usda.gov/eCCF/</a>.&nbsp;</p>\n<p>###</p>\n<p>NOTE: Access news releases and other information at FSIS’ website at <a href=\"/recalls\" data-entity-type=\"node\" data-entity-uuid=\"44ea4e6a-ea7d-43e2-af2e-d3d6d5c412e8\" data-entity-substitution=\"canonical\">http://www.fsis.usda.gov/recalls</a>.</p>\n<p>Follow FSIS on X at <a href=\"http://www.twitter.com/usdafoodsafety\">twitter.com/usdafoodsafety</a>.&nbsp;<br><br>USDA is an equal opportunity provider, employer and lender. To file a complaint of discrimination, write: USDA, Director, Office of Civil Rights, 1400 Independence Avenue, SW, Washington, DC 20250-9410 or call 800-795-3272 (voice), or 202-720-6382 (TDD).</p>\n",
+  "field_recall_reason": [
+   "Product Contamination"
+  ],
+  "field_states": [
+   "Arkansas",
+   "Louisiana",
+   "Mississippi",
+   "Oklahoma",
+   "Tennessee",
+   "Texas"
+  ],
+  "field_product_items": [
+   "9.5 oz Biscuit &amp; Sausage Gravy"
+  ],
+  "field_establishment": [
+   "Fresh &amp; Ready Foods LLC"
+  ],
+  "field_labels": [
+   "PHA-11142026-Product-Labels.pdf"
+  ],
+  "field_distro_list": [],
+  "field_processing": [
+   "Fully Cooked - Not Shelf Stable"
+  ],
+  "field_recall_type": "Public Health Alert",
+  "field_year": "2026"
+ },
+ {
   "field_title": "FSIS Issues Public Health Alert for Meat and Poultry Products Due to Misbranding and Undeclared Allergens",
   "field_recall_number": "PHA-11062026-01",
   "field_recall_url": "http://www.fsis.usda.gov/recalls-alerts/fsis-issues-public-health-alert-meat-and-poultry-products-due-misbranding-and",
