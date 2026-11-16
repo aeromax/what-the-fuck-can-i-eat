@@ -2241,27 +2241,5 @@
     "mergedFrom": [],
     "headline": null,
     "avoidLine": null
-  },
-  {
-    "id": "fsis:026-2026",
-    "product": "Full product list available in PDF format - Various RTE meat and poultry products bearing “EST. M/P 7839,” “EST. P 20935A” and “EST. M 9520” inside the USDA mark of inspection.",
-    "displayName": null,
-    "brand": "",
-    "company": "Kayem Foods Inc.",
-    "reason": "Processing Defect",
-    "announcedDate": "2026-10-17",
-    "classification": "Class I",
-    "retailers": [],
-    "states": [],
-    "distributionRaw": "Nationwide",
-    "nationwide": true,
-    "countryOfOrigin": null,
-    "lotCodes": [],
-    "source": "fsis",
-    "sourceUrl": "https://www.fsis.usda.gov/recalls-alerts/kayem-foods-inc--recalls-meat-and-poultry-products-due-possible-temperature-abuse",
-    "confidence": "verified",
-    "mergedFrom": [],
-    "headline": null,
-    "avoidLine": null
   }
 ]
