@@ -9,14 +9,14 @@
     {
       "name": "FDA RSS",
       "reachable": true,
-      "note": "12 records; skipped 0 pet, 0 unparseable, 0 unreachable",
+      "note": "12 records; skipped 0 pet, 0 unparseable, 2 unreachable",
       "count": 12
     },
     {
       "name": "FSIS",
-      "reachable": false,
-      "note": "HTTP 403",
-      "count": 0
+      "reachable": true,
+      "note": "3 of 2034 records included",
+      "count": 3
     }
   ]
 }
