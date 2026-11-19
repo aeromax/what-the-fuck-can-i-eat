@@ -62,6 +62,73 @@
     "why": "same company but the products do not clearly match",
     "scores": {
       "company": 1,
+      "product": 0.2222222222222222,
+      "sharedProductTokens": 2,
+      "reason": 1,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0196-2027",
+        "product": "WinCo Foods Hoagie Rolls, 6 rolls/bag. Product is packaged in clear plastic bag with red banner.  Net Wt. 16oz (1LB) 454g. UPC 0 70552 00649 2. Distributed By: WinCo Foods, LLC, Boise, ID 83704.",
+        "displayName": null,
+        "brand": "",
+        "company": "WinCo Foods LLC",
+        "reason": "Undeclared Sesame",
+        "announcedDate": "2026-11-11",
+        "classification": "Class I",
+        "retailers": [],
+        "states": [
+          "California",
+          "Idaho",
+          "Montana",
+          "Nevada",
+          "Oregon",
+          "Utah",
+          "Washington"
+        ],
+        "distributionRaw": "Distributed in CA, ID, MT, NV, OR, UT, and WA.",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Best if Used By Dates: SEP 10 through Best if used by NOV 3  Best if Used By Dates means: 9/10/2026 through 11/3/2026"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0196-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:winco-foods-llc-issues-allergy-alert-undeclared-sesame-hoagie-rolls",
+        "product": "Hoagie Rolls",
+        "displayName": null,
+        "brand": "WinCo Foods",
+        "company": "WinCo Foods LLC",
+        "reason": "Undeclared sesame",
+        "announcedDate": "2026-10-22",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/winco-foods-llc-issues-allergy-alert-undeclared-sesame-hoagie-rolls",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
       "product": 0.4,
       "sharedProductTokens": 2,
       "reason": 0,
