@@ -11,14 +11,14 @@
     },
     "records": [
       {
-        "id": "openfda:event-100248-4f7447e6",
+        "id": "openfda:h-0204-2027",
         "product": "365 Whole Foods Market Standardized + Full Spectrum Blend Ashwagandha Capsules 120 count. Product Item Number: 3006661. 120 ct powder capsules in a 200cc bottle Take 1 capsule 2 times daily. Packaged in a 200cc white HDPE bottle with white cap. Whole Foods UPC: 099482520991. Label Address: Whole Foods Market, 550 Bowie Street, Austin, Texas 78703.",
         "displayName": null,
         "brand": "",
         "company": "Vitality Works, Inc",
         "reason": "Possible Salmonella contamination.",
         "announcedDate": "2026-11-11",
-        "classification": null,
+        "classification": "Class I",
         "retailers": [],
         "states": [],
         "distributionRaw": "Recalled product was distributed nationwide.",
@@ -28,7 +28,7 @@
           "Lot: 202526227 Exp. Date: 10-13-28"
         ],
         "source": "openfda",
-        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=event_id%3A%22100248%22",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0204-2027%22",
         "confidence": "verified",
         "mergedFrom": [],
         "headline": null,
@@ -51,6 +51,515 @@
         "lotCodes": [],
         "source": "fdaRss",
         "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/vitality-works-inc-recalls-365-whole-foods-market-ashwagandha-capsules-sold-nationwide-due-potential",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.3333333333333333,
+      "sharedProductTokens": 2,
+      "reason": 0.5,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0208-2027",
+        "product": "Brad's Crunchy Kale Original, 2 oz (57g) bags with UPC 813104021679.",
+        "displayName": null,
+        "brand": "",
+        "company": "Snack Right Super Foods, Inc.",
+        "reason": "Products may contain elevated levels of thallium",
+        "announcedDate": "2026-11-18",
+        "classification": "Class II",
+        "retailers": [],
+        "states": [
+          "Illinois",
+          "Rhode Island"
+        ],
+        "distributionRaw": "The product was distributed to the following States:  IL and RI",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Lots 33525-1, 33525-2, 33525-3, 34525-1 and 35125-2"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0208-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+        "product": "Crunchy Kale and Veggie Chips Kale",
+        "displayName": null,
+        "brand": "Brad’s",
+        "company": "Snack Right Super Foods dba Brad’s Raw Chips",
+        "reason": "Product may contain thallium.",
+        "announcedDate": "2026-11-02",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.3333333333333333,
+      "sharedProductTokens": 2,
+      "reason": 0.5,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0209-2027",
+        "product": "Brad's Crunchy Kale, Cheeze It Up, 2 oz (57g) bags with UPC 813104021877.",
+        "displayName": null,
+        "brand": "",
+        "company": "Snack Right Super Foods, Inc.",
+        "reason": "Products may contain elevated levels of thallium",
+        "announcedDate": "2026-11-18",
+        "classification": "Class II",
+        "retailers": [],
+        "states": [
+          "Illinois",
+          "Rhode Island"
+        ],
+        "distributionRaw": "The product was distributed to the following States:  IL and RI",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Lot 35025-3"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0209-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+        "product": "Crunchy Kale and Veggie Chips Kale",
+        "displayName": null,
+        "brand": "Brad’s",
+        "company": "Snack Right Super Foods dba Brad’s Raw Chips",
+        "reason": "Product may contain thallium.",
+        "announcedDate": "2026-11-02",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.3333333333333333,
+      "sharedProductTokens": 2,
+      "reason": 0.6,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0202-2027",
+        "product": "Wise Wife ground cinnamon in plastic container with black screw top cap, 3.88 oz",
+        "displayName": null,
+        "brand": "",
+        "company": "SLR Food Distribution, Inc.",
+        "reason": "Product contains elevated levels of lead",
+        "announcedDate": "2026-11-11",
+        "classification": "Class II",
+        "retailers": [],
+        "states": [
+          "Connecticut",
+          "Indiana",
+          "Kansas",
+          "Massachusetts",
+          "Michigan",
+          "Minnesota",
+          "Nebraska",
+          "New York",
+          "North Carolina",
+          "Ohio",
+          "Pennsylvania",
+          "Texas",
+          "Virginia",
+          "Wisconsin"
+        ],
+        "distributionRaw": "20 retail locations located in: CT, IN, KS, MA, MI, MN, NC, NE, NY, OH, PA, TX, VA and WI",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Best Before: 4/25/2027 UPC: 0688474302754"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0202-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:slr-food-distribution-inc-recalls-wise-wife-brand-ground-cinnamon-due-elevated-lead-levels",
+        "product": "Ground cinnamon",
+        "displayName": null,
+        "brand": "Wise Wife",
+        "company": "SLR Food Distribution Inc.",
+        "reason": "Potential to be contaminated with elevated levels of lead.",
+        "announcedDate": "2026-10-29",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/slr-food-distribution-inc-recalls-wise-wife-brand-ground-cinnamon-due-elevated-lead-levels",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.2857142857142857,
+      "sharedProductTokens": 2,
+      "reason": 0.5,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0206-2027",
+        "product": "Brad's Crunchy Kale Radical Ranch, 2 oz (57g) bags with UPC UPC 813104020726.",
+        "displayName": null,
+        "brand": "",
+        "company": "Snack Right Super Foods, Inc.",
+        "reason": "Products may contain elevated levels of thallium",
+        "announcedDate": "2026-11-18",
+        "classification": "Class II",
+        "retailers": [],
+        "states": [
+          "Illinois",
+          "Rhode Island"
+        ],
+        "distributionRaw": "The product was distributed to the following States:  IL and RI",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Lot 29425-1"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0206-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+        "product": "Crunchy Kale and Veggie Chips Kale",
+        "displayName": null,
+        "brand": "Brad’s",
+        "company": "Snack Right Super Foods dba Brad’s Raw Chips",
+        "reason": "Product may contain thallium.",
+        "announcedDate": "2026-11-02",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.3333333333333333,
+      "sharedProductTokens": 1,
+      "reason": 0.4,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0198-2027",
+        "product": "Cold Smoked Sprats, 5 lbs.",
+        "displayName": null,
+        "brand": "",
+        "company": "D & M Smoked Fish, Inc.",
+        "reason": "May be contaminated with Clostridium botulinum",
+        "announcedDate": "2026-11-18",
+        "classification": "Class I",
+        "retailers": [],
+        "states": [
+          "New Jersey",
+          "New York",
+          "Pennsylvania"
+        ],
+        "distributionRaw": "NY, NJ, PA",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "all lots recalled but include lots: 9/2 Lot 244, 9/7 Lot 247,9/8 Lot 250, 9/9 Lot 251, 9/14 Lot 254, 9/15 Lot 257"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0198-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:haifa-smoked-fish-recalls-cold-smoked-sprats-due-potential-health-risk",
+        "product": "Cold Smoked Sprat Fish",
+        "displayName": null,
+        "brand": "No Brand",
+        "company": "D&M Smoked Fish Inc. dba Haifa Smoked Fish Inc.",
+        "reason": "Potential contamination with Clostridium botulinum",
+        "announcedDate": "2026-10-27",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/haifa-smoked-fish-recalls-cold-smoked-sprats-due-potential-health-risk",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.25,
+      "sharedProductTokens": 4,
+      "reason": 0.3333333333333333,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0229-2027",
+        "product": "Fresh To You Sausage, Egg & Cheese Biscuit Sandwich, net weight. 4.6 oz (131g). Refrigerated breakfast sandwich sold to the general population, packaging is flexible clear film package. UPC 8 40549 30168 4. Manufactured By: RFR Renton, WA 98057.",
+        "displayName": null,
+        "brand": "",
+        "company": "Fresh & Ready Foods LLC",
+        "reason": "Possible Listeria monocytogenes contamination.",
+        "announcedDate": "2026-11-18",
+        "classification": "Class I",
+        "retailers": [],
+        "states": [
+          "Oregon",
+          "Washington"
+        ],
+        "distributionRaw": "Distributed in OR and WA",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Fresh Thru: 11/7 through 11/19"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0229-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:fresh-ready-foods-llc-expands-recall-include-fresh-you-brand-sausage-egg-cheese-biscuit-sandwich-and",
+        "product": "Sausage, Egg & Cheese Biscuit Sandwich",
+        "displayName": null,
+        "brand": "Fresh to You",
+        "company": "Fresh & Ready Foods LLC",
+        "reason": "Potential to be contaminated with Listeria monocytogenes.",
+        "announcedDate": "2026-11-17",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/fresh-ready-foods-llc-expands-recall-include-fresh-you-brand-sausage-egg-cheese-biscuit-sandwich-and",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.25,
+      "sharedProductTokens": 4,
+      "reason": 0.3333333333333333,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0229-2027",
+        "product": "Fresh To You Sausage, Egg & Cheese Biscuit Sandwich, net weight. 4.6 oz (131g). Refrigerated breakfast sandwich sold to the general population, packaging is flexible clear film package. UPC 8 40549 30168 4. Manufactured By: RFR Renton, WA 98057.",
+        "displayName": null,
+        "brand": "",
+        "company": "Fresh & Ready Foods LLC",
+        "reason": "Possible Listeria monocytogenes contamination.",
+        "announcedDate": "2026-11-18",
+        "classification": "Class I",
+        "retailers": [],
+        "states": [
+          "Oregon",
+          "Washington"
+        ],
+        "distributionRaw": "Distributed in OR and WA",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Fresh Thru: 11/7 through 11/19"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0229-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:fresh-ready-foods-llc-recalls-fresh-you-brand-sausage-egg-cheese-biscuit-sandwich-due-possible",
+        "product": "Sausage, Egg & Cheese Biscuit Sandwich",
+        "displayName": null,
+        "brand": "Fresh to You",
+        "company": "Fresh & Ready Foods LLC",
+        "reason": "Potential to be contaminated with Listeria monocytogenes.",
+        "announcedDate": "2026-11-08",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/fresh-ready-foods-llc-recalls-fresh-you-brand-sausage-egg-cheese-biscuit-sandwich-due-possible",
+        "confidence": "extracted",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      }
+    ]
+  },
+  {
+    "why": "same company but the products do not clearly match",
+    "scores": {
+      "company": 1,
+      "product": 0.3333333333333333,
+      "sharedProductTokens": 2,
+      "reason": 0.5,
+      "sharedLotCodes": 0,
+      "brandMatch": false
+    },
+    "records": [
+      {
+        "id": "openfda:h-0207-2027",
+        "product": "Brad's Veggie Chips Kale, 3 oz (85g) bags with UPC UPC 854615002054.",
+        "displayName": null,
+        "brand": "",
+        "company": "Snack Right Super Foods, Inc.",
+        "reason": "Products may contain elevated levels of thallium",
+        "announcedDate": "2026-11-18",
+        "classification": "Class II",
+        "retailers": [],
+        "states": [
+          "Illinois",
+          "Rhode Island"
+        ],
+        "distributionRaw": "The product was distributed to the following States:  IL and RI",
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [
+          "Lots 33225-3, 33325-2, 33425-1 and 33525-1"
+        ],
+        "source": "openfda",
+        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0207-2027%22",
+        "confidence": "verified",
+        "mergedFrom": [],
+        "headline": null,
+        "avoidLine": null
+      },
+      {
+        "id": "fdaRss:snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
+        "product": "Crunchy Kale and Veggie Chips Kale",
+        "displayName": null,
+        "brand": "Brad’s",
+        "company": "Snack Right Super Foods dba Brad’s Raw Chips",
+        "reason": "Product may contain thallium.",
+        "announcedDate": "2026-11-02",
+        "classification": null,
+        "retailers": [],
+        "states": [],
+        "distributionRaw": null,
+        "nationwide": false,
+        "countryOfOrigin": null,
+        "lotCodes": [],
+        "source": "fdaRss",
+        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/snack-right-super-foods-inc-dba-brads-raw-chips-recalls-brads-crunchy-kale-veggie-chips-due",
         "confidence": "extracted",
         "mergedFrom": [],
         "headline": null,
