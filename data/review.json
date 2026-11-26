@@ -322,69 +322,6 @@
     "why": "same company but the products do not clearly match",
     "scores": {
       "company": 1,
-      "product": 0.3333333333333333,
-      "sharedProductTokens": 1,
-      "reason": 0.4,
-      "sharedLotCodes": 0,
-      "brandMatch": false
-    },
-    "records": [
-      {
-        "id": "openfda:h-0198-2027",
-        "product": "Cold Smoked Sprats, 5 lbs.",
-        "displayName": null,
-        "brand": "",
-        "company": "D & M Smoked Fish, Inc.",
-        "reason": "May be contaminated with Clostridium botulinum",
-        "announcedDate": "2026-11-18",
-        "classification": "Class I",
-        "retailers": [],
-        "states": [
-          "New Jersey",
-          "New York",
-          "Pennsylvania"
-        ],
-        "distributionRaw": "NY, NJ, PA",
-        "nationwide": false,
-        "countryOfOrigin": null,
-        "lotCodes": [
-          "all lots recalled but include lots: 9/2 Lot 244, 9/7 Lot 247,9/8 Lot 250, 9/9 Lot 251, 9/14 Lot 254, 9/15 Lot 257"
-        ],
-        "source": "openfda",
-        "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0198-2027%22",
-        "confidence": "verified",
-        "mergedFrom": [],
-        "headline": null,
-        "avoidLine": null
-      },
-      {
-        "id": "fdaRss:haifa-smoked-fish-recalls-cold-smoked-sprats-due-potential-health-risk",
-        "product": "Cold Smoked Sprat Fish",
-        "displayName": null,
-        "brand": "No Brand",
-        "company": "D&M Smoked Fish Inc. dba Haifa Smoked Fish Inc.",
-        "reason": "Potential contamination with Clostridium botulinum",
-        "announcedDate": "2026-10-27",
-        "classification": null,
-        "retailers": [],
-        "states": [],
-        "distributionRaw": null,
-        "nationwide": false,
-        "countryOfOrigin": null,
-        "lotCodes": [],
-        "source": "fdaRss",
-        "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/haifa-smoked-fish-recalls-cold-smoked-sprats-due-potential-health-risk",
-        "confidence": "extracted",
-        "mergedFrom": [],
-        "headline": null,
-        "avoidLine": null
-      }
-    ]
-  },
-  {
-    "why": "same company but the products do not clearly match",
-    "scores": {
-      "company": 1,
       "product": 0.25,
       "sharedProductTokens": 4,
       "reason": 0.3333333333333333,

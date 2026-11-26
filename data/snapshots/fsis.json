@@ -30,7 +30,9 @@
   "field_labels": [
    "Recall_028-2026-product-labels.pdf "
   ],
-  "field_distro_list": [],
+  "field_distro_list": [
+   "RC-028-2026-Retail-List.pdf"
+  ],
   "field_processing": [
    "Fully Cooked - Not Shelf Stable"
   ],
